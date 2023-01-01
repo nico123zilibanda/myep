@@ -71,7 +71,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 🔥 CHANGE: JSON → FormData
+    //FormData
     const formData = await req.formData();
 
     const title = formData.get("title") as string;
@@ -82,8 +82,6 @@ export async function POST(req: Request) {
     const location = (formData.get("location") as string) || "";
     const status = (formData.get("status") as string) || "PUBLISHED";
     const categoryId = Number(formData.get("categoryId")) || null;
-
-    // 🔥 NEW FIELDS
     const resourceType = formData.get("resourceType") as
       | "VIDEO"
       | "PDF"
@@ -93,6 +91,7 @@ export async function POST(req: Request) {
     const file = formData.get("file") as File | null;
     const resourceUrlInput = formData.get("resourceUrl") as string | null;
 
+    //VALIDATION
     if (!title || !deadline) {
       return NextResponse.json(
         {
@@ -134,7 +133,7 @@ export async function POST(req: Request) {
       resourceUrl = uploadResult.secure_url;
     }
 
-    // 🔥 VALIDATION
+    // VALIDATION
     if (resourceType && !resourceUrl) {
       return NextResponse.json(
         {
@@ -145,6 +144,7 @@ export async function POST(req: Request) {
       );
     }
 
+    //INSER DATA
     const { data: newOpportunity, error } = await supabaseAdmin
       .from("Opportunity")
       .insert({
@@ -157,7 +157,6 @@ export async function POST(req: Request) {
         status,
         categoryId,
         createdById: user.id,
-        // 🔥 NEW
         resourceType,
         resourceUrl,
       })

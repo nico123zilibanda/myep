@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
         educationLevel,
         program,
         employmentStatus,
-        roleId: 2, // YOUTH
+        roleId: 1, // YOUTH
       })
       .select("id")
       .single();
