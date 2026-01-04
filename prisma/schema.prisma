@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model AdminLog {
+  id         Int      @id @default(autoincrement())
+  action     String
+  entityType String
+  entityId   Int?
+  adminId    Int
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [adminId], references: [id])
+
+  @@index([adminId], map: "AdminLog_adminId_fkey")
+}
+
+model Category {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime      @default(now())
+  Opportunity Opportunity[]
+}
+
+model Opportunity {
+  id               Int                @id @default(autoincrement())
+  title            String
+  description      String
+  requirements     String
+  howToApply       String
+  deadline         DateTime
+  location         String
+  attachmentUrl    String?
+  status           Opportunity_status @default(PUBLISHED)
+  categoryId       Int
+  createdById      Int
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Category         Category           @relation(fields: [categoryId], references: [id])
+  User             User               @relation(fields: [createdById], references: [id])
+  SavedOpportunity SavedOpportunity[]
+
+  @@index([categoryId], map: "Opportunity_categoryId_fkey")
+  @@index([createdById], map: "Opportunity_createdById_fkey")
+}
+
+model Question {
+  id           Int             @id @default(autoincrement())
+  questionText String
+  answerText   String?
+  status       Question_status @default(PENDING)
+  userId       Int
+  createdAt    DateTime        @default(now())
+  answeredAt   DateTime?
+  User         User            @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "Question_userId_fkey")
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  User      User[]
+}
+
+model SavedOpportunity {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  opportunityId Int
+  createdAt     DateTime    @default(now())
+  Opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  User          User        @relation(fields: [userId], references: [id])
+
+  @@unique([userId, opportunityId])
+  @@index([opportunityId], map: "SavedOpportunity_opportunityId_fkey")
+}
+
+model Training {
+  id          Int           @id @default(autoincrement())
+  title       String
+  description String
+  type        Training_type
+  resourceUrl String
+  createdById Int
+  createdAt   DateTime      @default(now())
+  User        User          @relation(fields: [createdById], references: [id])
+
+  @@index([createdById], map: "Training_createdById_fkey")
+}
+
+model User {
+  id               Int                @id @default(autoincrement())
+  fullName         String
+  email            String             @unique
+  passwordHash     String
+  phone            String?
+  gender           String?
+  dateOfBirth      DateTime?
+  educationLevel   String?
+  isActive         Boolean            @default(true)
+  roleId           Int
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  AdminLog         AdminLog[]
+  Opportunity      Opportunity[]
+  Question         Question[]
+  SavedOpportunity SavedOpportunity[]
+  Training         Training[]
+  Role             Role               @relation(fields: [roleId], references: [id])
+
+  @@index([roleId], map: "User_roleId_fkey")
+}
+
+enum Question_status {
+  PENDING
+  ANSWERED
+}
+
+enum Training_type {
+  ARTICLE
+  VIDEO
+  PDF
+}
+
+enum Opportunity_status {
+  PUBLISHED
+  DRAFT
+  CLOSED
+}
