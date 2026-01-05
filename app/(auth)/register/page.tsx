@@ -4,7 +4,7 @@ import RegisterForm from "@/components/auth/RegisterForm";
 export default function RegisterPage() {
   return (
     <AuthLayout
-      title="Jisajili – DC MLELE YOUTH"
+      title="Jisajili – MLELE DC YOUTH"
       subtitle="Unda akaunti mpya ya kijana"
     >
       <RegisterForm />

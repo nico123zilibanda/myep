@@ -10,7 +10,7 @@ export default function HomePage() {
           
           <div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              Mlele Youth <br /> Empowerment Portal
+              Mlele DC <br /> Fursa Portal
             </h1>
 
             <p className="mt-6 text-lg text-blue-100">
@@ -149,7 +149,7 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <footer className="bg-gray-900 text-gray-400 text-center py-6 text-sm">
-        © {new Date().getFullYear()} Mlele Youth Empowerment Portal. All rights reserved.
+        © {new Date().getFullYear()} Mlele DC Fursa Portal. All rights reserved.
       </footer>
 
     </main>
