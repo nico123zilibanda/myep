@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma"; // Prisma MariaDB v7 instance
 import { getCurrentUser } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 
@@ -63,10 +63,10 @@ export async function POST(req: Request) {
   return NextResponse.json(training);
 }
 
-
+// ================= GET TRAININGS =================
 export async function GET() {
   const user = await getCurrentUser();
-  if (!user || user.Role.name !== "ADMIN") {
+  if (!user || user.Role?.name !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

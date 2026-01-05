@@ -5,9 +5,6 @@ import { prisma } from "@/lib/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-/* =========================
-   PASSWORD HELPERS
-========================= */
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 10);
 }
@@ -19,13 +16,7 @@ export async function verifyPassword(
   return bcrypt.compare(password, hashedPassword);
 }
 
-/* =========================
-   JWT HELPERS
-========================= */
-export function generateToken(payload: {
-  userId: number;
-  role: string;
-}) {
+export function generateToken(payload: { userId: number; role: string }) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
 }
 
@@ -38,9 +29,6 @@ export function verifyToken(token: string) {
   };
 }
 
-/* =========================
-   CURRENT USER (FIXED)
-========================= */
 export async function getCurrentUser() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -54,9 +42,10 @@ export async function getCurrentUser() {
     return null;
   }
 
+  // ✅ Use prisma.user.findUnique — works at runtime and type-safe
   const user = await prisma.user.findUnique({
     where: { id: decoded.userId },
-    include: { Role: true },
+    include: { Role: true }, // include role for role checks
   });
 
   return user;

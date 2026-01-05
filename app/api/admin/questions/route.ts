@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
-  if (!user || user.Role.name !== "ADMIN") {
+  if (!user || user.Role?.name !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -12,19 +12,8 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const status = url.searchParams.get("status");
 
-    if (status === "PENDING") {
-      const questions = await prisma.question.findMany({
-        where: { status: "PENDING" },
-        select: {
-          id: true,
-          questionText: true,
-        },
-        orderBy: { createdAt: "desc" },
-      });
-      return NextResponse.json(questions);
-    }
-
     const questions = await prisma.question.findMany({
+      where: status === "PENDING" ? { status: "PENDING" } : undefined,
       orderBy: { createdAt: "desc" },
       include: {
         User: {

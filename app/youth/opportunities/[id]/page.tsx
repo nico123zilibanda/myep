@@ -28,16 +28,19 @@ interface Opportunity {
 
 /* ================= PAGE ================= */
 export default function OpportunityDetailsPage() {
-const params = useParams();
-const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const params = useParams<{ id: string }>();
+  const id = params.id;
 
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchOpportunity = async () => {
       try {
         const res = await fetch(`/api/youth/opportunities/${id}`);
+        if (!res.ok) throw new Error("Failed");
         const data = await res.json();
         setOpportunity(data);
       } catch {
@@ -46,9 +49,13 @@ const id = Array.isArray(params.id) ? params.id[0] : params.id;
         setLoading(false);
       }
     };
-    
+
     fetchOpportunity();
   }, [id]);
+
+  if (!id) {
+    return <p className="text-red-500">ID haijapatikana</p>;
+  }
 
   if (loading) {
     return <p className="text-gray-500">Inapakia...</p>;
