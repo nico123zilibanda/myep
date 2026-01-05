@@ -36,7 +36,7 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-6 text-lg text-blue-100">
-              Mfumo wa kisasa unaowawezesha vijana wa Wilaya ya Mlele
+              Mfumo wa kisasa unaowawezesha vijana wa Halmashauri ya Wilaya ya Mlele
               kupata taarifa sahihi kuhusu fursa za ajira, mafunzo,
               mitaji na maendeleo binafsi.
             </p>
@@ -94,7 +94,7 @@ export default function HomePage() {
         </h2>
 
         <p className="text-gray-600 text-center max-w-3xl mx-auto">
-          Mfumo wa Mlele Youth Empowerment Portal umeanzishwa
+          Mfumo wa Mlele DC Fursa Portal umeanzishwa
           ili kurahisisha upatikanaji wa taarifa za fursa za
           maendeleo kwa vijana. Unakusanya taarifa zote muhimu
           sehemu moja ili vijana waweze kuzifikia kwa haraka,
