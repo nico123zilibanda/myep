@@ -1,13 +1,35 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+  const images = [
+    "/hero1.jpg",
+    "/hero2.jpg",
+    "/hero3.jpg",
+    "/hero4.jpg",
+    "/hero5.jpg",
+    "/hero6.jpg",
+  ];
+
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <main className="min-h-screen bg-gray-50">
-
       {/* HERO SECTION */}
       <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-          
+          {/* TEXT */}
           <div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
               Mlele DC <br /> Fursa Portal
@@ -36,15 +58,32 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* IMAGE PLACEHOLDER */}
-          <div className="hidden md:flex justify-center">
-            <div className="w-80 h-80 bg-white/10 rounded-2xl flex items-center justify-center">
-              <span className="text-sm text-blue-100">
-                Youth Empowerment Illustration
-              </span>
+          {/* IMAGE CAROUSEL */}
+          <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96">
+            <Image
+              src={images[current]}
+              alt="Youth Empowerment"
+              fill
+              priority
+              className="object-cover rounded-2xl transition-opacity duration-700"
+            />
+
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black/20 rounded-2xl" />
+
+            {/* DOTS */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrent(index)}
+                  className={`w-2.5 h-2.5 rounded-full transition ${
+                    current === index ? "bg-white" : "bg-white/50"
+                  }`}
+                />
+              ))}
             </div>
           </div>
-
         </div>
       </section>
 
@@ -71,7 +110,6 @@ export default function HomePage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
             <div className="border rounded-xl p-6 text-center hover:shadow-lg transition">
               <h3 className="text-xl font-semibold mb-3">Fursa</h3>
               <p className="text-gray-600">
@@ -89,13 +127,14 @@ export default function HomePage() {
             </div>
 
             <div className="border rounded-xl p-6 text-center hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold mb-3">Maswali & Ushauri</h3>
+              <h3 className="text-xl font-semibold mb-3">
+                Maswali & Ushauri
+              </h3>
               <p className="text-gray-600">
                 Pata ushauri na majibu ya maswali yako
                 kuhusu maendeleo na fursa.
               </p>
             </div>
-
           </div>
         </div>
       </section>
@@ -151,7 +190,6 @@ export default function HomePage() {
       <footer className="bg-gray-900 text-gray-400 text-center py-6 text-sm">
         © {new Date().getFullYear()} Mlele DC Fursa Portal. All rights reserved.
       </footer>
-
     </main>
   );
 }
