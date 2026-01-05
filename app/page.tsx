@@ -12,13 +12,14 @@ export default function HomePage() {
     "/hero4.jpg",
     "/hero5.jpg",
     "/hero6.jpg",
+    "/hero7.jpg"
   ];
 
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
+      setCurrent((prev) => (prev + 1) + images.length);
     }, 4000);
 
     return () => clearInterval(interval);
