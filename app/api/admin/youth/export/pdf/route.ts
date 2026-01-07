@@ -1,83 +1,63 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
 import PDFDocument from "pdfkit";
 
 export async function GET() {
-  try {
-    const user = await getCurrentUser();
-    if (!user || user.Role.name !== "ADMIN") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+  const user = await getCurrentUser();
+  if (!user || user.role !== "ADMIN") return new Response("Unauthorized", { status: 401 });
 
-    // Fetch youth users
-    const vijana = await prisma.user.findMany({
-      where: { Role: { is: { name: "YOUTH" } } },
-      select: {
-        fullName: true,
-        email: true,
-        phone: true,
-        educationLevel: true,
-        isActive: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+  const { data: youth, error } = await supabase
+    .from("User")
+    .select("fullName, email, phone, educationLevel, isActive, createdAt")
+    .eq("role", "YOUTH")
+    .order("createdAt", { ascending: false });
 
-    // Create PDF document
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
-    const chunks: Uint8Array[] = [];
+  if (error) return new Response(error.message, { status: 500 });
 
-    // Collect data chunks
-    doc.on("data", (chunk) => chunks.push(chunk));
+  const doc = new PDFDocument({ size: "A4", margin: 50 });
+  const chunks: Uint8Array[] = [];
 
-    // Write content
-    doc.fontSize(18).text("ORODHA YA VIJANA", { align: "center" });
-    doc.moveDown();
-    doc.fontSize(12).text(`Jumla ya Vijana: ${vijana.length}`);
-    doc.moveDown();
+  doc.on("data", chunk => chunks.push(chunk));
+  doc.on("end", () => {});
 
-    // Table headers
-    doc.font("Times-Bold");
-    doc.text("Jina", 50, doc.y, { width: 120 });
-    doc.text("Email", 180, doc.y, { width: 170 });
-    doc.text("Simu", 360, doc.y, { width: 80 });
-    doc.text("Status", 450, doc.y, { width: 80 });
+  // Title
+  doc.fontSize(18).text("ORODHA YA VIJANA", { align: "center" });
+  doc.moveDown();
+  doc.fontSize(12).text(`Jumla ya Vijana: ${youth.length}`);
+  doc.moveDown();
+
+  // Table headers
+  doc.font("Times-Bold");
+  doc.text("Jina", 50, doc.y, { width: 120 });
+  doc.text("Email", 180, doc.y, { width: 170 });
+  doc.text("Simu", 360, doc.y, { width: 80 });
+  doc.text("Status", 450, doc.y, { width: 80 });
+  doc.moveDown(0.5);
+
+  // Table content
+  doc.font("Times-Roman");
+  youth.forEach(v => {
+    doc.text(v.fullName, 50, doc.y, { width: 120 });
+    doc.text(v.email, 180, doc.y, { width: 170 });
+    doc.text(v.phone ?? "-", 360, doc.y, { width: 80 });
+    doc.text(v.isActive ? "Active" : "Inactive", 450, doc.y, { width: 80 });
     doc.moveDown(0.5);
+  });
 
-    // Table content
-    doc.font("Times-Roman");
-    vijana.forEach((v) => {
-      doc.text(v.fullName, 50, doc.y, { width: 120 });
-      doc.text(v.email, 180, doc.y, { width: 170 });
-      doc.text(v.phone || "-", 360, doc.y, { width: 80 });
-      doc.text(v.isActive ? "Active" : "Inactive", 450, doc.y, { width: 80 });
-      doc.moveDown(0.5);
-    });
+  doc.end();
 
-    // Finalize PDF
-    doc.end();
+  // Wait for PDF buffer
+  const pdfBuffer: Uint8Array = await new Promise((resolve, reject) => {
+    const buffers: Uint8Array[] = [];
+    doc.on("data", (chunk) => buffers.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(buffers)));
+    doc.on("error", (err) => reject(err));
+  });
 
-    // Wait for PDF to be fully generated
-    const pdfBuffer: Uint8Array = await new Promise((resolve, reject) => {
-      const buffers: Uint8Array[] = [];
-      doc.on("data", (chunk) => buffers.push(chunk));
-      doc.on("end", () => resolve(Buffer.concat(buffers)));
-      doc.on("error", (err) => reject(err));
-    });
-
-    // Return PDF response
-return new NextResponse(
-  new Uint8Array(pdfBuffer),
-  {
+  return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": 'attachment; filename="vijana.pdf"',
     },
-  }
-);
-  } catch (error) {
-    console.error("PDF EXPORT ERROR:", error);
-    return NextResponse.json({ message: "Failed to export PDF" }, { status: 500 });
-  }
+  });
 }

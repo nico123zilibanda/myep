@@ -1,52 +1,46 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+// lib/auth.ts
 import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma";
+import jwt from "jsonwebtoken";
+import { supabase } from "./supabase";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
-export async function hashPassword(password: string) {
-  return bcrypt.hash(password, 10);
+export interface AuthUser {
+  [x: string]: any;
+  id: number;
+  email: string;
+  role: "ADMIN" | "YOUTH";
 }
 
-export async function verifyPassword(
-  password: string,
-  hashedPassword: string
-) {
-  return bcrypt.compare(password, hashedPassword);
-}
-
-export function generateToken(payload: { userId: number; role: string }) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
-}
-
-export function verifyToken(token: string) {
-  return jwt.verify(token, JWT_SECRET) as {
-    userId: number;
-    role: string;
-    iat: number;
-    exp: number;
-  };
-}
-
-export async function getCurrentUser() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  if (!token) return null;
-
-  let decoded;
+// now req is optional, and if missing it reads cookies directly
+export async function getCurrentUser(req?: Request): Promise<AuthUser | null> {
   try {
-    decoded = verifyToken(token);
-  } catch {
+    let token: string | null = null;
+
+    // ✅ Read from request header if provided
+    if (req) {
+      const authHeader = req.headers.get("Authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        token = authHeader.replace("Bearer ", "");
+      }
+    }
+
+    // ✅ Read from cookies if no token from headers
+    if (!token) {
+      const cookieStore = await cookies();
+      token = cookieStore.get("token")?.value ?? null;
+    }
+
+    if (!token) return null;
+
+    // Decode token using your JWT_SECRET
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+
+    return {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role,
+    };
+  } catch (err) {
+    console.error("getCurrentUser error:", err);
     return null;
   }
-
-  // ✅ Use prisma.user.findUnique — works at runtime and type-safe
-  const user = await prisma.user.findUnique({
-    where: { id: decoded.userId },
-    include: { Role: true }, // include role for role checks
-  });
-
-  return user;
 }

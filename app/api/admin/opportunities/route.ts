@@ -1,47 +1,78 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
+// GET all opportunities
 export async function GET() {
-  const user = await getCurrentUser();
-  if (!user || user.Role.name !== "ADMIN") {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  try {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from("Opportunity")
+      .select(`
+        *,
+        Category:categoryId (id, name)
+      `)
+      .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("GET OPPORTUNITIES ERROR:", error);
+      return NextResponse.json({ message: error.message || "Failed to load opportunities" }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
+  } catch (err) {
+    console.error("GET OPPORTUNITIES ERROR:", err);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
-
-  const opportunities = await prisma.opportunity.findMany({
-    include: { Category: true },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(opportunities);
 }
 
+// POST create new opportunity
 export async function POST(req: Request) {
-  const user = await getCurrentUser();
-  if (!user || user.Role.name !== "ADMIN") {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  try {
+    const user = await getCurrentUser(req);
+    console.log("Current User in POST:", user); // 🔥 debug
+
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const data = await req.json();
+    if (!data.title || !data.deadline) {
+      return NextResponse.json({ message: "Title and deadline are required" }, { status: 400 });
+    }
+
+    const { data: newOpportunity, error } = await supabase
+      .from("Opportunity")
+      .insert({
+        title: data.title,
+        description: data.description || "",
+        requirements: data.requirements || "",
+        howToApply: data.howToApply || "",
+        deadline: new Date(data.deadline).toISOString(),
+        location: data.location || "",
+        attachmentUrl: data.attachmentUrl || "",
+        status: data.status || "PUBLISHED",
+        categoryId: data.categoryId ?? null,
+        createdById: user.id, // ✅ should never be null now
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("CREATE OPPORTUNITY ERROR:", error);
+      return NextResponse.json({ message: error.message || "Failed to create opportunity" }, { status: 500 });
+    }
+
+    return NextResponse.json(newOpportunity);
+  } catch (err) {
+    console.error("POST OPPORTUNITY ERROR:", err);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
-
-  const data = await req.json();
-
-  if (!data.title || !data.deadline || !data.categoryId) {
-    return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
-  }
-
-  const newOpportunity = await prisma.opportunity.create({
-    data: {
-      title: data.title,
-      description: data.description || "",
-      requirements: data.requirements || "",
-      howToApply: data.howToApply || "",
-      deadline: new Date(data.deadline),
-      location: data.location || "",
-      attachmentUrl: data.attachmentUrl || "",
-      status: data.status || "PUBLISHED",
-      categoryId: data.categoryId,
-      createdById: user.id,
-    },
-  });
-
-  return NextResponse.json(newOpportunity);
 }
+

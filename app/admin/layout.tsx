@@ -11,13 +11,12 @@ export default async function DashboardLayout({
 }) {
   const user = await getCurrentUser();
 
-  if (!user || user.Role.name !== "ADMIN") {
+  if (!user || user.role !== "ADMIN") {
     redirect("/login");
   }
 
   return (
     <div className="min-h-screen flex bg-gray-100">
-
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:flex w-60 bg-white border-r flex-col">
         <div className="h-16 flex items-center gap-2 px-6 border-b">
@@ -32,9 +31,7 @@ export default async function DashboardLayout({
 
       {/* MAIN */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* 👇 PITISHA USER */}
         <Navbar user={user} />
-
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {children}
         </main>

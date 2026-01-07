@@ -31,7 +31,7 @@ export default function OpportunityForm({
     location: initialData?.location || "",
     attachmentUrl: initialData?.attachmentUrl || "",
     status: initialData?.status || "PUBLISHED",
-    categoryId: initialData?.categoryId || (categories[0]?.id || 0),
+    categoryId: initialData?.categoryId ?? (categories[0]?.id ?? 0),
   });
 
   useEffect(() => {
@@ -46,21 +46,19 @@ export default function OpportunityForm({
       location: initialData?.location || "",
       attachmentUrl: initialData?.attachmentUrl || "",
       status: initialData?.status || "PUBLISHED",
-      categoryId: initialData?.categoryId || (categories[0]?.id || 0),
+      categoryId: initialData?.categoryId ?? (categories[0]?.id ?? 0),
     });
   }, [initialData, categories]);
 
   const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    ) => {
-      const { name, value } = e.target;
-
-      setForm(prev => ({
-        ...prev,
-        [name]: name === "categoryId" ? Number(value) : value,
-      }));
-    };
-;
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: name === "categoryId" ? Number(value) : value,
+    }));
+  };
 
   return (
     <form
@@ -78,7 +76,6 @@ export default function OpportunityForm({
       <FormInput label="Location" name="location" value={form.location} onChange={handleChange} />
       <FormInput label="Attachment URL" name="attachmentUrl" value={form.attachmentUrl} onChange={handleChange} />
 
-      {/* Status dropdown using {value,label} objects */}
       <FormSelect
         label="Status"
         name="status"
@@ -91,7 +88,6 @@ export default function OpportunityForm({
         ]}
       />
 
-      {/* Categories dropdown */}
       <FormSelect
         label="Category"
         name="categoryId"

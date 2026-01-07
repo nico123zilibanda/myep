@@ -1,14 +1,13 @@
+// app/dashboard/page.tsx
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 
 export default async function DashboardRedirect() {
-  const cookieStore = await cookies(); // ✅ muhimu sana
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) {
-    redirect("/login");
-  }
+  if (!token) redirect("/login");
 
   let decoded: any;
 
@@ -18,13 +17,10 @@ export default async function DashboardRedirect() {
     redirect("/login");
   }
 
-  if (decoded.role === "ADMIN") {
-    redirect("/admin");
-  }
+  // ✅ role is now string ("ADMIN" or "YOUTH")
+  if (decoded.role === "ADMIN") redirect("/admin");
+  if (decoded.role === "YOUTH") redirect("/youth");
 
-  if (decoded.role === "YOUTH") {
-    redirect("/youth");
-  }
-
+  // fallback
   redirect("/login");
 }

@@ -1,35 +1,37 @@
+// app/api/admin/youth/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function GET() {
   const user = await getCurrentUser();
-
-  if (!user || user.Role.name !== "ADMIN") {
+  if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const youthRole = await prisma.role.findFirst({
-    where: { name: "YOUTH" },
-  });
+  const { data, error } = await supabase
+    .from("User")
+    .select(`
+      id,
+      fullName,
+      email,
+      phone,
+      educationLevel,
+      gender,
+      dateOfBirth,
+      isActive,
+      createdAt,
+      roles:roleId (
+        name
+      )
+    `)
+    .eq("roleId", 1) // ✅ YOUTH
+    .order("createdAt", { ascending: false });
 
-  if (!youthRole) {
-    return NextResponse.json([], { status: 200 });
+  if (error) {
+    console.error("SUPABASE ERROR:", error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 
-  const vijana = await prisma.user.findMany({
-    where: { roleId: youthRole.id },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      fullName: true,
-      email: true,
-      phone: true,
-      educationLevel: true,
-      isActive: true,
-      createdAt: true,
-    },
-  });
-
-  return NextResponse.json(vijana);
+  return NextResponse.json(data);
 }

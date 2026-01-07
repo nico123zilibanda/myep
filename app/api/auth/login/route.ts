@@ -1,12 +1,21 @@
+// app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 interface LoginForm {
   email: string;
   password: string;
 }
+
+// Map numeric roleId to string roles
+const roleMap: { [key: number]: "YOUTH" | "ADMIN" } = {
+  1: "YOUTH",
+  2: "ADMIN",
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,25 +29,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: { Role: true },
-    });
+    // 🔍 Find user in Supabase
+    const { data: user, error } = await supabase
+      .from("User")
+      .select("*")
+      .eq("email", email)
+      .single();
 
-    if (!user) {
+    if (error || !user) {
+      console.error("SUPABASE SELECT ERROR:", error);
       return NextResponse.json(
         { message: "Email au password sio sahihi." },
         { status: 401 }
       );
     }
 
-    if (!user.isActive) {
+    // Optional: check if account is active
+    if ("isActive" in user && !user.isActive) {
       return NextResponse.json(
         { message: "Account imezimwa. Wasiliana na admin." },
         { status: 403 }
       );
     }
 
+    // ✅ Verify password
     const isValid = await bcrypt.compare(password, user.passwordHash);
     if (!isValid) {
       return NextResponse.json(
@@ -47,43 +61,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔐 JWT
+    // 🔐 Generate JWT with consistent payload
     const token = jwt.sign(
       {
-        userId: user.id,
+        id: user.id,                 // ✅ use 'id' for getCurrentUser()
         email: user.email,
-        role: user.Role.name,
+        role: roleMap[user.roleId] ?? "YOUTH",
       },
-      process.env.JWT_SECRET!,
+      JWT_SECRET,
       { expiresIn: "1d" }
     );
 
+    // 🍪 Set HttpOnly cookie
     const response = NextResponse.json({
       message: "Login successful",
       user: {
         id: user.id,
         email: user.email,
-        role: user.Role.name,
+        role: roleMap[user.roleId] ?? "YOUTH",
       },
     });
 
-    // 🍪 HttpOnly cookie
     response.cookies.set({
       name: "token",
       value: token,
       httpOnly: true,
+      path: "/",
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      path: "/",
       maxAge: 60 * 60 * 24, // 1 day
     });
 
     return response;
   } catch (error) {
     console.error("LOGIN ERROR:", error);
-    return NextResponse.json(
-      { message: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

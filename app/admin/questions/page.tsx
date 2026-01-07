@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "@/components/table/DataTable";
 import TableHeader from "@/components/table/TableHeader";
-import { TableRow } from "@/components/table/TableRow";
+import TableRow from "@/components/table/TableRow";
 import TableSearch from "@/components/table/TableSearch";
 import Pagination from "@/components/table/Pagination";
 import CategoryActions from "@/components/table/CategoryActions";
@@ -16,27 +16,27 @@ interface Question {
   questionText: string;
   answerText?: string;
   status: "PENDING" | "ANSWERED";
-  User?: {
-    fullName?: string;
-  };
+  User?: { fullName?: string };
 }
 
 export default function AdminQuestionsPage() {
-  /* ================= STATE ================= */
   const [questions, setQuestions] = useState<Question[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
   const [selected, setSelected] = useState<Question | null>(null);
   const [viewing, setViewing] = useState<Question | null>(null);
-  const [answer, setAnswer] = useState(""); // ✅ muhimu
+  const [answer, setAnswer] = useState("");
 
   /* ================= FETCH ================= */
   const fetchQuestions = async () => {
     try {
-      const res = await fetch("/api/admin/questions");
+      const res = await fetch("/api/admin/questions", {
+        credentials: "include",
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Failed to load questions");
-      const data = await res.json();
+      const data: Question[] = await res.json();
       setQuestions(data);
     } catch (error: any) {
       alert(error.message);
@@ -47,13 +47,12 @@ export default function AdminQuestionsPage() {
     fetchQuestions();
   }, []);
 
-  /* ================= FILTER ================= */
+  /* ================= FILTER + PAGINATION ================= */
   const filtered = questions.filter(q =>
     q.questionText.toLowerCase().includes(search.toLowerCase()) ||
     q.User?.fullName?.toLowerCase().includes(search.toLowerCase())
   );
 
-  /* ================= PAGINATION ================= */
   const perPage = 5;
   const totalPages = Math.ceil(filtered.length / perPage);
   const data = filtered.slice((page - 1) * perPage, page * perPage);
@@ -61,26 +60,18 @@ export default function AdminQuestionsPage() {
   /* ================= ANSWER ================= */
   const submitAnswer = async () => {
     if (!selected) return alert("Hakuna swali lililochaguliwa");
-
-    if (!answer.trim()) {
-      alert("Andika jibu kwanza");
-      return;
-    }
+    if (!answer.trim()) return alert("Andika jibu kwanza");
 
     try {
       const res = await fetch("/api/admin/questions/update", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: selected.id,
-          answerText: answer,
-        }),
+        credentials: "include",
+        body: JSON.stringify({ id: selected.id, answerText: answer }),
       });
 
-      if (!res.ok) {
-        const err = await res.json();
-        return alert(err.message);
-      }
+      const data = await res.json();
+      if (!res.ok) return alert(data.message);
 
       setSelected(null);
       setAnswer("");
@@ -92,13 +83,14 @@ export default function AdminQuestionsPage() {
 
   /* ================= DELETE ================= */
   const handleDelete = async (id: number, questionText: string) => {
-    if (!confirm(`Una uhakika unataka kufuta swali hili?\n\n"${questionText}"`))
+    if (!confirm(`Una uhakika unataka kufuta swali?\n"${questionText}"`))
       return;
 
     try {
       const res = await fetch("/api/admin/questions/delete", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ id }),
       });
 
@@ -111,44 +103,25 @@ export default function AdminQuestionsPage() {
     }
   };
 
-  /* ================= UI (HAIJABADILISHWA) ================= */
+  /* ================= UI ================= */
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Maswali ya Vijana</h1>
-
       <TableSearch value={search} onChange={setSearch} />
 
       <DataTable>
-        <TableHeader
-          columns={["Swali", "Aliyeuliza", "Jibu", "Status", "Actions"]}
-        />
-
+        <TableHeader columns={["Swali", "Aliyeuliza", "Jibu", "Status", "Actions"]} />
         <tbody>
           {data.map(q => (
             <TableRow key={q.id}>
-              <td className="px-4 py-3 max-w-75 truncate">
-                {q.questionText}
-              </td>
-
-              <td className="px-4 py-3">
-                {q.User?.fullName || "-"}
-              </td>
-
-              <td className="px-4 py-3 max-w-75 truncate">
-                {q.answerText || "-"}
-              </td>
-
-              <td className="px-4 py-3">
-                <StatusBadge status={q.status} />
-              </td>
-
+              <td className="px-4 py-3 max-w-75 truncate">{q.questionText}</td>
+              <td className="px-4 py-3">{q.User?.fullName || "-"}</td>
+              <td className="px-4 py-3 max-w-75 truncate">{q.answerText || "-"}</td>
+              <td className="px-4 py-3"><StatusBadge status={q.status} /></td>
               <td className="px-4 py-3">
                 <CategoryActions
                   onView={() => setViewing(q)}
-                  onEdit={() => {
-                    setSelected(q);
-                    setAnswer(q.answerText || "");
-                  }}
+                  onEdit={() => { setSelected(q); setAnswer(q.answerText || ""); }}
                   onDelete={() => handleDelete(q.id, q.questionText)}
                 />
               </td>
@@ -157,23 +130,12 @@ export default function AdminQuestionsPage() {
         </tbody>
       </DataTable>
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       {/* ANSWER MODAL */}
-      <Modal
-        title="Jibu Swali"
-        open={!!selected}
-        onClose={() => setSelected(null)}
-      >
+      <Modal title="Jibu Swali" open={!!selected} onClose={() => setSelected(null)}>
         <div className="space-y-4">
-          <p className="text-sm font-medium">
-            {selected?.questionText}
-          </p>
-
+          <p className="text-sm font-medium">{selected?.questionText}</p>
           <textarea
             rows={4}
             className="w-full border rounded-lg p-2"
@@ -181,39 +143,24 @@ export default function AdminQuestionsPage() {
             value={answer}
             onChange={e => setAnswer(e.target.value)}
           />
-
-          <button
-            onClick={submitAnswer}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg"
-          >
+          <button onClick={submitAnswer} className="w-full bg-blue-600 text-white py-2 rounded-lg">
             Tuma Jibu
           </button>
         </div>
       </Modal>
 
       {/* VIEW MODAL */}
-      <Modal
-        title="Maelezo ya Swali"
-        open={!!viewing}
-        onClose={() => setViewing(null)}
-      >
+      <Modal title="Maelezo ya Swali" open={!!viewing} onClose={() => setViewing(null)}>
         <div className="space-y-4">
           <div>
             <p className="text-sm text-gray-500 mb-1">Swali</p>
-            <p className="bg-gray-100 p-3 rounded">
-              {viewing?.questionText}
-            </p>
+            <p className="bg-gray-100 p-3 rounded">{viewing?.questionText}</p>
           </div>
-
           <div>
             <p className="text-sm text-gray-500 mb-1">Jibu</p>
-            <p className="bg-gray-100 p-3 rounded">
-              {viewing?.answerText || "Bado halijajibiwa"}
-            </p>
+            <p className="bg-gray-100 p-3 rounded">{viewing?.answerText || "Bado halijajibiwa"}</p>
           </div>
-          <div className="flex justify-end">
-            {viewing && <StatusBadge status={viewing.status} />}
-          </div>
+          <div className="flex justify-end">{viewing && <StatusBadge status={viewing.status} />}</div>
         </div>
       </Modal>
     </div>

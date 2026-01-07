@@ -12,30 +12,46 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  if (!email || !password) {
+    alert("Tafadhali jaza email na password.");
+    return;
+  }
 
+  setLoading(true);
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    let data;
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-      alert(data.message);
-      return;
-      }
-      router.replace("/dashboard");
-
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
+      data = await res.json();
+    } catch {
+      console.error("Failed to parse JSON response");
+      alert("Server error: invalid response");
       setLoading(false);
+      return;
     }
-  };
+
+    if (!res.ok) {
+      console.error("LOGIN FAILED:", data);
+      alert(data?.message || "Login failed");
+      setLoading(false);
+      return;
+    }
+
+    router.replace("/dashboard");
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    alert("Server error");
+    setLoading(false);
+  }
+};
+
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>

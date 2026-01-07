@@ -3,26 +3,40 @@
 import { useEffect, useState } from "react";
 import DataTable from "@/components/table/DataTable";
 import TableHeader from "@/components/table/TableHeader";
-import { TableRow } from "@/components/table/TableRow";
+import TableRow from "@/components/table/TableRow";
 import TableSearch from "@/components/table/TableSearch";
 import Pagination from "@/components/table/Pagination";
 import CategoryActions from "@/components/table/CategoryActions";
 import Modal from "@/components/ui/Modal";
 
+interface Youth {
+  id: string; // Supabase IDs are string
+  fullName?: string;
+  email?: string | null;
+  phone?: string | null;
+  educationLevel?: string | null;
+  gender?: string | null;
+  dateOfBirth?: string | null;
+  isActive: boolean;
+  createdAt?: string | null;
+}
+
 export default function YouthPage() {
-  const [youth, setYouth] = useState<any[]>([]);
+  const [youth, setYouth] = useState<Youth[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [viewing, setViewing] = useState<any>(null);
+  const [viewing, setViewing] = useState<Youth | null>(null);
 
-  /* ================= FETCH ================= */
+  /* ================= FETCH YOUTH ================= */
   const fetchYouth = async () => {
     try {
       const res = await fetch("/api/admin/youth");
-      const data = await res.json();
-      setYouth(data);
-    } catch (error) {
-      console.error("Failed to load youth");
+      const data: Youth[] = await res.json();
+      if (Array.isArray(data)) setYouth(data);
+      else setYouth([]);
+    } catch (err) {
+      console.error("Failed to load youth:", err);
+      setYouth([]);
     }
   };
 
@@ -31,10 +45,9 @@ export default function YouthPage() {
   }, []);
 
   /* ================= FILTER ================= */
-  const filtered = youth.filter(
-    (v) =>
-      v.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      v.email.toLowerCase().includes(search.toLowerCase())
+  const filtered = youth.filter((v) =>
+    (v.fullName ?? "").toLowerCase().includes(search.toLowerCase()) ||
+    (v.email ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   /* ================= PAGINATION ================= */
@@ -43,21 +56,28 @@ export default function YouthPage() {
   const data = filtered.slice((page - 1) * perPage, page * perPage);
 
   /* ================= ACTIONS ================= */
-  const toggleStatus = async (id: number, isActive: boolean) => {
-    await fetch(`/api/admin/youth/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !isActive }),
-    });
-
-    fetchYouth();
+  const toggleStatus = async (id: string, isActive: boolean) => {
+    try {
+      await fetch(`/api/admin/youth/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: !isActive }),
+      });
+      fetchYouth();
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
+    }
   };
 
-  const handleDelete = async (id: number, name: string) => {
-    if (!confirm(`Una uhakika unataka kufuta account ya ${name}?`)) return;
+  const handleDelete = async (id: string, name?: string) => {
+    if (!confirm(`Una uhakika unataka kufuta account ya ${name ?? "youth"}?`)) return;
 
-    await fetch(`/api/admin/youth/${id}`, { method: "DELETE" });
-    setYouth((prev) => prev.filter((v) => v.id !== id));
+    try {
+      await fetch(`/api/admin/youth/${id}`, { method: "DELETE" });
+      setYouth((prev) => prev.filter((v) => v.id !== id));
+    } catch (err) {
+      console.error("Failed to delete youth:", err);
+    }
   };
 
   /* ================= UI ================= */
@@ -66,25 +86,22 @@ export default function YouthPage() {
       {/* ===== HEADER ===== */}
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold">Vijana</h1>
-
         <div className="flex gap-2">
           <a
             href="/api/admin/youth/export/csv"
-            className="px-3 py-2 text-sm bg-blue-500 rounded hover:bg-blue-600"
+            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Export CSV
           </a>
-
           <a
             href="/api/admin/youth/export/excel"
-            className="px-3 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+            className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             Export Excel
           </a>
-
           <a
             href="/api/admin/youth/export/pdf"
-            className="px-3 py-2 text-sm bg-cyan-300 text-white rounded hover:bg-cyan-400"
+            className="px-3 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
           >
             Export PDF
           </a>
@@ -97,25 +114,16 @@ export default function YouthPage() {
       {/* ===== TABLE ===== */}
       <DataTable>
         <TableHeader
-          columns={[
-            "Jina",
-            "Email",
-            "Simu",
-            "Elimu",
-            "Status",
-            "Tarehe",
-            "Actions",
-          ]}
+          columns={["Jina", "Email", "Simu", "Elimu", "Status", "Tarehe", "Actions"]}
         />
-
         <tbody>
           {data.map((v) => (
             <TableRow key={v.id}>
-              <td className="px-4 py-3">{v.fullName}</td>
-              <td className="px-4 py-3">{v.email}</td>
-              <td className="px-4 py-3">{v.phone || "-"}</td>
-              <td className="px-4 py-3">{v.educationLevel || "-"}</td>
-              <td className="px-4 py-3">
+              <td>{v.fullName ?? "-"}</td>
+              <td>{v.email ?? "-"}</td>
+              <td>{v.phone ?? "-"}</td>
+              <td>{v.educationLevel ?? "-"}</td>
+              <td>
                 <span
                   className={`px-2 py-1 rounded text-xs ${
                     v.isActive
@@ -126,12 +134,10 @@ export default function YouthPage() {
                   {v.isActive ? "Active" : "Inactive"}
                 </span>
               </td>
-              <td className="px-4 py-3">
-                {new Date(v.createdAt).toLocaleDateString()}
-              </td>
-              <td className="px-4 py-3">
+              <td>{v.createdAt ? new Date(v.createdAt).toLocaleDateString() : "-"}</td>
+              <td>
                 <CategoryActions
-                  onView={() => setViewing(v)} // ✅ Show modal
+                  onView={() => setViewing(v)}
                   onEdit={() => toggleStatus(v.id, v.isActive)}
                   onDelete={() => handleDelete(v.id, v.fullName)}
                 />
@@ -142,71 +148,28 @@ export default function YouthPage() {
       </DataTable>
 
       {/* ===== PAGINATION ===== */}
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       {/* ===== VIEW MODAL ===== */}
-      <Modal
-        title="Wasifu wa Kijana"
-        open={!!viewing}
-        onClose={() => setViewing(null)}
-      >
-        <div className="space-y-4 text-sm">
-          <div>
-            <p className="text-gray-500">Jina Kamili</p>
-            <p className="font-medium">{viewing?.fullName}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Email</p>
-            <p>{viewing?.email}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Simu</p>
-            <p>{viewing?.phone || "-"}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Kiwango cha Elimu</p>
-            <p>{viewing?.educationLevel || "-"}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Jinsia</p>
-            <p>{viewing?.gender || "-"}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Tarehe ya Kuzaliwa</p>
+      <Modal title="Wasifu wa Kijana" open={!!viewing} onClose={() => setViewing(null)}>
+        {viewing && (
+          <div className="space-y-4 text-sm">
+            <p><strong>Jina:</strong> {viewing.fullName ?? "-"}</p>
+            <p><strong>Email:</strong> {viewing.email ?? "-"}</p>
+            <p><strong>Simu:</strong> {viewing.phone ?? "-"}</p>
+            <p><strong>Elimu:</strong> {viewing.educationLevel ?? "-"}</p>
+            <p><strong>Jinsia:</strong> {viewing.gender ?? "-"}</p>
             <p>
-              {viewing?.dateOfBirth
-                ? new Date(viewing.dateOfBirth).toLocaleDateString()
-                : "-"}
+              <strong>Tarehe ya Kuzaliwa:</strong>{" "}
+              {viewing.dateOfBirth ? new Date(viewing.dateOfBirth).toLocaleDateString() : "-"}
+            </p>
+            <p><strong>Status:</strong> {viewing.isActive ? "Active" : "Inactive"}</p>
+            <p>
+              <strong>Amejiunga:</strong>{" "}
+              {viewing.createdAt ? new Date(viewing.createdAt).toLocaleDateString() : "-"}
             </p>
           </div>
-
-          <div>
-            <p className="text-gray-500">Status</p>
-            <span
-              className={`inline-block px-2 py-1 rounded text-xs ${
-                viewing?.isActive
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}
-            >
-              {viewing?.isActive ? "Active" : "Inactive"}
-            </span>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Amejiunga Tarehe</p>
-            <p>{new Date(viewing?.createdAt).toLocaleDateString()}</p>
-          </div>
-        </div>
+        )}
       </Modal>
     </div>
   );

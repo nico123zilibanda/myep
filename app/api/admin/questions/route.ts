@@ -1,36 +1,42 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
 
-export async function GET(req: Request) {
-  const user = await getCurrentUser();
-  if (!user || user.Role?.name !== "ADMIN") {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+export const runtime = "nodejs";
 
+export async function GET(req: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     const url = new URL(req.url);
     const status = url.searchParams.get("status");
 
-    const questions = await prisma.question.findMany({
-      where: status === "PENDING" ? { status: "PENDING" } : undefined,
-      orderBy: { createdAt: "desc" },
-      include: {
-        User: {
-          select: {
-            fullName: true,
-            email: true,
-          },
-        },
-      },
-    });
+    let query = supabase
+      .from("Question")
+      .select(`
+        *,
+        User:userId (id, fullName, email)
+      `)
+      .order("createdAt", { ascending: false });
 
-    return NextResponse.json(questions);
-  } catch (error) {
-    console.error("GET questions error:", error);
-    return NextResponse.json(
-      { message: "Failed to load questions" },
-      { status: 500 }
-    );
+    // Only filter if status is PENDING
+    if (status === "PENDING") {
+      query = query.eq("status", "PENDING");
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("SUPABASE GET QUESTIONS ERROR:", error);
+      return NextResponse.json({ message: "Failed to fetch questions" }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
+  } catch (err) {
+    console.error("GET QUESTIONS ERROR:", err);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

@@ -1,33 +1,36 @@
+// app/api/admin/questions/delete/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
 
-export async function DELETE(req: Request) {
-  const user = await getCurrentUser();
-  if (!user || user.Role.name !== "ADMIN") {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+export const runtime = "nodejs";
 
+export async function DELETE(req: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await req.json();
 
     if (!id || isNaN(Number(id))) {
-      return NextResponse.json(
-        { message: "Invalid question ID" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Invalid question ID" }, { status: 400 });
     }
 
-    await prisma.question.delete({
-      where: { id: Number(id) },
-    });
+    const { error } = await supabase
+      .from("Question")
+      .delete()
+      .eq("id", Number(id));
 
-    return NextResponse.json({ message: "Question deleted" });
-  } catch (error) {
-    console.error("DELETE question error:", error);
-    return NextResponse.json(
-      { message: "Failed to delete question" },
-      { status: 500 }
-    );
+    if (error) {
+      console.error("SUPABASE DELETE QUESTION ERROR:", error);
+      return NextResponse.json({ message: "Failed to delete question" }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: "Question deleted successfully" });
+  } catch (err) {
+    console.error("DELETE QUESTION ERROR:", err);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
