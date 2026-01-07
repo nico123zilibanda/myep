@@ -1,8 +1,9 @@
+// app/api/auth/register/route.ts
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin"; // 🔑 use admin client
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,11 +34,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: existingUser } = await supabase
+    // 🔍 Check if user already exists
+    const { data: existingUser, error: selectError } = await supabaseAdmin
       .from("User")
       .select("id")
       .eq("email", email)
       .single();
+
+    if (selectError && selectError.code !== "PGRST116") {
+      // PGRST116 = record not found, ok
+      console.error("SUPABASE SELECT ERROR:", selectError);
+      return NextResponse.json({ message: selectError.message }, { status: 500 });
+    }
 
     if (existingUser) {
       return NextResponse.json(
@@ -48,23 +56,21 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(passwordHash, 10);
 
-          const { error } = await supabase.from("User").insert({
-            fullName,
-            email,
-            passwordHash: hashedPassword,
-            phone,
-            gender,
-            dateOfBirth,
-            educationLevel,
-            roleId: 2,
-          });
+    const { error: insertError } = await supabaseAdmin.from("User").insert({
+      fullName,
+      email,
+      passwordHash: hashedPassword,
+      phone,
+      gender,
+      dateOfBirth,
+      educationLevel,
+      roleId: 2, // ✅ YOUTH
+    });
 
-          if (error) {
-            console.error("SUPABASE INSERT ERROR:", error);
-            return NextResponse.json({ message: error.message }, { status: 500 });
-          }
-
-    if (error) throw error;
+    if (insertError) {
+      console.error("SUPABASE INSERT ERROR:", insertError);
+      return NextResponse.json({ message: insertError.message }, { status: 500 });
+    }
 
     return NextResponse.json(
       { message: "Usajili umefanikiwa" },

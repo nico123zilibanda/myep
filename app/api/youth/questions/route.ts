@@ -1,6 +1,5 @@
-// app/api/youth/questions/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 interface QuestionResponse {
@@ -18,38 +17,35 @@ interface QuestionResponse {
 export async function GET() {
   const user = await getCurrentUser();
 
-  if (!user || user.Role.name !== "YOUTH") {
+  if (!user || user.role !== "YOUTH") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const questions = await prisma.question.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        questionText: true,
-        answerText: true,
-        status: true,
-        createdAt: true,
-        answeredAt: true,
-      },
-    });
+    const { data: questions, error } = await supabaseAdmin
+      .from("Question")
+      .select("*")
+      .eq("userId", user.id)
+      .order("createdAt", { ascending: false });
 
-    // 🔹 Type-safe formatting
-    const formatted: QuestionResponse[] = questions.map((q) => ({
+    if (error) {
+      console.error("SUPABASE GET QUESTIONS ERROR:", error);
+      return NextResponse.json({ message: "Failed to load questions" }, { status: 500 });
+    }
+
+    const formatted: QuestionResponse[] = (questions || []).map((q: any) => ({
       id: q.id,
       questionText: q.questionText,
       answerText: q.answerText ?? null,
       status: q.status as "PENDING" | "ANSWERED",
-      createdAt: q.createdAt.toISOString(),
-      answeredAt: q.answeredAt ? q.answeredAt.toISOString() : null,
+      createdAt: new Date(q.createdAt).toISOString(),
+      answeredAt: q.answeredAt ? new Date(q.answeredAt).toISOString() : null,
     }));
 
     return NextResponse.json(formatted);
   } catch (error) {
-    console.error("GET youth questions error:", error);
-    return NextResponse.json({ message: "Failed to load questions" }, { status: 500 });
+    console.error("YOUTH GET QUESTIONS ERROR:", error);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
 
@@ -59,7 +55,7 @@ export async function GET() {
 export async function POST(req: Request) {
   const user = await getCurrentUser();
 
-  if (!user || user.Role.name !== "YOUTH") {
+  if (!user || user.role !== "YOUTH") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -71,31 +67,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Question is required" }, { status: 400 });
     }
 
-    const question = await prisma.question.create({
-      data: {
+    const { data: question, error } = await supabaseAdmin
+      .from("Question")
+      .insert({
         questionText,
         userId: user.id,
-        status: "PENDING", // 🔹 default status
-      },
-      select: {
-        id: true,
-        questionText: true,
-        status: true,
-        createdAt: true,
-      },
-    });
+        status: "PENDING",
+      })
+      .select()
+      .single();
 
-    return NextResponse.json(
-      {
-        id: question.id,
-        questionText: question.questionText,
-        status: question.status as "PENDING",
-        createdAt: question.createdAt.toISOString(),
-      },
-      { status: 201 }
-    );
+    if (error) {
+      console.error("SUPABASE POST QUESTION ERROR:", error);
+      return NextResponse.json({ message: "Failed to submit question" }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      id: question.id,
+      questionText: question.questionText,
+      status: question.status as "PENDING",
+      createdAt: new Date(question.createdAt).toISOString(),
+    }, { status: 201 });
+
   } catch (error) {
-    console.error("POST youth question error:", error);
-    return NextResponse.json({ message: "Failed to submit question" }, { status: 500 });
+    console.error("YOUTH POST QUESTION ERROR:", error);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

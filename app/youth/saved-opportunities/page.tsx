@@ -27,13 +27,16 @@ export default function SavedOpportunitiesPage() {
     const fetchSaved = async () => {
       try {
         const res = await fetch("/api/youth/saved-opportunities");
+        if (!res.ok) throw new Error("Failed");
         const data = await res.json();
         setSavedOpportunities(data);
       } catch (err) {
-        console.error("Failed to load saved opportunities:", err);
+        console.error(err);
+        alert("Imeshindikana kupakia saved opportunities");
       } finally {
         setLoading(false);
       }
+
     };
 
     fetchSaved();
@@ -110,8 +113,8 @@ export default function SavedOpportunitiesPage() {
 
                 <span
                   className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 ${isExpired
-                      ? "bg-red-100 text-red-700"
-                      : "bg-green-100 text-green-700"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-green-100 text-green-700"
                     }`}
                 >
                   <Clock size={12} />

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 
@@ -12,11 +12,17 @@ export async function GET() {
       return NextResponse.json({ count: 0 }, { status: 401 });
     }
 
-    const pendingCount = await prisma.question.count({
-      where: { status: "PENDING" },
-    });
+    const { count, error } = await supabaseAdmin
+      .from("Question")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "PENDING");
 
-    return NextResponse.json({ count: pendingCount });
+    if (error) {
+      console.error("SUPABASE COUNT ERROR:", error);
+      return NextResponse.json({ count: 0 }, { status: 500 });
+    }
+
+    return NextResponse.json({ count: count ?? 0 });
   } catch (err) {
     console.error("NOTIFICATIONS COUNT ERROR:", err);
     return NextResponse.json({ count: 0 }, { status: 500 });

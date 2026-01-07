@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -20,16 +20,24 @@ export async function GET(req: Request) {
     }
 
     const id = getIdFromReq(req);
-    if (!id) return NextResponse.json({ message: "Invalid category ID" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json(
+        { message: "Invalid category ID" },
+        { status: 400 }
+      );
+    }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("Category")
       .select("*")
       .eq("id", id)
       .single();
 
     if (error || !data) {
-      return NextResponse.json({ message: "Category not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Category not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(data);
@@ -48,12 +56,22 @@ export async function PATCH(req: Request) {
     }
 
     const id = getIdFromReq(req);
-    if (!id) return NextResponse.json({ message: "Invalid category ID" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json(
+        { message: "Invalid category ID" },
+        { status: 400 }
+      );
+    }
 
     const { name, description } = await req.json();
-    if (!name) return NextResponse.json({ message: "Category name is required" }, { status: 400 });
+    if (!name) {
+      return NextResponse.json(
+        { message: "Category name is required" },
+        { status: 400 }
+      );
+    }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("Category")
       .update({ name, description })
       .eq("id", id)
@@ -61,7 +79,10 @@ export async function PATCH(req: Request) {
       .single();
 
     if (error || !data) {
-      return NextResponse.json({ message: "Failed to update category" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to update category" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(data);
@@ -80,15 +101,23 @@ export async function DELETE(req: Request) {
     }
 
     const id = getIdFromReq(req);
-    if (!id) return NextResponse.json({ message: "Invalid category ID" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json(
+        { message: "Invalid category ID" },
+        { status: 400 }
+      );
+    }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from("Category")
       .delete()
       .eq("id", id);
 
     if (error) {
-      return NextResponse.json({ message: "Failed to delete category" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to delete category" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ message: "Category deleted successfully" });

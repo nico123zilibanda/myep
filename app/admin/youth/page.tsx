@@ -28,17 +28,21 @@ export default function YouthPage() {
   const [viewing, setViewing] = useState<Youth | null>(null);
 
   /* ================= FETCH YOUTH ================= */
-  const fetchYouth = async () => {
-    try {
-      const res = await fetch("/api/admin/youth");
-      const data: Youth[] = await res.json();
-      if (Array.isArray(data)) setYouth(data);
-      else setYouth([]);
-    } catch (err) {
-      console.error("Failed to load youth:", err);
-      setYouth([]);
-    }
-  };
+const fetchYouth = async () => {
+  try {
+    const res = await fetch("/api/admin/youth", {
+      credentials: "include",
+      cache: "no-store",
+    });
+    const data: Youth[] = await res.json();
+    if (Array.isArray(data)) setYouth(data);
+    else setYouth([]);
+  } catch (err) {
+    console.error("Failed to load youth:", err);
+    setYouth([]);
+  }
+};
+
 
   useEffect(() => {
     fetchYouth();
@@ -62,6 +66,8 @@ export default function YouthPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !isActive }),
+        credentials: "include",
+
       });
       fetchYouth();
     } catch (err) {
@@ -73,7 +79,11 @@ export default function YouthPage() {
     if (!confirm(`Una uhakika unataka kufuta account ya ${name ?? "youth"}?`)) return;
 
     try {
-      await fetch(`/api/admin/youth/${id}`, { method: "DELETE" });
+      await fetch(`/api/admin/youth/${id}`, { 
+        method: "DELETE",
+        credentials: "include",
+ 
+      });
       setYouth((prev) => prev.filter((v) => v.id !== id));
     } catch (err) {
       console.error("Failed to delete youth:", err);
@@ -119,11 +129,11 @@ export default function YouthPage() {
         <tbody>
           {data.map((v) => (
             <TableRow key={v.id}>
-              <td>{v.fullName ?? "-"}</td>
-              <td>{v.email ?? "-"}</td>
-              <td>{v.phone ?? "-"}</td>
-              <td>{v.educationLevel ?? "-"}</td>
-              <td>
+              <td className="px-2 py-6 font-medium">{v.fullName ?? "-"}</td>
+              <td className="px-2 py-6">{v.email ?? "-"}</td>
+              <td className="px-2 py-6">{v.phone ?? "-"}</td>
+              <td className="px-2 py-6">{v.educationLevel ?? "-"}</td>
+              <td className="px-2 py-6">
                 <span
                   className={`px-2 py-1 rounded text-xs ${
                     v.isActive
@@ -135,7 +145,7 @@ export default function YouthPage() {
                 </span>
               </td>
               <td>{v.createdAt ? new Date(v.createdAt).toLocaleDateString() : "-"}</td>
-              <td>
+              <td className="px-2 py-6">
                 <CategoryActions
                   onView={() => setViewing(v)}
                   onEdit={() => toggleStatus(v.id, v.isActive)}

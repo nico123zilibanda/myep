@@ -8,9 +8,15 @@ export default function YouthQuestionsPage() {
   const [questions, setQuestions] = useState<any[]>([]);
 
   const fetchQuestions = async () => {
-    const res = await fetch("/api/youth/questions");
-    const data = await res.json();
-    setQuestions(data);
+    try {
+      const res = await fetch("/api/youth/questions");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      setQuestions(data);
+    } catch (err) {
+      console.error(err);
+      alert("Imeshindikana kupakia maswali");
+    }
   };
 
   useEffect(() => {

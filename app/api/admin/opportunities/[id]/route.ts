@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
-// DELETE opportunity
+// ================= DELETE OPPORTUNITY =================
 export async function DELETE(req: Request) {
   try {
     const user = await getCurrentUser();
@@ -15,13 +15,24 @@ export async function DELETE(req: Request) {
     const url = new URL(req.url);
     const id = Number(url.pathname.split("/").pop());
 
-    if (isNaN(id)) return NextResponse.json({ message: "Invalid opportunity ID" }, { status: 400 });
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { message: "Invalid opportunity ID" },
+        { status: 400 }
+      );
+    }
 
-    const { error } = await supabase.from("Opportunity").delete().eq("id", id);
+    const { error } = await supabaseAdmin
+      .from("Opportunity")
+      .delete()
+      .eq("id", id);
 
     if (error) {
       console.error("DELETE OPPORTUNITY ERROR:", error);
-      return NextResponse.json({ message: "Failed to delete opportunity" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to delete opportunity" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ message: "Opportunity deleted successfully" });
@@ -31,7 +42,7 @@ export async function DELETE(req: Request) {
   }
 }
 
-// PATCH update opportunity
+// ================= UPDATE OPPORTUNITY =================
 export async function PATCH(req: Request) {
   try {
     const user = await getCurrentUser();
@@ -41,7 +52,13 @@ export async function PATCH(req: Request) {
 
     const url = new URL(req.url);
     const id = Number(url.pathname.split("/").pop());
-    if (isNaN(id)) return NextResponse.json({ message: "Invalid opportunity ID" }, { status: 400 });
+
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { message: "Invalid opportunity ID" },
+        { status: 400 }
+      );
+    }
 
     const {
       title,
@@ -56,10 +73,13 @@ export async function PATCH(req: Request) {
     } = await req.json();
 
     if (!title || !deadline) {
-      return NextResponse.json({ message: "Title and deadline are required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Title and deadline are required" },
+        { status: 400 }
+      );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("Opportunity")
       .update({
         title,
@@ -78,7 +98,10 @@ export async function PATCH(req: Request) {
 
     if (error) {
       console.error("UPDATE OPPORTUNITY ERROR:", error);
-      return NextResponse.json({ message: "Failed to update opportunity" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to update opportunity" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(data);

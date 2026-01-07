@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin"; // 🔑 admin client
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -29,15 +29,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔍 Find user in Supabase
-    const { data: user, error } = await supabase
+    // 🔍 Find user in Supabase Admin
+    const { data: user, error } = await supabaseAdmin
       .from("User")
       .select("*")
       .eq("email", email)
       .single();
 
     if (error || !user) {
-      console.error("SUPABASE SELECT ERROR:", error);
+      console.error("SUPABASE ADMIN SELECT ERROR:", error);
       return NextResponse.json(
         { message: "Email au password sio sahihi." },
         { status: 401 }
@@ -61,10 +61,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔐 Generate JWT with consistent payload
+    // 🔐 Generate JWT
     const token = jwt.sign(
       {
-        id: user.id,                 // ✅ use 'id' for getCurrentUser()
+        id: user.id,
         email: user.email,
         role: roleMap[user.roleId] ?? "YOUTH",
       },

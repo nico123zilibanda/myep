@@ -1,6 +1,6 @@
 // app/api/admin/youth/[id]/route.ts
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function PATCH(req: Request) {
@@ -14,10 +14,12 @@ export async function PATCH(req: Request) {
 
   const { isActive } = await req.json();
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("User")
     .update({ isActive })
-    .eq("id", Number(id));
+    .eq("id", Number(id))
+    .select()
+    .single();
 
   if (error) return NextResponse.json({ message: error.message }, { status: 500 });
 
@@ -33,7 +35,11 @@ export async function DELETE(req: Request) {
   const id = req.url.split("/").pop();
   if (!id) return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
 
-  const { error } = await supabase.from("User").delete().eq("id", Number(id));
+  const { error } = await supabaseAdmin
+    .from("User")
+    .delete()
+    .eq("id", Number(id));
+
   if (error) return NextResponse.json({ message: error.message }, { status: 500 });
 
   return NextResponse.json({ message: "Youth deleted successfully" });

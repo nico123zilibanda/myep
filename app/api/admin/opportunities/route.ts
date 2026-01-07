@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
-// GET all opportunities
+// ================= GET ALL OPPORTUNITIES =================
 export async function GET() {
   try {
     const user = await getCurrentUser();
@@ -12,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("Opportunity")
       .select(`
         *,
@@ -22,7 +22,10 @@ export async function GET() {
 
     if (error) {
       console.error("GET OPPORTUNITIES ERROR:", error);
-      return NextResponse.json({ message: error.message || "Failed to load opportunities" }, { status: 500 });
+      return NextResponse.json(
+        { message: error.message || "Failed to load opportunities" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(data);
@@ -32,7 +35,7 @@ export async function GET() {
   }
 }
 
-// POST create new opportunity
+// ================= CREATE OPPORTUNITY =================
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser(req);
@@ -44,10 +47,13 @@ export async function POST(req: Request) {
 
     const data = await req.json();
     if (!data.title || !data.deadline) {
-      return NextResponse.json({ message: "Title and deadline are required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Title and deadline are required" },
+        { status: 400 }
+      );
     }
 
-    const { data: newOpportunity, error } = await supabase
+    const { data: newOpportunity, error } = await supabaseAdmin
       .from("Opportunity")
       .insert({
         title: data.title,
@@ -59,14 +65,17 @@ export async function POST(req: Request) {
         attachmentUrl: data.attachmentUrl || "",
         status: data.status || "PUBLISHED",
         categoryId: data.categoryId ?? null,
-        createdById: user.id, // ✅ should never be null now
+        createdById: user.id, // ✅ must not be null
       })
       .select()
       .single();
 
     if (error) {
       console.error("CREATE OPPORTUNITY ERROR:", error);
-      return NextResponse.json({ message: error.message || "Failed to create opportunity" }, { status: 500 });
+      return NextResponse.json(
+        { message: error.message || "Failed to create opportunity" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(newOpportunity);
@@ -75,4 +84,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
-

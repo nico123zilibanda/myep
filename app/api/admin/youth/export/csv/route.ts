@@ -1,14 +1,16 @@
-import { supabase } from "@/lib/supabase";
+// app/api/admin/youth/export/csv/route.ts
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function GET() {
   const user = await getCurrentUser();
-  if (!user || user.role !== "ADMIN") return new Response("Unauthorized", { status: 401 });
+  if (!user || user.role !== "ADMIN") 
+    return new Response("Unauthorized", { status: 401 });
 
-  const { data: youth, error } = await supabase
+  const { data: youth, error } = await supabaseAdmin
     .from("User")
     .select("fullName, email, phone, educationLevel, isActive, createdAt")
-    .eq("role", "YOUTH")
+    .eq("roleId", 1) // ✅ YOUTH roleId
     .order("createdAt", { ascending: false });
 
   if (error) return new Response(error.message, { status: 500 });
@@ -23,7 +25,9 @@ export async function GET() {
     new Date(v.createdAt).toISOString().split("T")[0],
   ]);
 
-  const csv = [header, ...rows].map(r => r.map(val => `"${val}"`).join(",")).join("\n");
+  const csv = [header, ...rows]
+    .map(r => r.map(val => `"${val}"`).join(","))
+    .join("\n");
 
   return new Response(csv, {
     headers: {

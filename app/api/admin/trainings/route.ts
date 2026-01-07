@@ -1,12 +1,13 @@
-export const runtime = "nodejs";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Prisma MariaDB v7 instance
 import { getCurrentUser } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   const user = await getCurrentUser();
-  if (!user || user.Role?.name !== "ADMIN") {
+  if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
     const uploadResult = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
-          resource_type: type === "VIDEO" ? "video" : "raw", // video for mp4, raw for PDF
+          resource_type: type === "VIDEO" ? "video" : "raw",
           folder: "trainings",
         },
         (error, result) => {
@@ -49,30 +50,42 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Resource URL or file is required", status: 400 });
   }
 
-  // ================= SAVE TO DATABASE =================
-  const training = await prisma.training.create({
-    data: {
+  // ================= SAVE TO SUPABASE =================
+  const { data, error } = await supabaseAdmin
+    .from("Training")
+    .insert({
       title,
       description,
       type,
       resourceUrl,
       createdById: user.id,
-    },
-  });
+    })
+    .select()
+    .single();
 
-  return NextResponse.json(training);
+  if (error) {
+    console.error("CREATE TRAINING ERROR:", error);
+    return NextResponse.json({ message: "Failed to create training" }, { status: 500 });
+  }
+
+  return NextResponse.json(data);
 }
 
-// ================= GET TRAININGS =================
 export async function GET() {
   const user = await getCurrentUser();
-  if (!user || user.Role?.name !== "ADMIN") {
+  if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const trainings = await prisma.training.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { data, error } = await supabaseAdmin
+    .from("Training")
+    .select("*")
+    .order("createdAt", { ascending: false });
 
-  return NextResponse.json(trainings);
+  if (error) {
+    console.error("GET TRAININGS ERROR:", error);
+    return NextResponse.json({ message: "Failed to fetch trainings" }, { status: 500 });
+  }
+
+  return NextResponse.json(data);
 }

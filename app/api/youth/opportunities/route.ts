@@ -1,46 +1,46 @@
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET() {
   try {
     const user = await getCurrentUser();
 
-    const opportunities = await prisma.opportunity.findMany({
-      where: {
-        status: "PUBLISHED",
-      },
-      include: {
-        Category: {
-          select: { name: true },
-        },
-        SavedOpportunity: user
-          ? {
-              where: { userId: user.id },
-              select: { id: true },
-            }
-          : false,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    if (!user || user.role !== "YOUTH") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
-    // 🔹 format response
-    const formatted = opportunities.map((op) => ({
+    // Fetch all published opportunities
+    const { data: opportunities, error } = await supabaseAdmin
+      .from("Opportunity")
+      .select(`
+        *,
+        Category:categoryId (name),
+        SavedOpportunity:savedOpportunities!inner(userId) 
+      `)
+      .eq("status", "PUBLISHED")
+      .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("SUPABASE GET OPPORTUNITIES ERROR:", error);
+      return NextResponse.json({ message: "Failed to load opportunities" }, { status: 500 });
+    }
+
+    // Map to formatted response
+    const formatted = opportunities.map((op: any) => ({
       id: op.id,
       title: op.title,
       description: op.description,
       deadline: op.deadline,
       location: op.location,
       Category: op.Category,
-      isSaved: op.SavedOpportunity?.length > 0,
+      // Check if the current user saved this opportunity
+      isSaved: op.SavedOpportunity?.some((s: any) => s.userId === user.id) ?? false,
     }));
 
     return NextResponse.json(formatted);
-  } catch (error) {
-    console.error("YOUTH GET opportunities error:", error);
-    return NextResponse.json(
-      { message: "Failed to load opportunities" },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error("YOUTH GET OPPORTUNITIES ERROR:", err);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

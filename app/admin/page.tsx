@@ -1,6 +1,6 @@
 // app/admin/page.tsx
 import { getCurrentUser } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import AdminDashboard from "./AdminDashboard";
 
 export default async function AdminPage() {
@@ -11,26 +11,30 @@ export default async function AdminPage() {
     return <div className="p-6">Unauthorized</div>;
   }
 
-  // 📊 COUNTS (Supabase)
-  const [{ count: vijanaCount }, { count: opportunitiesCount }, { count: trainingsCount }, { count: questionsCount }] =
-    await Promise.all([
-      supabase
-        .from("User")
-        .select("*", { count: "exact", head: true })
-        .eq("roleId", 1), // YOUTH
+  // 📊 COUNTS (Supabase Admin)
+  const [
+    { count: vijanaCount },
+    { count: opportunitiesCount },
+    { count: trainingsCount },
+    { count: questionsCount },
+  ] = await Promise.all([
+    supabaseAdmin
+      .from("User")
+      .select("*", { count: "exact", head: true })
+      .eq("roleId", 1), // YOUTH
 
-      supabase
-        .from("Opportunity")
-        .select("*", { count: "exact", head: true }),
+    supabaseAdmin
+      .from("Opportunity")
+      .select("*", { count: "exact", head: true }),
 
-      supabase
-        .from("Training")
-        .select("*", { count: "exact", head: true }),
+    supabaseAdmin
+      .from("Training")
+      .select("*", { count: "exact", head: true }),
 
-      supabase
-        .from("Question")
-        .select("*", { count: "exact", head: true }),
-    ]);
+    supabaseAdmin
+      .from("Question")
+      .select("*", { count: "exact", head: true }),
+  ]);
 
   return (
     <AdminDashboard

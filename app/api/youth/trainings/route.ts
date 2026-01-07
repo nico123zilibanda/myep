@@ -1,26 +1,21 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function GET() {
   try {
-    const trainings = await prisma.training.findMany({
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        type: true,
-        resourceUrl: true,
-        createdAt: true,
-      },
-    });
+    const { data, error } = await supabaseAdmin
+      .from("Training")
+      .select("*")
+      .order("createdAt", { ascending: false });
 
-    return NextResponse.json(trainings);
+    if (error) {
+      console.error("SUPABASE GET TRAININGS ERROR:", error);
+      return NextResponse.json({ message: "Failed to load trainings" }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error("YOUTH GET trainings error:", error);
-    return NextResponse.json(
-      { message: "Failed to load trainings" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

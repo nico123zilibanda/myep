@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const status = url.searchParams.get("status");
 
-    let query = supabase
+    let query = supabaseAdmin
       .from("Question")
       .select(`
         *,
@@ -31,7 +31,10 @@ export async function GET(req: Request) {
 
     if (error) {
       console.error("SUPABASE GET QUESTIONS ERROR:", error);
-      return NextResponse.json({ message: "Failed to fetch questions" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to fetch questions" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(data);

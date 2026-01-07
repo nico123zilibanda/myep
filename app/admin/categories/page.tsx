@@ -217,9 +217,9 @@ export default function CategoriesPage() {
           ) : (
             paginatedData.map((cat) => (
               <TableRow key={cat.id}>
-                <td className="px-4 py-3 font-medium">{cat.name}</td>
-                <td className="px-4 py-3">{cat.description || "-"}</td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-6 font-medium">{cat.name}</td>
+                <td className="px-2 py-6">{cat.description || "-"}</td>
+                <td className="px-2 py-6">
                   <CategoryActions
                     onEdit={() => {
                       setEditing(cat); // ✅ ID remains number

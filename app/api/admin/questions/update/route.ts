@@ -1,6 +1,5 @@
-// app/api/admin/questions/update/route.ts
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -15,14 +14,20 @@ export async function PATCH(req: Request) {
     const { id, answerText } = await req.json();
 
     if (!id || isNaN(Number(id))) {
-      return NextResponse.json({ message: "Invalid question ID" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid question ID" },
+        { status: 400 }
+      );
     }
 
     if (!answerText || !answerText.trim()) {
-      return NextResponse.json({ message: "Answer is required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Answer is required" },
+        { status: 400 }
+      );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("Question")
       .update({
         answerText: answerText.trim(),
@@ -35,7 +40,10 @@ export async function PATCH(req: Request) {
 
     if (error) {
       console.error("SUPABASE UPDATE QUESTION ERROR:", error);
-      return NextResponse.json({ message: "Failed to update question" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to update question" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(data);

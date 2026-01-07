@@ -34,20 +34,23 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
   const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
 
   const fetchPendingQuestions = async () => {
-  try {
-    const res = await fetch("/api/admin/questions?status=PENDING");
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/admin/questions?status=PENDING", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = await res.json();
 
-    setPendingQuestions(
-      data.map((q: any) => ({
-        ...q,
-        id: Number(q.id),
-      }))
-    );
-  } catch (err) {
-    console.error("Error fetching pending questions", err);
-  }
-};
+      setPendingQuestions(
+        data.map((q: any) => ({
+          ...q,
+          id: Number(q.id),
+        }))
+      );
+    } catch (err) {
+      console.error("Error fetching pending questions", err);
+    }
+  };
 
   const handleYouthSubmit = (data: any) => {
     console.log("Submitted youth:", data);
@@ -115,51 +118,51 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       </section>
 
       {/* MODALS */}
-            {openModal === "question" && (
-            <Modal title="Maswali Yanayosubiri" open={true} onClose={() => setOpenModal(null)}>
-                <div className="space-y-4">
-                {pendingQuestions.length === 0 && (
-                    <p>Hakuna maswali yanayosubiri.</p>
-                )}
-
-                {pendingQuestions.map((q) => (
-                    <div key={q.id} className="border p-4 rounded-lg space-y-2">
-                    <p className="font-semibold">{q.questionText}</p>
-
-                    <AnswerForm
-                        onSubmit={async (answer) => {
-                        try {
-                            const res = await fetch("/api/admin/questions/update", {
-                            method: "PATCH",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                id: q.id,
-                                answerText: answer,
-                            }),
-                            });
-
-                            const data = await res.json();
-
-                            if (!res.ok) {
-                            alert(data.message || "Imeshindikana kujibu swali");
-                            return;
-                            }
-
-                            // Ondoa swali lililojibiwa
-                            setPendingQuestions((prev) =>
-                            prev.filter((item) => item.id !== q.id)
-                            );
-                        } catch (err) {
-                            console.error(err);
-                            alert("Tatizo la mtandao");
-                        }
-                        }}
-                    />
-                    </div>
-                ))}
-                </div>
-            </Modal>
+      {openModal === "question" && (
+        <Modal title="Maswali Yanayosubiri" open={true} onClose={() => setOpenModal(null)}>
+          <div className="space-y-4">
+            {pendingQuestions.length === 0 && (
+              <p>Hakuna maswali yanayosubiri.</p>
             )}
+
+            {pendingQuestions.map((q) => (
+              <div key={q.id} className="border p-4 rounded-lg space-y-2">
+                <p className="font-semibold">{q.questionText}</p>
+
+                <AnswerForm
+                  onSubmit={async (answer) => {
+                    try {
+                      const res = await fetch("/api/admin/questions/update", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({
+                          id: q.id,
+                          answerText: answer,
+                        }),
+                      });
+                      const data = await res.json();
+
+                      if (!res.ok) {
+                        alert(data.message || "Imeshindikana kujibu swali");
+                        return;
+                      }
+
+                      // Ondoa swali lililojibiwa
+                      setPendingQuestions((prev) =>
+                        prev.filter((item) => item.id !== q.id)
+                      );
+                    } catch (err) {
+                      console.error(err);
+                      alert("Tatizo la mtandao");
+                    }
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </Modal>
+      )}
 
       {openModal === "opportunity" && (
         <Modal title="Ongeza Fursa" open={true} onClose={() => setOpenModal(null)}>

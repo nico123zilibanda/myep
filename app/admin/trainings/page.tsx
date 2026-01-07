@@ -18,11 +18,14 @@ export default function TrainingsPage() {
   const [search, setSearch] = useState("");
 
 
-  const fetchTrainings = async () => {
-    const res = await fetch("/api/admin/trainings");
-    const data = await res.json();
-    setTrainings(data);
-  };
+ const fetchTrainings = async () => {
+  const res = await fetch("/api/admin/trainings", {
+    credentials: "include",
+    cache: "no-store",
+  });
+  const data = await res.json();
+  setTrainings(data);
+};
 
   useEffect(() => {
     fetchTrainings();
@@ -44,6 +47,8 @@ export default function TrainingsPage() {
 
     const res = await fetch(`/api/admin/trainings/${id}`, {
       method: "DELETE",
+      credentials: "include",
+
     });
 
     if (res.ok) {
@@ -57,11 +62,15 @@ const handleSubmit = async (formData: FormData) => {
     await fetch(`/api/admin/trainings/${editing.id}`, {
       method: "PATCH",
       body: formData, // ✅ NO headers
+      credentials: "include",
+
     });
   } else {
     await fetch("/api/admin/trainings", {
       method: "POST",
       body: formData, // ✅ NO headers
+      credentials: "include",
+
     });
   }
 

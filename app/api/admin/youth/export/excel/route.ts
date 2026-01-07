@@ -1,15 +1,17 @@
-import { supabase } from "@/lib/supabase";
+// app/api/admin/youth/export/excel/route.ts
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 import * as XLSX from "xlsx";
 
 export async function GET() {
   const user = await getCurrentUser();
-  if (!user || user.role !== "ADMIN") return new Response("Unauthorized", { status: 401 });
+  if (!user || user.role !== "ADMIN")
+    return new Response("Unauthorized", { status: 401 });
 
-  const { data: youth, error } = await supabase
+  const { data: youth, error } = await supabaseAdmin
     .from("User")
     .select("fullName, email, phone, educationLevel, isActive, createdAt")
-    .eq("role", "YOUTH")
+    .eq("roleId", 1) // ✅ YOUTH roleId
     .order("createdAt", { ascending: false });
 
   if (error) return new Response(error.message, { status: 500 });
@@ -31,7 +33,8 @@ export async function GET() {
 
   return new Response(buffer, {
     headers: {
-      "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Type":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "Content-Disposition": "attachment; filename=vijana.xlsx",
     },
   });

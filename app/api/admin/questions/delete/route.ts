@@ -1,6 +1,5 @@
-// app/api/admin/questions/delete/route.ts
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -15,17 +14,23 @@ export async function DELETE(req: Request) {
     const { id } = await req.json();
 
     if (!id || isNaN(Number(id))) {
-      return NextResponse.json({ message: "Invalid question ID" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid question ID" },
+        { status: 400 }
+      );
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from("Question")
       .delete()
       .eq("id", Number(id));
 
     if (error) {
       console.error("SUPABASE DELETE QUESTION ERROR:", error);
-      return NextResponse.json({ message: "Failed to delete question" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to delete question" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ message: "Question deleted successfully" });

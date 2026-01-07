@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
-// GET ALL categories
+// ================= GET ALL CATEGORIES =================
 export async function GET() {
   try {
     const user = await getCurrentUser();
@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: categories, error } = await supabase
+    const { data: categories, error } = await supabaseAdmin
       .from("Category")
       .select("*")
       .order("createdAt", { ascending: false });
@@ -31,7 +31,7 @@ export async function GET() {
   }
 }
 
-// CREATE a new category
+// ================= CREATE CATEGORY =================
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { data: category, error } = await supabase
+    const { data: category, error } = await supabaseAdmin
       .from("Category")
       .insert({ name, description })
       .select()

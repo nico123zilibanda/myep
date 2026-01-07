@@ -1,41 +1,41 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
-    // ✅ SAFE ID extraction
     const pathname = new URL(req.url).pathname;
     const id = Number(pathname.split("/").pop());
 
     if (!id || isNaN(id)) {
-      return NextResponse.json(
-        { message: "Invalid ID" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
     }
 
     const user = await getCurrentUser();
 
-    const opportunity = await prisma.opportunity.findUnique({
-      where: { id },
-      include: {
-        Category: true,
-        SavedOpportunity: user
-          ? {
-              where: { userId: user.id },
-              select: { id: true },
-            }
-          : false,
-      },
-    });
+    // Fetch opportunity by ID with Category and SavedOpportunity for this user
+    const { data: opportunities, error } = await supabaseAdmin
+      .from("Opportunity")
+      .select(`
+        *,
+        Category:categoryId (name),
+        SavedOpportunity:savedOpportunities(userId)
+      `)
+      .eq("id", id);
+
+    if (error) {
+      console.error("SUPABASE GET OPPORTUNITY ERROR:", error);
+      return NextResponse.json({ message: "Failed to fetch opportunity" }, { status: 500 });
+    }
+
+    const opportunity = opportunities?.[0];
 
     if (!opportunity) {
-      return NextResponse.json(
-        { message: "Not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Not found" }, { status: 404 });
     }
+
+    // Check if current user has saved this opportunity
+    const isSaved = opportunity.SavedOpportunity?.some((s: any) => s.userId === user?.id) ?? false;
 
     return NextResponse.json({
       id: opportunity.id,
@@ -46,13 +46,10 @@ export async function GET(req: Request) {
       deadline: opportunity.deadline,
       location: opportunity.location,
       Category: opportunity.Category,
-      isSaved: opportunity.SavedOpportunity?.length > 0,
+      isSaved,
     });
-  } catch (error) {
-    console.error("YOUTH GET opportunity error:", error);
-    return NextResponse.json(
-      { message: "Failed to load opportunity" },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error("YOUTH GET OPPORTUNITY ERROR:", err);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
