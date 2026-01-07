@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "@/components/table/DataTable";
 import TableHeader from "@/components/table/TableHeader";
-import { TableRow } from "@/components/table/TableRow";
+import TableRow  from "@/components/table/TableRow";
 import Pagination from "@/components/table/Pagination";
 import Modal from "@/components/ui/Modal";
 import TrainingsForm from "@/components/forms/TrainingsForm";
