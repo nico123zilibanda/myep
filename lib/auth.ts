@@ -1,21 +1,12 @@
 // lib/auth.ts
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { supabase } from "./supabase";
-
-export interface AuthUser {
-  [x: string]: any;
-  id: number;
-  email: string;
-  role: "ADMIN" | "YOUTH";
-}
-
-// now req is optional, and if missing it reads cookies directly
-export async function getCurrentUser(req?: Request): Promise<AuthUser | null> {
+import { supabaseAdmin } from "./supabaseAdmin"; // <-- badala ya supabase
+export async function getCurrentUser(req?: Request) {
   try {
     let token: string | null = null;
 
-    // ✅ Read from request header if provided
+    // ✅ Read token
     if (req) {
       const authHeader = req.headers.get("Authorization");
       if (authHeader?.startsWith("Bearer ")) {
@@ -23,7 +14,6 @@ export async function getCurrentUser(req?: Request): Promise<AuthUser | null> {
       }
     }
 
-    // ✅ Read from cookies if no token from headers
     if (!token) {
       const cookieStore = await cookies();
       token = cookieStore.get("token")?.value ?? null;
@@ -31,13 +21,22 @@ export async function getCurrentUser(req?: Request): Promise<AuthUser | null> {
 
     if (!token) return null;
 
-    // Decode token using your JWT_SECRET
+    // ✅ Decode JWT
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
+    // 🔹 Optional: fetch user from Supabase Admin client
+    const { data: user, error } = await supabaseAdmin
+      .from("User")
+      .select("id, email, roleId, role(name)")
+      .eq("id", decoded.id)
+      .single();
+
+    if (error || !user) return null;
+
     return {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role,
+      id: user.id,
+      email: user.email,
+      role: user.role.name, // "ADMIN" | "YOUTH"
     };
   } catch (err) {
     console.error("getCurrentUser error:", err);
