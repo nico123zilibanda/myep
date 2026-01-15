@@ -12,7 +12,8 @@ import { useEffect, useState } from "react";
 type NavbarProps = {
   user: {
     email: string;
-    role: "ADMIN" | "YOUTH"; // role is string now
+    fullName: string; // Ensure fullName is included
+    role: "ADMIN" | "YOUTH"; 
     image?: string | null;
   };
 };
@@ -23,24 +24,15 @@ export default function Navbar({ user }: NavbarProps) {
   const router = useRouter();
 
   // 🔔 Fetch unread messages count (admin only)
-    useEffect(() => {
+  useEffect(() => {
     if (user.role !== "ADMIN") return;
 
     const loadCount = async () => {
       try {
         const res = await fetch("/api/admin/notifications/count", {
-          credentials: "include", // 🔥 muhimu sana
-          cache: "no-store",      // 🔄 avoid stale data
+          credentials: "include", 
+          cache: "no-store",   
         });
-
-        // if (!res.ok) {
-        //   console.error(
-        //     "Failed to fetch notifications count:",
-        //     res.status,
-        //     await res.text()
-        //   );
-        //   return;
-        // }
 
         const data = await res.json();
         setUnreadCount(Number(data.count) || 0);
@@ -102,9 +94,10 @@ export default function Navbar({ user }: NavbarProps) {
             className="rounded-full border"
           />
 
-          <div className="hidden md:flex flex-col leading-tight">
+          <div className="hidden md:flex flex-col leading-tight">            
+            {/* Display the user's full name */}
             <span className="text-sm font-medium text-gray-800">
-              {user.email}
+              {user.fullName} {/* Display full name */}
             </span>
             <span className="text-xs text-gray-500 text-right">
               {user.role}

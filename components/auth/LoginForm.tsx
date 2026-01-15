@@ -1,104 +1,100 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!email || !password) {
-    alert("Tafadhali jaza email na password.");
-    return;
-  }
+    e.preventDefault();
+    setLoading(true);
 
-  setLoading(true);
-
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    let data;
     try {
-      data = await res.json();
-    } catch {
-      console.error("Failed to parse JSON response");
-      alert("Server error: invalid response");
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      router.replace(data.redirectTo || "/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Server error. Try again later.");
       setLoading(false);
-      return;
     }
-
-    if (!res.ok) {
-      console.error("LOGIN FAILED:", data);
-      alert(data?.message || "Login failed");
-      setLoading(false);
-      return;
-    }
-
-    router.replace("/dashboard");
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    alert("Server error");
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
       {/* EMAIL */}
       <div>
-        <label className="text-sm font-medium text-gray-700">Barua pepe</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Barua pepe</label>
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="admin@mlele.go.tz"
-          className="mt-1 w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="example@email.com"
+          className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
         />
       </div>
 
       {/* PASSWORD */}
       <div>
-        <label className="text-sm font-medium text-gray-700">Nenosiri</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Nenosiri</label>
         <div className="relative mt-1">
           <input
-            type={show ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="Andika nenosiri lako"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
           <button
             type="button"
-            onClick={() => setShow(!show)}
-            className="absolute right-3 top-2.5 text-gray-400"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition"
           >
-            {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
       </div>
 
+      {/* SUBMIT */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg flex items-center justify-center gap-2"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-2 transition"
       >
         {loading && <Loader2 className="animate-spin" size={18} />}
         Ingia
       </button>
-            <p className="text-sm text-center">
-        Tengeneza account mpya?{" "}
-        <a href="/register" className="text-blue-600 underline">
+
+      <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-4">
+        Bado huna akaunti?{" "}
+        <a href="/register" className="text-indigo-600 dark:text-indigo-400 underline">
           Jisajili
         </a>
       </p>

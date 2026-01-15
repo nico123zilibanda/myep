@@ -37,6 +37,8 @@ export async function GET() {
       deadline: s.Opportunity.deadline,
       location: s.Opportunity.location,
       Category: s.Opportunity.Category,
+      isSaved: true, // ✅ muhimu sana
+
     }));
 
     return NextResponse.json(formatted);

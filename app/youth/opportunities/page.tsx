@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  MapPin,
-  Calendar,
-  Folder,
-  Info,
-  Clock,
-  Bookmark,
-} from "lucide-react";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { Info } from "lucide-react";
+import OpportunityCard from "@/components/opportunities/OpportunityCard";
 
 /* ================= TYPES ================= */
-interface Opportunity {
+export interface Opportunity {
   id: number;
   title: string;
   description: string;
@@ -19,7 +13,7 @@ interface Opportunity {
   howToApply: string;
   deadline: string;
   location: string;
-  isSaved: boolean; // hali ya kuwa saved au la
+  isSaved: boolean;
   Category?: {
     name: string;
   };
@@ -31,32 +25,61 @@ export default function YouthOpportunitiesPage() {
   const [loading, setLoading] = useState(true);
 
   const [categoryFilter, setCategoryFilter] = useState("ALL");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | "OPEN" | "EXPIRED">(
-    "ALL"
-  );
+  const [statusFilter, setStatusFilter] =
+    useState<"ALL" | "OPEN" | "EXPIRED">("ALL");
 
   /* ================= FETCH OPPORTUNITIES ================= */
-  useEffect(() => {
-    const fetchOpportunities = async () => {
-      try {
-        const res = await fetch("/api/youth/opportunities");
-        const data = await res.json();
+  const fetchOpportunities = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch("/api/youth/opportunities", {
+        cache: "no-store", // 🔑 important
+      });
+
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
         setOpportunities(data);
-      } catch {
-        alert("Imeshindikana kupakia fursa");
-      } finally {
-        setLoading(false);
+      } else {
+        setOpportunities([]);
       }
+    } catch {
+      alert("Imeshindikana kupakia fursa");
+      setOpportunities([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /* 🔹 INITIAL LOAD */
+  useEffect(() => {
+    fetchOpportunities();
+  }, [fetchOpportunities]);
+
+  /* 🔹 REFRESH WHEN USER RETURNS TO PAGE */
+  useEffect(() => {
+    const onFocus = () => {
+      fetchOpportunities();
     };
 
-    fetchOpportunities();
-  }, []);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        onFocus();
+      }
+    });
+
+    return () => {
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [fetchOpportunities]);
 
   /* ================= FILTERS ================= */
   const categories = useMemo(() => {
     const cats = opportunities
       .map((o) => o.Category?.name)
-      .filter(Boolean) as string[];
+      .filter((c): c is string => Boolean(c));
+
     return ["ALL", ...Array.from(new Set(cats))];
   }, [opportunities]);
 
@@ -64,8 +87,7 @@ export default function YouthOpportunitiesPage() {
     const now = new Date();
 
     return opportunities.filter((op) => {
-      const deadline = new Date(op.deadline);
-      const isExpired = deadline < now;
+      const isExpired = new Date(op.deadline) < now;
 
       if (categoryFilter !== "ALL" && op.Category?.name !== categoryFilter) {
         return false;
@@ -78,27 +100,31 @@ export default function YouthOpportunitiesPage() {
     });
   }, [opportunities, categoryFilter, statusFilter]);
 
-  /* ================= TOGGLE SAVE/UNSAVE ================= */
+  /* ================= SAVE / UNSAVE (OPTIMISTIC UI) ================= */
   const toggleSave = async (id: number, isSaved: boolean) => {
+    // 1️⃣ Optimistic UI
+    setOpportunities((prev) =>
+      prev.map((op) =>
+        op.id === id ? { ...op, isSaved: !isSaved } : op
+      )
+    );
+
     try {
-      // call API: POST ili save, DELETE ili unsave
       const res = await fetch("/api/youth/saved-opportunities", {
         method: isSaved ? "DELETE" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ opportunityId: id }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to toggle save");
-      }
-
-      // optimistic UI update
+      if (!res.ok) throw new Error();
+    } catch {
+      // 2️⃣ Rollback
       setOpportunities((prev) =>
         prev.map((op) =>
-          op.id === id ? { ...op, isSaved: !isSaved } : op
+          op.id === id ? { ...op, isSaved } : op
         )
       );
-    } catch (err) {
+
       alert("Imeshindikana kuhifadhi fursa");
     }
   };
@@ -120,7 +146,7 @@ export default function YouthOpportunitiesPage() {
         </p>
       </div>
 
-      {/* INFO NOTE */}
+      {/* INFO */}
       <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-5 flex gap-3">
         <Info className="text-yellow-600 mt-1" size={20} />
         <p className="text-sm text-yellow-700">
@@ -156,102 +182,15 @@ export default function YouthOpportunitiesPage() {
         </select>
       </div>
 
-      {/* EMPTY STATE */}
-      {filteredOpportunities.length === 0 && (
-        <p className="text-gray-500 text-sm">
-          Hakuna fursa zinazolingana na vigezo ulivyochagua.
-        </p>
-      )}
-
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredOpportunities.map((op) => (
           <OpportunityCard
             key={op.id}
             opportunity={op}
-            onToggleSave={toggleSave} // pass toggle function
+            onToggleSave={toggleSave}
           />
         ))}
-      </div>
-    </div>
-  );
-}
-
-/* ================= CARD ================= */
-function OpportunityCard({
-  opportunity,
-  onToggleSave,
-}: {
-  opportunity: Opportunity;
-  onToggleSave: (id: number, isSaved: boolean) => void;
-}) {
-  const deadline = new Date(opportunity.deadline);
-  const isExpired = deadline < new Date();
-
-  return (
-    <div className="bg-white border rounded-xl p-5 space-y-4 hover:shadow-sm transition">
-      {/* BADGES */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 flex items-center gap-1">
-          <Folder size={12} />
-          {opportunity.Category?.name || "Bila Kundi"}
-        </span>
-
-        <span
-          className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 ${
-            isExpired
-              ? "bg-red-100 text-red-700"
-              : "bg-green-100 text-green-700"
-          }`}
-        >
-          <Clock size={12} />
-          {isExpired ? "Imefungwa" : "Bado Wazi"}
-        </span>
-      </div>
-
-      {/* TITLE */}
-      <h3 className="font-semibold text-gray-800">{opportunity.title}</h3>
-
-      {/* DESCRIPTION */}
-      <p className="text-sm text-gray-600">{opportunity.description}</p>
-
-      {/* META */}
-      <div className="text-sm text-gray-500 space-y-1">
-        <div className="flex gap-2 items-center">
-          <MapPin size={16} />
-          {opportunity.location || "Haijabainishwa"}
-        </div>
-        <div className="flex gap-2 items-center">
-          <Calendar size={16} />
-            <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs">
-            Deadline: {deadline.toLocaleDateString()}
-            </span>
-        </div>
-      </div>
-
-      {/* SAVE / DETAILS */}
-      <div className="border-t pt-3 flex justify-between items-center text-sm">
-        {/* Save / Unsave button */}
-          <button
-            onClick={() => onToggleSave(opportunity.id, opportunity.isSaved)}
-            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition ${
-              opportunity.isSaved
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            <Bookmark size={14} className={opportunity.isSaved ? "text-white" : "text-gray-700"} />
-            {opportunity.isSaved ? "Saved" : "Save"}
-          </button>
-
-
-        {/* Details link */}
-        <a
-          href={`/youth/opportunities/${opportunity.id}`}
-          className="text-blue-600 font-medium hover:underline text-xs"
-        >
-          Soma Maelezo →
-        </a>
       </div>
     </div>
   );

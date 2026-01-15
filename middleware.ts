@@ -1,26 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { cookies } from "next/headers"; // For getting cookies server-side
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
-  const { pathname } = request.nextUrl;
+// Apply middleware to specific routes
+export const config = {
+  matcher: ["/admin/:path*", "/youth/:path*"],  // Apply only to routes that need authentication
+};
 
-  // Ignore API routes
-  if (pathname.startsWith("/api")) {
-    return NextResponse.next();
+export async function middleware(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  const pathname = req.nextUrl.pathname;
+
+  // 1️⃣ Get token from cookies
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  console.log("JWT token from cookies:", token);  // Debugging
+
+  if (!token) {
+    console.log("No token found, redirecting to /login");
+    url.pathname = "/login";  // If no token, redirect to login
+    return NextResponse.redirect(url);
   }
 
-  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register");
+  // Token exists, so we assume the user is logged in. If you need to add extra logic later, you can.
+  console.log("Token found, user is authenticated!");
 
-  // Redirect unauthenticated users trying to access protected pages
-  if (!token && (pathname.startsWith("/admin") || pathname.startsWith("/youth"))) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // Redirect logged in users away from login/register pages
-  if (token && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
+  // 2️⃣ Allow the request to proceed
   return NextResponse.next();
 }

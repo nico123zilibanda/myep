@@ -7,6 +7,8 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  size?: "sm" | "md" | "lg";
+
 }
 
 export default function Modal({ title, open, onClose, children }: ModalProps) {

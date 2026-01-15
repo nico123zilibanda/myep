@@ -1,100 +1,84 @@
-// app/api/auth/login/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { signJwt } from "@/lib/jwt";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { supabaseAdmin } from "@/lib/supabaseAdmin"; // 🔑 admin client
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+export async function POST(req: Request) {
+  const { email, password } = await req.json();
+  
+  // Basic validation for email and password
+  if (!email || !password) {
+    return NextResponse.json(
+      { message: "Email and password are required" },
+      { status: 400 }
+    );
+  }
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
-// Map numeric roleId to string roles
-const roleMap: { [key: number]: "YOUTH" | "ADMIN" } = {
-  1: "YOUTH",
-  2: "ADMIN",
-};
-
-export async function POST(req: NextRequest) {
   try {
-    const body: LoginForm = await req.json();
-    const { email, password } = body;
-
-    if (!email || !password) {
-      return NextResponse.json(
-        { message: "Email na password vinahitajika." },
-        { status: 400 }
-      );
-    }
-
-    // 🔍 Find user in Supabase Admin
+    // Fetch user from Supabase
     const { data: user, error } = await supabaseAdmin
       .from("User")
-      .select("*")
+      .select(`
+        id,
+        email,
+        fullName,
+        passwordHash,
+        isActive,
+        role:Role!User_roleId_fkey (
+          name
+        )
+      `)
       .eq("email", email)
       .single();
 
     if (error || !user) {
-      console.error("SUPABASE ADMIN SELECT ERROR:", error);
       return NextResponse.json(
-        { message: "Email au password sio sahihi." },
+        { message: "Invalid email or password" },
         { status: 401 }
       );
     }
 
-    // Optional: check if account is active
-    if ("isActive" in user && !user.isActive) {
+    // Check if account is active
+    if (!user.isActive) {
       return NextResponse.json(
-        { message: "Account imezimwa. Wasiliana na admin." },
+        { message: "Account is inactive. Contact the admin." },
         { status: 403 }
       );
     }
 
-    // ✅ Verify password
-    const isValid = await bcrypt.compare(password, user.passwordHash);
-    if (!isValid) {
+    // Check password validity
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+    if (!isValidPassword) {
       return NextResponse.json(
-        { message: "Email au password sio sahihi." },
+        { message: "Invalid email or password" },
         { status: 401 }
       );
     }
 
-    // 🔐 Generate JWT
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        role: roleMap[user.roleId] ?? "YOUTH",
-      },
-      JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    // 🍪 Set HttpOnly cookie
-    const response = NextResponse.json({
-      message: "Login successful",
-      user: {
-        id: user.id,
-        email: user.email,
-        role: roleMap[user.roleId] ?? "YOUTH",
-      },
+    // Generate JWT token
+    const token = signJwt({
+      id: user.id.toString(), role: user.role.name,
+      email: ""
     });
 
-    response.cookies.set({
-      name: "token",
-      value: token,
+    // Set the token in cookies
+    const res = NextResponse.json({
+      success: true,
+      role: user.role.name,
+      redirectTo: "/dashboard", // Redirect to dashboard after login
+    });
+
+    res.cookies.set("token", token, {
       httpOnly: true,
       path: "/",
+      maxAge: 3600,  // Token expires in 1 hour
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24, // 1 day
+      secure: process.env.NODE_ENV === "production", // Secure only in production
     });
 
-    return response;
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
+    return res;
+  } catch (err) {
+    console.error("Login error:", err);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

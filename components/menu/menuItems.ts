@@ -19,29 +19,29 @@ export const menuItems = [
         icon: LayoutDashboard,
       },
       {
-        label: "Makundi Ya Fursa",
+        label: "Categories",
         href: "/admin/categories",
         icon: Briefcase,
       },
       {
-        label: "Vijana",
-        href: "/admin/youth",
-        icon: Users,
-      },
-      {
-        label: "Fursa",
+        label: "Opportunities",
         href: "/admin/opportunities",
         icon: Briefcase,
       },
       {
-        label: "Mafunzo",
+        label: "Trainings",
         href: "/admin/trainings",
         icon: GraduationCap,
       },
       {
-        label: "Maswali",
+        label: "Questions",
         href: "/admin/questions",
         icon: HelpCircle,
+      },
+            {
+        label: "Youth",
+        href: "/admin/youth",
+        icon: Users,
       },
     ],
   },

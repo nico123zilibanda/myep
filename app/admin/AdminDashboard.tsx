@@ -1,8 +1,6 @@
-
-"use client"
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
-import RegisterForm from "@/components/auth/RegisterForm";
 import AnswerForm from "@/components/forms/AnswerForm";
 import QuickAction from "@/components/QuickActions";
 import OpportunityForm from "@/components/forms/OpportunityForm";
@@ -15,6 +13,7 @@ interface Stats {
   trainingsCount: number;
   questionsCount: number;
 }
+
 interface Question {
   id: number;
   questionText: string;
@@ -26,32 +25,34 @@ interface AdminDashboardProps {
 
 export default function AdminDashboard({ stats }: AdminDashboardProps) {
   const { vijanaCount, opportunitiesCount, trainingsCount, questionsCount } = stats;
-
-  const [openModal, setOpenModal] = useState<
-    "youth" | "opportunity" | "training" | "question" | null
-  >(null);
-
+  const [openModal, setOpenModal] = useState<"youth" | "opportunity" | "training" | "question" | null>(null);
   const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
 
+  // Fetch pending questions when modal for "question" is opened
   const fetchPendingQuestions = async () => {
+    setLoadingQuestions(true);
     try {
-      const res = await fetch("/api/admin/questions?status=PENDING", {
+      const response = await fetch("/api/admin/questions?status=PENDING", {
         credentials: "include",
-        cache: "no-store",
+        cache: "no-store", // Ensure no cache
       });
-      const data = await res.json();
 
-      setPendingQuestions(
-        data.map((q: any) => ({
-          ...q,
-          id: Number(q.id),
-        }))
-      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch pending questions");
+      }
+
+      const data = await response.json();
+      setPendingQuestions(data);
     } catch (err) {
       console.error("Error fetching pending questions", err);
+      alert("Failed to fetch pending questions.");
+    } finally {
+      setLoadingQuestions(false);
     }
   };
 
+  // Handle Youth Submission
   const handleYouthSubmit = (data: any) => {
     console.log("Submitted youth:", data);
     setOpenModal(null);
@@ -61,22 +62,10 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
     <div className="space-y-8">
       {/* STATS */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div className="border-blue-500 p-4 rounded-xl border">
-          <h3 className="font-semibold text-gray-800">Vijana</h3>
-          <p className="text-2xl font-bold">{vijanaCount}</p>
-        </div>
-        <div className="border-green-500 p-4 rounded-xl border">
-          <h3 className="font-semibold text-gray-800">Fursa</h3>
-          <p className="text-2xl font-bold">{opportunitiesCount}</p>
-        </div>
-        <div className="border-purple-500 p-4 rounded-xl border">
-          <h3 className="font-semibold text-gray-800">Mafunzo</h3>
-          <p className="text-2xl font-bold">{trainingsCount}</p>
-        </div>
-        <div className="border-red-500 p-4 rounded-xl border">
-          <h3 className="font-semibold text-gray-800">Maswali</h3>
-          <p className="text-2xl font-bold">{questionsCount}</p>
-        </div>
+        <StatCard label="Vijana" count={vijanaCount} color="blue" />
+        <StatCard label="Fursa" count={opportunitiesCount} color="green" />
+        <StatCard label="Mafunzo" count={trainingsCount} color="purple" />
+        <StatCard label="Maswali" count={questionsCount} color="red" />
       </section>
 
       {/* QUICK ACTIONS */}
@@ -121,14 +110,11 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       {openModal === "question" && (
         <Modal title="Maswali Yanayosubiri" open={true} onClose={() => setOpenModal(null)}>
           <div className="space-y-4">
-            {pendingQuestions.length === 0 && (
-              <p>Hakuna maswali yanayosubiri.</p>
-            )}
-
+            {loadingQuestions && <p>Loading pending questions...</p>}
+            {pendingQuestions.length === 0 && !loadingQuestions && <p>Hakuna maswali yanayosubiri.</p>}
             {pendingQuestions.map((q) => (
               <div key={q.id} className="border p-4 rounded-lg space-y-2">
                 <p className="font-semibold">{q.questionText}</p>
-
                 <AnswerForm
                   onSubmit={async (answer) => {
                     try {
@@ -148,10 +134,8 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                         return;
                       }
 
-                      // Ondoa swali lililojibiwa
-                      setPendingQuestions((prev) =>
-                        prev.filter((item) => item.id !== q.id)
-                      );
+                      // Remove answered question
+                      setPendingQuestions((prev) => prev.filter((item) => item.id !== q.id));
                     } catch (err) {
                       console.error(err);
                       alert("Tatizo la mtandao");
@@ -174,7 +158,14 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
           <TrainingsForm onSubmit={(data) => { console.log(data); setOpenModal(null); }} />
         </Modal>
       )}
-
     </div>
   );
 }
+
+// Helper component for displaying stats
+const StatCard = ({ label, count, color }: { label: string; count: number; color: string }) => (
+  <div className={`border-${color}-500 p-4 rounded-xl border`}>
+    <h3 className="font-semibold text-gray-800">{label}</h3>
+    <p className="text-2xl font-bold">{count}</p>
+  </div>
+);

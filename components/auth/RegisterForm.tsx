@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 interface RegisterFormProps {
-  onSubmit?: (data: any) => void; // <-- Add this
+  onSubmit?: (data: any) => void;
 }
 
 export default function RegisterForm({ onSubmit }: RegisterFormProps) {
@@ -23,32 +23,26 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      setLoading(false);
 
-    const data = await res.json();
-    setLoading(false);
+      if (!res.ok) return alert(data.message || "Kuna tatizo limetokea.");
 
-    if (!res.ok) {
-      alert(data.message);
-    } else {
       alert("Usajili umefanikiwa");
-
-      // Call parent callback if provided
       onSubmit?.(form);
 
-      // Reset form
       setForm({
         fullName: "",
         email: "",
@@ -59,57 +53,42 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
         educationLevel: "",
       });
 
-      // Optional: redirect to login
       window.location.href = "/login";
+    } catch (error) {
+      setLoading(false);
+      alert("Kuna tatizo la mtandao, jaribu tena.");
     }
   };
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-      {/* FULL NAME */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Jina Kamili</label>
-        <input
-          type="text"
-          name="fullName"
-          value={form.fullName}
-          onChange={handleChange}
-          className="mt-1 w-full px-4 py-2 border rounded-lg"
-        />
-      </div>
-
-      {/* EMAIL */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Barua pepe</label>
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          className="mt-1 w-full px-4 py-2 border rounded-lg"
-        />
-      </div>
-
-      {/* PHONE */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Namba ya Simu</label>
-        <input
-          type="tel"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          className="mt-1 w-full px-4 py-2 border rounded-lg"
-        />
-      </div>
+      {[
+        { label: "Jina Kamili", name: "fullName", type: "text", placeholder: "Jina lako kamili" },
+        { label: "Barua pepe", name: "email", type: "email", placeholder: "example@email.com" },
+        { label: "Namba ya Simu", name: "phone", type: "tel", placeholder: "07XXXXXXXX" },
+        { label: "Siku ya Kuzaliwa", name: "dateOfBirth", type: "date", placeholder: "" },
+      ].map((field, i) => (
+        <div key={i}>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{field.label}</label>
+          <input
+            type={field.type}
+            name={field.name}
+            value={(form as any)[field.name]}
+            onChange={handleChange}
+            placeholder={field.placeholder}
+            className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+          />
+        </div>
+      ))}
 
       {/* GENDER */}
       <div>
-        <label className="text-sm font-medium text-gray-700">Jinsia</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jinsia</label>
         <select
           name="gender"
           value={form.gender}
           onChange={handleChange}
-          className="mt-1 w-full px-4 py-2 border rounded-lg"
+          className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
         >
           <option value="">Chagua</option>
           <option value="Male">Mwanaume</option>
@@ -117,26 +96,14 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
         </select>
       </div>
 
-      {/* DATE OF BIRTH */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Siku ya Kuzaliwa</label>
-        <input
-          type="date"
-          name="dateOfBirth"
-          value={form.dateOfBirth}
-          onChange={handleChange}
-          className="mt-1 w-full px-4 py-2 border rounded-lg"
-        />
-      </div>
-
       {/* EDUCATION */}
       <div>
-        <label className="text-sm font-medium text-gray-700">Kiwango cha Elimu</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kiwango cha Elimu</label>
         <select
           name="educationLevel"
           value={form.educationLevel}
           onChange={handleChange}
-          className="mt-1 w-full px-4 py-2 border rounded-lg"
+          className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
         >
           <option value="">Chagua</option>
           <option>Elimu ya Msingi</option>
@@ -148,21 +115,22 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
       {/* PASSWORD */}
       <div>
-        <label className="text-sm font-medium text-gray-700">Nenosiri</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Nenosiri</label>
         <div className="relative mt-1">
           <input
             type={show ? "text" : "password"}
             name="passwordHash"
             value={form.passwordHash}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg"
+            placeholder="Chagua nenosiri"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
           <button
             type="button"
             onClick={() => setShow(!show)}
-            className="absolute right-3 top-2.5 text-gray-400"
+            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition"
           >
-            {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            {show ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
       </div>
@@ -171,15 +139,15 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded-lg flex justify-center gap-2"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-2 transition"
       >
         {loading && <Loader2 className="animate-spin" size={18} />}
         Jisajili
       </button>
 
-      <p className="text-sm text-center">
+      <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-4">
         Tayari una akaunti?{" "}
-        <a href="/login" className="text-blue-600 underline">
+        <a href="/login" className="text-indigo-600 dark:text-indigo-400 underline">
           Ingia
         </a>
       </p>

@@ -30,9 +30,12 @@ export default function HeroSlider({ images }: HeroSliderProps) {
   }, []);
 
   const nextSlide = () => setCurrent((prev) => (prev + 1) % images.length);
-  const prevSlide = () => setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const prevSlide = () =>
+    setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
 
-  const onTouchStart = (e: React.TouchEvent) => (touchStartX.current = e.touches[0].clientX);
+  const onTouchStart = (e: React.TouchEvent) =>
+    (touchStartX.current = e.touches[0].clientX);
+
   const onTouchEnd = (e: React.TouchEvent) => {
     if (!touchStartX.current) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
@@ -58,7 +61,13 @@ export default function HeroSlider({ images }: HeroSliderProps) {
           }`}
         >
           {/* BLURRED BACKGROUND */}
-          <Image src={src} alt="" fill className="object-cover blur-2xl scale-110 opacity-40" aria-hidden />
+          <Image
+            src={src}
+            alt=""
+            fill
+            className="object-cover blur-2xl scale-110 opacity-40"
+            aria-hidden
+          />
 
           {/* MAIN IMAGE */}
           <Image
@@ -66,7 +75,6 @@ export default function HeroSlider({ images }: HeroSliderProps) {
             alt={`Hero ${index}`}
             fill
             className="object-contain relative z-10"
-            loading={index === 0 ? "eager" : "lazy"}
             priority={index === 0}
           />
 
@@ -90,18 +98,19 @@ export default function HeroSlider({ images }: HeroSliderProps) {
         <ChevronRight size={24} />
       </button>
 
-      {/* ================= THUMBNAILS ================= */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2 bg-black/40 px-4 py-2 rounded-xl backdrop-blur">
-        {images.map((src, index) => (
+      {/* ================= DOT INDICATORS ================= */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+        {images.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`relative w-14 h-8 rounded overflow-hidden border transition ${
-              current === index ? "border-white" : "border-transparent opacity-70"
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              current === index
+                ? "bg-white scale-125"
+                : "bg-white/50 hover:bg-white"
             }`}
-          >
-            <Image src={src} alt="thumb" fill className="object-cover" />
-          </button>
+            aria-label={`Go to slide ${index + 1}`}
+          />
         ))}
       </div>
     </section>

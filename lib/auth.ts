@@ -1,49 +1,43 @@
-// lib/auth.ts
-import { supabaseAdmin } from "./supabaseAdmin";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { cookies } from "next/headers"; // For getting cookies server-side
+import { verifyJwt } from "./jwt"; // Ensure verifyJwt is imported correctly
 
-// Define TypeScript types for User and Role
-type Role = {
-  name: string;
-};
-
-type User = {
+// Current user type with role
+export type CurrentUser = {
   id: string;
   email: string;
-  fullName: string;
-  role: Role[]; // Supabase returns role as an array
+  role: string;
 };
 
-export async function getCurrentUser(req?: Request) {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+// Function to check if the user is authenticated using the JWT token
+export async function getCurrentUser(): Promise<CurrentUser | null> {
+  const cookieStore = await cookies(); // Using cookies() from next/headers
+  const token = cookieStore.get("token")?.value; // Get the token cookie
 
-    if (!token) return null;
+  console.log("getCurrentUser cookie token:", token); // Debugging
 
-    const decoded: { id: string } = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as { id: string };
-
-    // Query user from Supabase
-    const { data: user, error } = await supabaseAdmin
-      .from("User")
-      .select("id, email, fullName, role(name)")
-      .eq("id", decoded.id)
-      .single();
-
-    if (error || !user) return null;
-
-    return {
-      id: user.id,
-      email: user.email,
-      role: user.role[0]?.name || null, // safely get first role name
-      fullName: user.fullName,
-    };
-  } catch (err) {
-    console.error("Error getting current user:", err);
-    return null;
+  if (!token) {
+    return null; // No token found, user is not authenticated
   }
+
+  // Verify the JWT token
+  let payload;
+  try {
+    payload = verifyJwt(token); // This should decode and verify the JWT token
+  } catch (err) {
+    console.error("JWT verification failed:", err); // Log the error
+    return null; // Token verification failed, return null
+  }
+
+  console.log("JWT payload:", payload); // Debugging
+
+  if (!payload || !payload.id || !payload.role) {
+    return null; // Invalid JWT payload or missing user details
+  }
+
+  // Return the basic user information (without fetching from database for now)
+  return {
+    id: payload.id.toString(),
+    email: payload.email || "",
+    role: payload.role,
+  };
 }
