@@ -68,13 +68,13 @@ export default function OpportunityForm({
       }}
       className="space-y-4"
     >
-      <FormInput label="Title" name="title" value={form.title} onChange={handleChange} />
-      <FormInput label="Description" name="description" value={form.description} onChange={handleChange} />
-      <FormInput label="Requirements" name="requirements" value={form.requirements} onChange={handleChange} />
-      <FormInput label="How to Apply" name="howToApply" value={form.howToApply} onChange={handleChange} />
-      <FormInput label="Deadline" name="deadline" type="date" value={form.deadline} onChange={handleChange} />
-      <FormInput label="Location" name="location" value={form.location} onChange={handleChange} />
-      <FormInput label="Attachment URL" name="attachmentUrl" value={form.attachmentUrl} onChange={handleChange} />
+      <FormInput label="Title" name="title" value={form.title} onChange={handleChange} placeholder={""} />
+      <FormInput label="Description" name="description" value={form.description} onChange={handleChange} placeholder={""} />
+      <FormInput label="Requirements" name="requirements" value={form.requirements} onChange={handleChange} placeholder={""} />
+      <FormInput label="How to Apply" name="howToApply" value={form.howToApply} onChange={handleChange} placeholder={""} />
+      <FormInput label="Deadline" name="deadline" type="date" value={form.deadline} onChange={handleChange} placeholder={""} />
+      <FormInput label="Location" name="location" value={form.location} onChange={handleChange} placeholder={""} />
+      <FormInput label="Attachment URL" name="attachmentUrl" value={form.attachmentUrl} onChange={handleChange} placeholder={""} />
 
       <FormSelect
         label="Status"

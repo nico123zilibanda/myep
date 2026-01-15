@@ -40,15 +40,17 @@ export default function CategoryForm({
         label="Jina la Category"
         name="name"
         value={form.name}
-        onChange={handleChange}
-      />
+        onChange={handleChange} 
+        placeholder={""}      
+        />
 
       <FormInput
         label="Maelezo"
         name="description"
         value={form.description}
-        onChange={handleChange}
-      />
+        onChange={handleChange} 
+        placeholder={""}      
+        />
 
       <button
         type="submit"
