@@ -38,7 +38,7 @@ export async function GET() {
 // ================= CREATE OPPORTUNITY =================
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser(req);
+    const user = await getCurrentUser();
     console.log("Current User in POST:", user); // 🔥 debug
 
     if (!user || user.role !== "ADMIN") {
