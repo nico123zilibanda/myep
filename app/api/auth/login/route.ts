@@ -55,18 +55,27 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate JWT token
-    const token = signJwt({
-      id: user.id.toString(), 
-      role: user.role.name,
-      email: user.email,
-      fullName: user.fullName,
-    });
+// Extract role safely
+const roleName = user.role?.[0]?.name;
 
+      if (!roleName) {
+        return NextResponse.json(
+          { message: "User role not found" },
+          { status: 500 }
+        );
+      }
+
+      // Generate JWT token
+      const token = signJwt({
+        id: user.id.toString(),
+        role: roleName as "ADMIN" | "YOUTH",
+        email: user.email,
+        fullName: user.fullName,
+      });
     // Set the token in cookies
     const res = NextResponse.json({
       success: true,
-      role: user.role.name,
+      role: roleName,
       redirectTo: "/dashboard", // Redirect to dashboard after login
     });
 
