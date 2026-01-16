@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
-  
-  // Basic validation for email and password
+
+  // 1️⃣ Basic validation
   if (!email || !password) {
     return NextResponse.json(
       { message: "Email and password are required" },
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Fetch user from Supabase
+    // 2️⃣ Fetch user (NO ROLE JOIN)
     const { data: user, error } = await supabaseAdmin
       .from("User")
       .select(`
@@ -24,9 +24,7 @@ export async function POST(req: Request) {
         fullName,
         passwordHash,
         isActive,
-        role:Role!User_roleId_fkey (
-          name
-        )
+        roleId
       `)
       .eq("email", email)
       .single();
@@ -38,7 +36,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if account is active
+    // 3️⃣ Check if account is active
     if (!user.isActive) {
       return NextResponse.json(
         { message: "Account is inactive. Contact the admin." },
@@ -46,8 +44,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check password validity
-    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+    // 4️⃣ Verify password
+    const isValidPassword = await bcrypt.compare(
+      password,
+      user.passwordHash
+    );
+
     if (!isValidPassword) {
       return NextResponse.json(
         { message: "Invalid email or password" },
@@ -55,41 +57,48 @@ export async function POST(req: Request) {
       );
     }
 
-// Extract role safely
-const roleName = user.role?.[0]?.name;
+    // 5️⃣ Map roleId → role name (SAFE & EXPLICIT)
+    let role: "ADMIN" | "YOUTH" | null = null;
 
-      if (!roleName) {
-        return NextResponse.json(
-          { message: "User role not found" },
-          { status: 500 }
-        );
-      }
+    if (user.roleId === 2) role = "ADMIN";
+    if (user.roleId === 1) role = "YOUTH";
 
-      // Generate JWT token
-      const token = signJwt({
-        id: user.id.toString(),
-        role: roleName as "ADMIN" | "YOUTH",
-        email: user.email,
-        fullName: user.fullName,
-      });
-    // Set the token in cookies
+    if (!role) {
+      return NextResponse.json(
+        { message: "User role invalid" },
+        { status: 500 }
+      );
+    }
+
+    // 6️⃣ Sign JWT
+    const token = signJwt({
+      id: user.id.toString(),
+      email: user.email,
+      fullName: user.fullName,
+      role,
+    });
+
+    // 7️⃣ Response + cookie
     const res = NextResponse.json({
       success: true,
-      role: roleName,
-      redirectTo: "/dashboard", // Redirect to dashboard after login
+      role,
+      redirectTo: "/dashboard",
     });
 
     res.cookies.set("token", token, {
       httpOnly: true,
       path: "/",
-      maxAge: 3600,  // Token expires in 1 hour
+      maxAge: 60 * 60, // 1 hour
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production", // Secure only in production
+      secure: process.env.NODE_ENV === "production",
     });
 
     return res;
   } catch (err) {
     console.error("Login error:", err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
+    );
   }
 }
