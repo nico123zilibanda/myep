@@ -5,12 +5,17 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
-
+  
+  // Basic validation for email and password
   if (!email || !password) {
-    return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Email and password are required" },
+      { status: 400 }
+    );
   }
 
   try {
+    // Fetch user from Supabase
     const { data: user, error } = await supabaseAdmin
       .from("User")
       .select(`
@@ -19,48 +24,58 @@ export async function POST(req: Request) {
         fullName,
         passwordHash,
         isActive,
-        role:Role!User_roleId_fkey (name)
+        role:Role!User_roleId_fkey (
+          name
+        )
       `)
       .eq("email", email)
       .single();
 
     if (error || !user) {
-      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
+    // Check if account is active
     if (!user.isActive) {
-      return NextResponse.json({ message: "Account is inactive. Contact the admin." }, { status: 403 });
+      return NextResponse.json(
+        { message: "Account is inactive. Contact the admin." },
+        { status: 403 }
+      );
     }
 
+    // Check password validity
     const isValidPassword = await bcrypt.compare(password, user.passwordHash);
     if (!isValidPassword) {
-      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
-    // Supabase role is array, take first element
-    const roleName = Array.isArray(user.role) && user.role.length > 0 ? user.role[0].name : "YOUTH";
-
-    // ✅ Generate JWT with fullName
+    // Generate JWT token
     const token = signJwt({
-      id: user.id.toString(),
-      fullName: user.fullName,
-      role: roleName as "ADMIN" | "YOUTH",
+      id: user.id.toString(), 
+      role: user.role.name,
       email: user.email,
+      fullName: user.fullName,
     });
 
-    // Set httpOnly cookie
+    // Set the token in cookies
     const res = NextResponse.json({
       success: true,
-      role: roleName,
-      redirectTo: "/dashboard"
+      role: user.role.name,
+      redirectTo: "/dashboard", // Redirect to dashboard after login
     });
 
     res.cookies.set("token", token, {
       httpOnly: true,
       path: "/",
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 3600,  // Token expires in 1 hour
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production", // Secure only in production
     });
 
     return res;

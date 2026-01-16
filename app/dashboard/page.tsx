@@ -1,18 +1,15 @@
-import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
-  console.log("Dashboard getCurrentUser:", user);
 
-  if (!user) {
-    console.log("No user found, redirecting to /login");
-    return redirect("/login");
-  }
+  console.log("🔥 DASHBOARD USER:", user);
 
-  // Role-based redirect
+  if (!user) return redirect("/login");
+
   if (user.role === "ADMIN") return redirect("/admin");
   if (user.role === "YOUTH") return redirect("/youth");
 
-  return redirect("/login"); // fallback
+  return redirect("/login");
 }

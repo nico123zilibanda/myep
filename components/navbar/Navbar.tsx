@@ -11,8 +11,9 @@ import { useEffect, useState } from "react";
 
 type NavbarProps = {
   user: {
+    id: string;
     email: string;
-    fullName: string; // Ensure fullName is included
+    fullName: string  // Ensure fullName is included
     role: "ADMIN" | "YOUTH"; 
     image?: string | null;
   };
@@ -97,7 +98,7 @@ export default function Navbar({ user }: NavbarProps) {
           <div className="hidden md:flex flex-col leading-tight">            
             {/* Display the user's full name */}
             <span className="text-sm font-medium text-gray-800">
-              {user.fullName} {/* Display full name */}
+              {user.email} {/* Display full name */}
             </span>
             <span className="text-xs text-gray-500 text-right">
               {user.role}
