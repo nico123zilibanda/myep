@@ -111,14 +111,14 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
           Quick Actions
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <QuickAction
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* <QuickAction
             title="Ongeza Kijana"
             description="Sajili kijana mpya"
             icon={UserPlus}
             color="blue"
             onClick={() => setOpenModal("youth")}
-          />
+          /> */}
 
           <QuickAction
             title="Ongeza Fursa"

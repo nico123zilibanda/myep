@@ -1,4 +1,6 @@
-import { ReactNode } from "react";
+"use client";
+
+import { ReactNode, useEffect, useState } from "react";
 
 interface StatCardProps {
   title: string;
@@ -39,6 +41,27 @@ export default function StatCard({
   loading = false,
 }: StatCardProps) {
   const styles = colorMap[color];
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (loading) return;
+
+    let start = 0;
+    const duration = 800; // ms
+    const increment = Math.max(1, Math.floor(value / (duration / 16)));
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= value) {
+        setDisplayValue(value);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(start);
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [value, loading]);
 
   return (
     <div
@@ -62,8 +85,10 @@ export default function StatCard({
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {title}
             </p>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {value}
+
+            {/* 🔥 COUNT ANIMATION */}
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+              {displayValue.toLocaleString()}
             </h2>
           </div>
 

@@ -1,48 +1,77 @@
 "use client";
 
-import { LogOut, Sun, Moon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { LogOut, Sun, Moon, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function YouthTopbar() {
+export default function YouthTopbar({
+  onMenuClick,
+}: {
+  onMenuClick: () => void;
+}) {
   const [darkMode, setDarkMode] = useState(false);
 
+  // Init theme on mount
   useEffect(() => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setDarkMode(true);
+    const storedTheme = localStorage.getItem("theme");
+
+    if (storedTheme === "dark") {
       document.documentElement.classList.add("dark");
+      setDarkMode(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setDarkMode(false);
     }
   }, []);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle("dark");
-  };
-
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/login";
+  // Toggle theme
+  const toggleTheme = () => {
+    if (darkMode) {
+      // Switch to LIGHT
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      setDarkMode(false);
+    } else {
+      // Switch to DARK
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      setDarkMode(true);
+    }
   };
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between shadow-sm">
-      <span className="font-medium text-gray-700 dark:text-gray-200 text-lg sm:text-base">
-        Youth Dashboard
-      </span>
-
-      <div className="flex items-center gap-4">
-        {/* Dark Mode Toggle */}
+    <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b bg-white dark:bg-gray-900">
+      {/* Left */}
+      <div className="flex items-center gap-3">
         <button
-          onClick={toggleDarkMode}
-          className="flex items-center gap-1 text-sm sm:text-base text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition"
+          onClick={onMenuClick}
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          <Menu size={18} />
+        </button>
+
+        <span className="font-semibold text-gray-800 dark:text-gray-100">
+          Youth Dashboard
+        </span>
+      </div>
+
+      {/* Right */}
+      <div className="flex items-center gap-4">
+        {/* Theme toggle */}
+        {/* <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
         >
           {darkMode ? <Sun size={16} /> : <Moon size={16} />}
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </button>
+        </button> */}
 
         {/* Logout */}
         <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-sm sm:text-base text-red-600 dark:text-red-400 hover:underline transition"
+          onClick={async () => {
+            await fetch("/api/auth/logout", { method: "POST" });
+            window.location.href = "/login";
+          }}
+          className="flex items-center gap-1 text-red-600 dark:text-red-400 hover:underline transition"
         >
           <LogOut size={16} />
           Logout
