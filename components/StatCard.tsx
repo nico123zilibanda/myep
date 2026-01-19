@@ -1,27 +1,82 @@
 import { ReactNode } from "react";
 
+interface StatCardProps {
+  title: string;
+  value: number;
+  icon: ReactNode;
+  color: "blue" | "green" | "purple" | "red";
+  loading?: boolean;
+}
+
+const colorMap = {
+  blue: {
+    border: "border-blue-500",
+    bg: "bg-blue-50 dark:bg-blue-900/20",
+    text: "text-blue-600",
+  },
+  green: {
+    border: "border-green-500",
+    bg: "bg-green-50 dark:bg-green-900/20",
+    text: "text-green-600",
+  },
+  purple: {
+    border: "border-purple-500",
+    bg: "bg-purple-50 dark:bg-purple-900/20",
+    text: "text-purple-600",
+  },
+  red: {
+    border: "border-red-500",
+    bg: "bg-red-50 dark:bg-red-900/20",
+    text: "text-red-600",
+  },
+};
+
 export default function StatCard({
   title,
   value,
   icon,
   color,
-}: {
-  title: string;
-  value: number;
-  icon: ReactNode;
-  color: string;
-}) {
+  loading = false,
+}: StatCardProps) {
+  const styles = colorMap[color];
+
   return (
-    <div className={`p-5 rounded-2xl bg-white shadow-sm border-l-4 ${color}`}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-500">{title}</p>
-          <h2 className="text-3xl font-bold mt-1">{value}</h2>
+    <div
+      className={`
+        relative overflow-hidden
+        rounded-2xl border-l-4 ${styles.border}
+        bg-white dark:bg-gray-900
+        p-5 shadow-sm
+        transition-all duration-300
+        hover:shadow-md hover:-translate-y-0.5
+      `}
+    >
+      {loading ? (
+        <div className="space-y-3 animate-pulse">
+          <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
+          <div className="h-8 w-16 bg-gray-200 dark:bg-gray-700 rounded" />
         </div>
-        <div className="text-gray-400 text-3xl">
-          {icon}
+      ) : (
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {title}
+            </p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {value}
+            </h2>
+          </div>
+
+          <div
+            className={`
+              p-3 rounded-xl ${styles.bg} ${styles.text}
+              text-3xl
+            `}
+          >
+            {icon}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

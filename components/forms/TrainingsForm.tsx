@@ -89,7 +89,14 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+    <form onSubmit={handleSubmit} 
+    className="
+      space-y-6
+      bg-white dark:bg-gray-900
+      p-6 rounded-xl
+      border border-gray-200 dark:border-gray-800
+      shadow-sm
+    ">
       
       {/* TITLE */}
       <FormInput

@@ -62,46 +62,133 @@ export default function OpportunityForm({
 
   return (
     <form
-      onSubmit={e => {
-        e.preventDefault();
-        onSubmit(form);
-      }}
-      className="space-y-4"
-    >
-      <FormInput label="Title" name="title" value={form.title} onChange={handleChange} placeholder={""} />
-      <FormInput label="Description" name="description" value={form.description} onChange={handleChange} placeholder={""} />
-      <FormInput label="Requirements" name="requirements" value={form.requirements} onChange={handleChange} placeholder={""} />
-      <FormInput label="How to Apply" name="howToApply" value={form.howToApply} onChange={handleChange} placeholder={""} />
-      <FormInput label="Deadline" name="deadline" type="date" value={form.deadline} onChange={handleChange} placeholder={""} />
-      <FormInput label="Location" name="location" value={form.location} onChange={handleChange} placeholder={""} />
-      <FormInput label="Attachment URL" name="attachmentUrl" value={form.attachmentUrl} onChange={handleChange} placeholder={""} />
+  onSubmit={e => {
+    e.preventDefault();
+    onSubmit(form);
+  }}
+  className="
+    space-y-6
+    bg-white dark:bg-gray-900
+    p-6 rounded-xl
+    border border-gray-200 dark:border-gray-800
+    shadow-sm
+  "
+>
+  {/* FORM HEADER */}
+  <div className="space-y-1">
+    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+      Opportunity Details
+    </h3>
+    <p className="text-sm text-gray-500 dark:text-gray-400">
+      Jaza taarifa muhimu za fursa
+    </p>
+  </div>
 
-      <FormSelect
-        label="Status"
-        name="status"
-        value={form.status}
+  {/* GRID */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <FormInput
+      label="Title"
+      name="title"
+      value={form.title}
+      onChange={handleChange}
+      placeholder="Mfano: Internship ya ICT"
+      required
+    />
+
+    <FormInput
+      label="Location"
+      name="location"
+      value={form.location}
+      onChange={handleChange}
+      placeholder="Mfano: Dodoma"
+      required
+    />
+
+    <FormInput
+      label="Deadline"
+      name="deadline"
+      type="date"
+      value={form.deadline}
+      onChange={handleChange}
+      required
+    />
+
+    <FormSelect
+      label="Status"
+      name="status"
+      value={form.status}
+      onChange={handleChange}
+      options={[
+        { value: "PUBLISHED", label: "Published" },
+        { value: "DRAFT", label: "Draft" },
+        { value: "CLOSED", label: "Closed" },
+      ]}
+    />
+
+    <div className="md:col-span-2">
+      <FormInput
+        label="Description"
+        name="description"
+        value={form.description}
         onChange={handleChange}
-        options={[
-          { value: "PUBLISHED", label: "PUBLISHED" },
-          { value: "DRAFT", label: "DRAFT" },
-          { value: "CLOSED", label: "CLOSED" },
-        ]}
+        placeholder="Elezea kwa ufupi kuhusu fursa"
       />
+    </div>
 
-      <FormSelect
-        label="Category"
-        name="categoryId"
-        value={form.categoryId}
+    <div className="md:col-span-2">
+      <FormInput
+        label="Requirements"
+        name="requirements"
+        value={form.requirements}
         onChange={handleChange}
-        options={categories.map(c => ({ value: c.id, label: c.name }))}
+        placeholder="Sifa au vigezo vinavyohitajika"
       />
+    </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-      >
-        Hifadhi
-      </button>
-    </form>
+    <div className="md:col-span-2">
+      <FormInput
+        label="How to Apply"
+        name="howToApply"
+        value={form.howToApply}
+        onChange={handleChange}
+        placeholder="Elekeza jinsi ya kuomba"
+      />
+    </div>
+
+    <FormSelect
+      label="Category"
+      name="categoryId"
+      value={form.categoryId}
+      onChange={handleChange}
+      options={categories.map(c => ({
+        value: c.id,
+        label: c.name,
+      }))}
+    />
+
+    <FormInput
+      label="Attachment URL"
+      name="attachmentUrl"
+      value={form.attachmentUrl}
+      onChange={handleChange}
+      placeholder="Link ya document (hiari)"
+    />
+  </div>
+
+  {/* SUBMIT */}
+  <button
+    type="submit"
+    className="
+      w-full
+      bg-blue-600 hover:bg-blue-700
+      text-white py-3 rounded-lg
+      font-medium shadow-sm
+      transition
+    "
+  >
+    Hifadhi Opportunity
+  </button>
+</form>
+
   );
 }

@@ -75,7 +75,7 @@ export default function HomePage() {
             {/* RIGHT: IMAGE SLIDER */}
             <motion.div
               variants={fadeUp}
-              className="relative w-full h-[280px] md:h-[360px] lg:h-[420px] rounded-2xl overflow-hidden shadow-2xl"
+              className="relative w-full h-70 md:h-90 lg:h-105 rounded-2xl overflow-hidden shadow-2xl"
             >
               <HeroSlider
                 images={[

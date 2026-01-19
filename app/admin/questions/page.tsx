@@ -19,8 +19,26 @@ interface Question {
   User?: { fullName?: string };
 }
 
+/* ================= SKELETON ================= */
+function TableSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, i) => (
+        <TableRow key={i}>
+          <td colSpan={5} className="px-4 py-4">
+            <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </td>
+        </TableRow>
+      ))}
+    </>
+  );
+}
+
+/* ================= PAGE ================= */
 export default function AdminQuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
@@ -31,15 +49,23 @@ export default function AdminQuestionsPage() {
   /* ================= FETCH ================= */
   const fetchQuestions = async () => {
     try {
+      setLoading(true);
       const res = await fetch("/api/admin/questions", {
         credentials: "include",
         cache: "no-store",
       });
-      if (!res.ok) throw new Error("Failed to load questions");
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to load questions");
+      }
+
       const data: Question[] = await res.json();
       setQuestions(data);
     } catch (error: any) {
       alert(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,15 +73,25 @@ export default function AdminQuestionsPage() {
     fetchQuestions();
   }, []);
 
+  /* Reset page on search */
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
   /* ================= FILTER + PAGINATION ================= */
-  const filtered = questions.filter(q =>
-    q.questionText.toLowerCase().includes(search.toLowerCase()) ||
-    q.User?.fullName?.toLowerCase().includes(search.toLowerCase())
+  const filtered = questions.filter(
+    (q) =>
+      q.questionText.toLowerCase().includes(search.toLowerCase()) ||
+      q.User?.fullName?.toLowerCase().includes(search.toLowerCase())
   );
 
   const perPage = 5;
   const totalPages = Math.ceil(filtered.length / perPage);
-  const data = filtered.slice((page - 1) * perPage, page * perPage);
+
+  const paginatedData = filtered.slice(
+    (page - 1) * perPage,
+    page * perPage
+  );
 
   /* ================= ANSWER ================= */
   const submitAnswer = async () => {
@@ -97,7 +133,7 @@ export default function AdminQuestionsPage() {
       const data = await res.json();
       if (!res.ok) return alert(data.message);
 
-      setQuestions(prev => prev.filter(q => q.id !== id));
+      setQuestions((prev) => prev.filter((q) => q.id !== id));
     } catch {
       alert("Imeshindikana kufuta swali");
     }
@@ -106,61 +142,139 @@ export default function AdminQuestionsPage() {
   /* ================= UI ================= */
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">Maswali ya Vijana</h1>
-      <TableSearch value={search} onChange={setSearch} />
+      {/* HEADER */}
+      <div>
+        <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          Maswali ya Vijana
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Maswali yaliyoulizwa na vijana na majibu yake
+        </p>
+      </div>
 
-      <DataTable>
-        <TableHeader columns={["Swali", "Aliyeuliza", "Jibu", "Status", "Actions"]} />
-        <tbody>
-          {data.map(q => (
-            <TableRow key={q.id}>
-              <td className="px-4 py-3 max-w-75 truncate">{q.questionText}</td>
-              <td className="px-4 py-3">{q.User?.fullName || "-"}</td>
-              <td className="px-4 py-3 max-w-75 truncate">{q.answerText || "-"}</td>
-              <td className="px-4 py-3"><StatusBadge status={q.status} /></td>
-              <td className="px-4 py-3">
-                <CategoryActions
-                  onView={() => setViewing(q)}
-                  onEdit={() => { setSelected(q); setAnswer(q.answerText || ""); }}
-                  onDelete={() => handleDelete(q.id, q.questionText)}
-                />
-              </td>
-            </TableRow>
-          ))}
-        </tbody>
-      </DataTable>
+      {/* SEARCH */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
+        <TableSearch value={search} onChange={setSearch} />
+      </div>
 
-      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      {/* TABLE */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
+        <DataTable>
+          <TableHeader
+            columns={["Swali", "Aliyeuliza", "Jibu", "Status", "Actions"]}
+          />
+
+          <tbody>
+            {loading ? (
+              <TableSkeleton rows={perPage} />
+            ) : paginatedData.length === 0 ? (
+              <TableRow>
+                <td
+                  colSpan={5}
+                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                >
+                  Hakuna maswali yaliyopatikana
+                </td>
+              </TableRow>
+            ) : (
+              paginatedData.map((q) => (
+                <TableRow key={q.id}>
+                  <td className="px-4 py-4 max-w-xs truncate font-medium text-gray-800 dark:text-gray-100">
+                    {q.questionText}
+                  </td>
+                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
+                    {q.User?.fullName || "-"}
+                  </td>
+                  <td className="px-4 py-4 max-w-xs truncate text-gray-600 dark:text-gray-300">
+                    {q.answerText || "-"}
+                  </td>
+                  <td className="px-4 py-4">
+                    <StatusBadge status={q.status} />
+                  </td>
+                  <td className="px-4 py-4">
+                    <CategoryActions
+                      onView={() => setViewing(q)}
+                      onEdit={() => {
+                        setSelected(q);
+                        setAnswer(q.answerText || "");
+                      }}
+                      onDelete={() =>
+                        handleDelete(q.id, q.questionText)
+                      }
+                    />
+                  </td>
+                </TableRow>
+              ))
+            )}
+          </tbody>
+        </DataTable>
+      </div>
+
+      {/* PAGINATION */}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
 
       {/* ANSWER MODAL */}
-      <Modal title="Jibu Swali" open={!!selected} onClose={() => setSelected(null)}>
+      <Modal
+        title="Jibu Swali"
+        open={!!selected}
+        onClose={() => setSelected(null)}
+        size="sm"
+      >
         <div className="space-y-4">
-          <p className="text-sm font-medium">{selected?.questionText}</p>
+          <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
+            {selected?.questionText}
+          </p>
+
           <textarea
             rows={4}
-            className="w-full border rounded-lg p-2"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Andika jibu hapa..."
             value={answer}
-            onChange={e => setAnswer(e.target.value)}
+            onChange={(e) => setAnswer(e.target.value)}
           />
-          <button onClick={submitAnswer} className="w-full bg-blue-600 text-white py-2 rounded-lg">
+
+          <button
+            onClick={submitAnswer}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+          >
             Tuma Jibu
           </button>
         </div>
       </Modal>
 
       {/* VIEW MODAL */}
-      <Modal title="Maelezo ya Swali" open={!!viewing} onClose={() => setViewing(null)}>
-        <div className="space-y-4">
+      <Modal
+        title="Maelezo ya Swali"
+        open={!!viewing}
+        onClose={() => setViewing(null)}
+        size="md"
+      >
+        <div className="space-y-4 text-sm">
           <div>
-            <p className="text-sm text-gray-500 mb-1">Swali</p>
-            <p className="bg-gray-100 p-3 rounded">{viewing?.questionText}</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-1">
+              Swali
+            </p>
+            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-gray-800 dark:text-gray-100">
+              {viewing?.questionText}
+            </p>
           </div>
+
           <div>
-            <p className="text-sm text-gray-500 mb-1">Jibu</p>
-            <p className="bg-gray-100 p-3 rounded">{viewing?.answerText || "Bado halijajibiwa"}</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-1">
+              Jibu
+            </p>
+            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-gray-800 dark:text-gray-100">
+              {viewing?.answerText || "Bado halijajibiwa"}
+            </p>
           </div>
-          <div className="flex justify-end">{viewing && <StatusBadge status={viewing.status} />}</div>
+
+          <div className="flex justify-end">
+            {viewing && <StatusBadge status={viewing.status} />}
+          </div>
         </div>
       </Modal>
     </div>

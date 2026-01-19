@@ -17,14 +17,15 @@ export default function ActionButtons({
   onPublish,
   onDelete,
 }: ActionButtonsProps) {
+  const baseBtnClasses = `
+    p-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-1 
+    transition text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700
+  `;
+
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-wrap">
       {onView && (
-        <button
-          onClick={onView}
-          className="p-2 rounded hover:bg-gray-100"
-          title="View"
-        >
+        <button onClick={onView} className={baseBtnClasses} title="View">
           <Eye size={16} />
         </button>
       )}
@@ -32,7 +33,7 @@ export default function ActionButtons({
       {onEdit && (
         <button
           onClick={onEdit}
-          className="p-2 rounded hover:bg-blue-100 text-blue-600"
+          className={`${baseBtnClasses} text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900`}
           title="Edit"
         >
           <Pencil size={16} />
@@ -42,7 +43,7 @@ export default function ActionButtons({
       {onPublish && status !== "PUBLISHED" && (
         <button
           onClick={onPublish}
-          className="p-2 rounded hover:bg-green-100 text-green-600"
+          className={`${baseBtnClasses} text-green-600 hover:bg-green-100 dark:hover:bg-green-900`}
           title="Publish"
         >
           <CheckCircle size={16} />
@@ -52,7 +53,7 @@ export default function ActionButtons({
       {onDelete && (
         <button
           onClick={onDelete}
-          className="p-2 rounded hover:bg-red-100 text-red-600"
+          className={`${baseBtnClasses} text-red-600 hover:bg-red-100 dark:hover:bg-red-900`}
           title="Delete"
         >
           <Trash2 size={16} />

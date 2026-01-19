@@ -14,9 +14,7 @@ export interface Opportunity {
   deadline: string;
   location: string;
   isSaved: boolean;
-  Category?: {
-    name: string;
-  };
+  Category?: { name: string };
 }
 
 /* ================= PAGE ================= */
@@ -34,7 +32,7 @@ export default function YouthOpportunitiesPage() {
       setLoading(true);
 
       const res = await fetch("/api/youth/opportunities", {
-        cache: "no-store", // 🔑 important
+        cache: "no-store",
       });
 
       const data = await res.json();
@@ -59,19 +57,12 @@ export default function YouthOpportunitiesPage() {
 
   /* 🔹 REFRESH WHEN USER RETURNS TO PAGE */
   useEffect(() => {
-    const onFocus = () => {
-      fetchOpportunities();
+    const onFocus = () => fetchOpportunities();
+    const handler = () => {
+      if (document.visibilityState === "visible") onFocus();
     };
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        onFocus();
-      }
-    });
-
-    return () => {
-      document.removeEventListener("visibilitychange", onFocus);
-    };
+    document.addEventListener("visibilitychange", handler);
+    return () => document.removeEventListener("visibilitychange", handler);
   }, [fetchOpportunities]);
 
   /* ================= FILTERS ================= */
@@ -79,20 +70,16 @@ export default function YouthOpportunitiesPage() {
     const cats = opportunities
       .map((o) => o.Category?.name)
       .filter((c): c is string => Boolean(c));
-
     return ["ALL", ...Array.from(new Set(cats))];
   }, [opportunities]);
 
   const filteredOpportunities = useMemo(() => {
     const now = new Date();
-
     return opportunities.filter((op) => {
       const isExpired = new Date(op.deadline) < now;
 
-      if (categoryFilter !== "ALL" && op.Category?.name !== categoryFilter) {
+      if (categoryFilter !== "ALL" && op.Category?.name !== categoryFilter)
         return false;
-      }
-
       if (statusFilter === "OPEN" && isExpired) return false;
       if (statusFilter === "EXPIRED" && !isExpired) return false;
 
@@ -100,13 +87,10 @@ export default function YouthOpportunitiesPage() {
     });
   }, [opportunities, categoryFilter, statusFilter]);
 
-  /* ================= SAVE / UNSAVE (OPTIMISTIC UI) ================= */
+  /* ================= SAVE / UNSAVE ================= */
   const toggleSave = async (id: number, isSaved: boolean) => {
-    // 1️⃣ Optimistic UI
     setOpportunities((prev) =>
-      prev.map((op) =>
-        op.id === id ? { ...op, isSaved: !isSaved } : op
-      )
+      prev.map((op) => (op.id === id ? { ...op, isSaved: !isSaved } : op))
     );
 
     try {
@@ -115,43 +99,33 @@ export default function YouthOpportunitiesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ opportunityId: id }),
       });
-
       if (!res.ok) throw new Error();
     } catch {
-      // 2️⃣ Rollback
       setOpportunities((prev) =>
-        prev.map((op) =>
-          op.id === id ? { ...op, isSaved } : op
-        )
+        prev.map((op) => (op.id === id ? { ...op, isSaved } : op))
       );
-
       alert("Imeshindikana kuhifadhi fursa");
     }
   };
-
-  if (loading) {
-    return <p className="text-gray-500">Inapakia fursa...</p>;
-  }
 
   /* ================= RENDER ================= */
   return (
     <div className="space-y-8">
       {/* HEADER */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">
           Fursa Zilizopo
         </h1>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
           Angalia fursa zilizotangazwa na upate maelekezo ya kuzifikia
         </p>
       </div>
 
       {/* INFO */}
-      <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-5 flex gap-3">
-        <Info className="text-yellow-600 mt-1" size={20} />
-        <p className="text-sm text-yellow-700">
-          Mfumo huu hautumiki kuomba fursa. Soma maelezo ya kila
-          fursa ili kujua hatua zinazofuata.
+      <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-100 dark:border-yellow-700 rounded-xl p-5 flex gap-3 shadow-sm">
+        <Info className="text-yellow-600 dark:text-yellow-300 mt-1" size={20} />
+        <p className="text-sm text-yellow-700 dark:text-yellow-200">
+          Mfumo huu hautumiki kuomba fursa. Soma maelezo ya kila fursa ili kujua hatua zinazofuata.
         </p>
       </div>
 
@@ -160,7 +134,7 @@ export default function YouthOpportunitiesPage() {
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="border rounded-lg px-3 py-2 text-sm"
+          className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>
@@ -174,7 +148,7 @@ export default function YouthOpportunitiesPage() {
           onChange={(e) =>
             setStatusFilter(e.target.value as "ALL" | "OPEN" | "EXPIRED")
           }
-          className="border rounded-lg px-3 py-2 text-sm"
+          className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           <option value="ALL">Zote</option>
           <option value="OPEN">Bado Ziko Wazi</option>
@@ -184,13 +158,26 @@ export default function YouthOpportunitiesPage() {
 
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredOpportunities.map((op) => (
-          <OpportunityCard
-            key={op.id}
-            opportunity={op}
-            onToggleSave={toggleSave}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-white dark:bg-gray-800 rounded-xl p-5 space-y-4 shadow animate-pulse"
+              >
+                <div className="h-4 w-24 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                <div className="h-6 w-3/4 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                <div className="h-3 w-full bg-gray-300 dark:bg-gray-700 rounded"></div>
+                <div className="h-3 w-full bg-gray-300 dark:bg-gray-700 rounded"></div>
+                <div className="h-6 w-20 bg-gray-300 dark:bg-gray-700 rounded mt-2"></div>
+              </div>
+            ))
+          : filteredOpportunities.map((op) => (
+              <OpportunityCard
+                key={op.id}
+                opportunity={op}
+                onToggleSave={toggleSave}
+              />
+            ))}
       </div>
     </div>
   );

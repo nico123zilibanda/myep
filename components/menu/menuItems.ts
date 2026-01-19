@@ -6,7 +6,6 @@ import {
   HelpCircle,
   User,
   Settings,
-  LogOut,
 } from "lucide-react";
 
 export const menuItems = [

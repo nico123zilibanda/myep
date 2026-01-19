@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       gender,
       dateOfBirth,
       educationLevel,
-      roleId: 2, // ✅ YOUTH
+      roleId: 2,
     });
 
     if (insertError) {

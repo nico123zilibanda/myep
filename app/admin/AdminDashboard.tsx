@@ -1,11 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
+import StatCard from "@/components/StatCard";
+import QuickAction from "@/components/QuickActions";
 import Modal from "@/components/ui/Modal";
 import AnswerForm from "@/components/forms/AnswerForm";
-import QuickAction from "@/components/QuickActions";
 import OpportunityForm from "@/components/forms/OpportunityForm";
 import TrainingsForm from "@/components/forms/TrainingsForm";
-import { UserPlus, Briefcase, BookOpen, MessageCircle } from "lucide-react";
+
+import {
+  Users,
+  Briefcase,
+  BookOpen,
+  MessageCircle,
+  UserPlus,
+} from "lucide-react";
+
+/* ================= TYPES ================= */
 
 interface Stats {
   vijanaCount: number;
@@ -23,62 +34,92 @@ interface AdminDashboardProps {
   stats: Stats;
 }
 
+/* ================= COMPONENT ================= */
+
 export default function AdminDashboard({ stats }: AdminDashboardProps) {
-  const { vijanaCount, opportunitiesCount, trainingsCount, questionsCount } = stats;
-  const [openModal, setOpenModal] = useState<"youth" | "opportunity" | "training" | "question" | null>(null);
+  const { vijanaCount, opportunitiesCount, trainingsCount, questionsCount } =
+    stats;
+
+  const [openModal, setOpenModal] =
+    useState<"youth" | "opportunity" | "training" | "question" | null>(null);
+
   const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
 
-  // Fetch pending questions when modal for "question" is opened
+  /* ================= HANDLERS ================= */
+
   const fetchPendingQuestions = async () => {
     setLoadingQuestions(true);
     try {
-      const response = await fetch("/api/admin/questions?status=PENDING", {
+      const res = await fetch("/api/admin/questions?status=PENDING", {
         credentials: "include",
-        cache: "no-store", // Ensure no cache
+        cache: "no-store",
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch pending questions");
-      }
-
-      const data = await response.json();
+      const data = await res.json();
       setPendingQuestions(data);
-    } catch (err) {
-      console.error("Error fetching pending questions", err);
-      alert("Failed to fetch pending questions.");
+    } catch {
+      alert("Imeshindikana kupakua maswali");
     } finally {
       setLoadingQuestions(false);
     }
   };
 
-  // Handle Youth Submission
-  const handleYouthSubmit = (data: any) => {
-    console.log("Submitted youth:", data);
-    setOpenModal(null);
-  };
+  /* ================= UI ================= */
 
   return (
-    <div className="space-y-8">
-      {/* STATS */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        <StatCard label="Vijana" count={vijanaCount} color="blue" />
-        <StatCard label="Fursa" count={opportunitiesCount} color="green" />
-        <StatCard label="Mafunzo" count={trainingsCount} color="purple" />
-        <StatCard label="Maswali" count={questionsCount} color="red" />
+    <div className="space-y-12">
+      {/* ========= PAGE HEADER ========= */}
+      <header className="space-y-1">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Muhtasari wa mfumo na vitendo vya haraka
+        </p>
+      </header>
+
+      {/* ========= STATS ========= */}
+      <section>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <StatCard
+            title="Vijana"
+            value={vijanaCount}
+            color="blue"
+            icon={<Users />}
+          />
+          <StatCard
+            title="Fursa"
+            value={opportunitiesCount}
+            color="green"
+            icon={<Briefcase />}
+          />
+          <StatCard
+            title="Mafunzo"
+            value={trainingsCount}
+            color="purple"
+            icon={<BookOpen />}
+          />
+          <StatCard
+            title="Maswali"
+            value={questionsCount}
+            color="red"
+            icon={<MessageCircle />}
+          />
+        </div>
       </section>
 
-      {/* QUICK ACTIONS */}
+      {/* ========= QUICK ACTIONS ========= */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-gray-800">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+          Quick Actions
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <QuickAction
             title="Ongeza Kijana"
-            description="Sajili kijana mpya kwenye mfumo"
+            description="Sajili kijana mpya"
             icon={UserPlus}
             color="blue"
             onClick={() => setOpenModal("youth")}
           />
+
           <QuickAction
             title="Ongeza Fursa"
             description="Ajira, zabuni au mikopo"
@@ -86,6 +127,7 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
             color="green"
             onClick={() => setOpenModal("opportunity")}
           />
+
           <QuickAction
             title="Ongeza Mafunzo"
             description="Kozi, video au PDF"
@@ -93,9 +135,10 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
             color="purple"
             onClick={() => setOpenModal("training")}
           />
+
           <QuickAction
-            title="Maswali Yanayosubiri"
-            description="Maswali ambayo hayajajibiwa"
+            title="Maswali"
+            description="Maswali yanayosubiri"
             icon={MessageCircle}
             color="red"
             onClick={async () => {
@@ -106,39 +149,55 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
         </div>
       </section>
 
-      {/* MODALS */}
+      {/* ========= MODALS ========= */}
+
       {openModal === "question" && (
-        <Modal title="Maswali Yanayosubiri" open={true} onClose={() => setOpenModal(null)}>
+        <Modal
+          title="Maswali Yanayosubiri"
+          open
+          onClose={() => setOpenModal(null)}
+        >
           <div className="space-y-4">
-            {loadingQuestions && <p>Loading pending questions...</p>}
-            {pendingQuestions.length === 0 && !loadingQuestions && <p>Hakuna maswali yanayosubiri.</p>}
+            {loadingQuestions && (
+              <p className="text-sm text-gray-500">Inapakia maswali...</p>
+            )}
+
+            {!loadingQuestions && pendingQuestions.length === 0 && (
+              <p className="text-sm text-gray-500">
+                Hakuna maswali yanayosubiri.
+              </p>
+            )}
+
             {pendingQuestions.map((q) => (
-              <div key={q.id} className="border p-4 rounded-lg space-y-2">
-                <p className="font-semibold">{q.questionText}</p>
+              <div
+                key={q.id}
+                className="rounded-xl border p-4 bg-gray-50 dark:bg-gray-900 space-y-3"
+              >
+                <p className="font-medium text-gray-800 dark:text-gray-100">
+                  {q.questionText}
+                </p>
+
                 <AnswerForm
                   onSubmit={async (answer) => {
-                    try {
-                      const res = await fetch("/api/admin/questions/update", {
+                    const res = await fetch(
+                      "/api/admin/questions/update",
+                      {
                         method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
                         credentials: "include",
                         body: JSON.stringify({
                           id: q.id,
                           answerText: answer,
                         }),
-                      });
-                      const data = await res.json();
-
-                      if (!res.ok) {
-                        alert(data.message || "Imeshindikana kujibu swali");
-                        return;
                       }
+                    );
 
-                      // Remove answered question
-                      setPendingQuestions((prev) => prev.filter((item) => item.id !== q.id));
-                    } catch (err) {
-                      console.error(err);
-                      alert("Tatizo la mtandao");
+                    if (res.ok) {
+                      setPendingQuestions((prev) =>
+                        prev.filter((item) => item.id !== q.id)
+                      );
                     }
                   }}
                 />
@@ -149,23 +208,27 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       )}
 
       {openModal === "opportunity" && (
-        <Modal title="Ongeza Fursa" open={true} onClose={() => setOpenModal(null)}>
-          <OpportunityForm onSubmit={(data) => { console.log(data); setOpenModal(null); }} categories={[]} />
+        <Modal
+          title="Ongeza Fursa"
+          open
+          onClose={() => setOpenModal(null)}
+        >
+          <OpportunityForm
+            categories={[]}
+            onSubmit={() => setOpenModal(null)}
+          />
         </Modal>
       )}
+
       {openModal === "training" && (
-        <Modal title="Ongeza Mafunzo" open={true} onClose={() => setOpenModal(null)}>
-          <TrainingsForm onSubmit={(data) => { console.log(data); setOpenModal(null); }} />
+        <Modal
+          title="Ongeza Mafunzo"
+          open
+          onClose={() => setOpenModal(null)}
+        >
+          <TrainingsForm onSubmit={() => setOpenModal(null)} />
         </Modal>
       )}
     </div>
   );
 }
-
-// Helper component for displaying stats
-const StatCard = ({ label, count, color }: { label: string; count: number; color: string }) => (
-  <div className={`border-${color}-500 p-4 rounded-xl border`}>
-    <h3 className="font-semibold text-gray-800">{label}</h3>
-    <p className="text-2xl font-bold">{count}</p>
-  </div>
-);

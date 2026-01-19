@@ -8,18 +8,16 @@ interface Props {
   onDelete?: () => void;
 }
 
-export default function CategoryActions({
-  onView,
-  onEdit,
-  onDelete,
-}: Props) {
+export default function CategoryActions({ onView, onEdit, onDelete }: Props) {
+  const btnBase = "p-2 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400";
+
   return (
     <div className="flex gap-2">
       {/* View */}
       {onView && (
         <button
           onClick={onView}
-          className="p-2 rounded hover:bg-gray-100 text-gray-600"
+          className={`${btnBase} text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800`}
           title="View"
         >
           <Eye size={16} />
@@ -30,8 +28,8 @@ export default function CategoryActions({
       {onEdit && (
         <button
           onClick={onEdit}
-          className="p-2 rounded hover:bg-blue-100 text-blue-600"
-          title="Toggle Status"
+          className={`${btnBase} text-blue-600 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900`}
+          title="Edit"
         >
           <Pencil size={16} />
         </button>
@@ -41,7 +39,7 @@ export default function CategoryActions({
       {onDelete && (
         <button
           onClick={onDelete}
-          className="p-2 rounded hover:bg-red-100 text-red-600"
+          className={`${btnBase} text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900`}
           title="Delete"
         >
           <Trash2 size={16} />
