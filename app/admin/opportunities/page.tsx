@@ -9,6 +9,8 @@ import Pagination from "@/components/table/Pagination";
 import Modal from "@/components/ui/Modal";
 import OpportunityForm from "@/components/forms/OpportunityForm";
 import ActionButtons from "@/components/table/ActionButtons";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
 interface Category {
@@ -28,6 +30,12 @@ interface Opportunity {
   status: string;
   categoryId: number | null;
   Category?: { id: number; name: string };
+}
+
+interface ApiResponse<T = any> {
+  success: boolean;
+  messageKey: MessageKey;
+  data?: T;
 }
 
 /* ================= SKELETON ================= */
@@ -55,7 +63,7 @@ export default function OpportunitiesPage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  /* ================= FETCH ================= */
+  /* ================= FETCH OPPORTUNITIES ================= */
   const fetchOpportunities = async () => {
     try {
       setLoading(true);
@@ -63,26 +71,40 @@ export default function OpportunitiesPage() {
         credentials: "include",
         cache: "no-store",
       });
-      if (!res.ok) throw new Error("Failed to load opportunities");
-      const data: Opportunity[] = await res.json();
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey ?? "SERVER_ERROR");
+        return;
+      }
+
       setOpportunities(data);
-    } catch (error: any) {
-      alert(error.message);
+    } catch {
+      showError("SERVER_ERROR");
     } finally {
       setLoading(false);
     }
   };
 
+  /* ================= FETCH CATEGORIES ================= */
   const fetchCategories = async () => {
     try {
       const res = await fetch("/api/admin/categories", {
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Failed to load categories");
-      const data: Category[] = await res.json();
-      setCategories(data);
-    } catch (error: any) {
-      console.error(error.message);
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        showError(result.messageKey ?? "SERVER_ERROR");
+        return;
+      }
+
+      setCategories(result.data || []);
+
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
@@ -109,24 +131,28 @@ export default function OpportunitiesPage() {
   );
 
   /* ================= DELETE ================= */
-  const handleDelete = async (id: number, title: string) => {
-    if (!confirm(`Una hakika unataka kufuta opportunity: "${title}"?`)) return;
-
+  const handleDelete = async (id: number) => {
     try {
       const res = await fetch(`/api/admin/opportunities/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
-      const result = await res.json();
-      if (!res.ok) return alert(result.message);
 
+      const data: ApiResponse = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
       setOpportunities((prev) => prev.filter((o) => o.id !== id));
-    } catch (error) {
-      console.error(error);
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
-  /* ================= EDIT ================= */
+  /* ================= UPDATE ================= */
   const handleEdit = async (id: number, form: Opportunity) => {
     try {
       const res = await fetch(`/api/admin/opportunities/${id}`, {
@@ -136,14 +162,19 @@ export default function OpportunitiesPage() {
         credentials: "include",
       });
 
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
+      const data: ApiResponse = await res.json();
 
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
       setOpen(false);
       setEditing(null);
       fetchOpportunities();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
@@ -162,13 +193,18 @@ export default function OpportunitiesPage() {
         credentials: "include",
       });
 
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
+      const data: ApiResponse = await res.json();
 
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
       setOpen(false);
       fetchOpportunities();
-    } catch (error: any) {
-      alert(error.message);
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
@@ -191,13 +227,7 @@ export default function OpportunitiesPage() {
             setEditing(null);
             setOpen(true);
           }}
-          className="
-            inline-flex items-center justify-center gap-2
-            rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
-            text-white hover:bg-blue-700 transition
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-            w-full sm:w-auto
-          "
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
         >
           + Ongeza Opportunity
         </button>
@@ -228,32 +258,23 @@ export default function OpportunitiesPage() {
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
         <DataTable>
           <TableHeader columns={["Title", "Deadline", "Category", "Actions"]} />
-
           <tbody>
             {loading ? (
               <TableSkeleton rows={perPage} />
             ) : paginatedData.length === 0 ? (
               <TableRow>
-                <td
-                  colSpan={4}
-                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
-                >
-                  <p className="text-sm">Hakuna opportunity iliyopatikana</p>
-                  <p className="text-xs mt-1">
-                    Jaribu kubadilisha search au ongeza mpya
-                  </p>
+                <td colSpan={4} className="px-4 py-10 text-center text-gray-500">
+                  Hakuna opportunity iliyopatikana
                 </td>
               </TableRow>
             ) : (
               paginatedData.map((o) => (
                 <TableRow key={o.id}>
-                  <td className="px-4 py-4 font-medium text-gray-800 dark:text-gray-100">
-                    {o.title}
-                  </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
+                  <td className="px-4 py-4 font-medium">{o.title}</td>
+                  <td className="px-4 py-4">
                     {new Date(o.deadline).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
+                  <td className="px-4 py-4">
                     {o.Category?.name || "-"}
                   </td>
                   <td className="px-4 py-4">
@@ -263,7 +284,7 @@ export default function OpportunitiesPage() {
                         setEditing(o);
                         setOpen(true);
                       }}
-                      onDelete={() => handleDelete(o.id, o.title)}
+                      onDelete={() => handleDelete(o.id)}
                     />
                   </td>
                 </TableRow>

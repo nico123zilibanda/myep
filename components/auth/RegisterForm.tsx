@@ -2,16 +2,33 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
 
 interface RegisterFormProps {
-  onSubmit?: (data: any) => void;
+  onSubmit?: (data: RegisterFormData) => void;
+}
+
+interface RegisterFormData {
+  fullName: string;
+  email: string;
+  passwordHash: string;
+  phone: string;
+  gender: string;
+  dateOfBirth: string;
+  educationLevel: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  messageKey: MessageKey;
 }
 
 export default function RegisterForm({ onSubmit }: RegisterFormProps) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<RegisterFormData>({
     fullName: "",
     email: "",
     passwordHash: "",
@@ -23,7 +40,9 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => setForm({ ...form, [e.target.name]: e.target.value });
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +54,16 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      const data = await res.json();
+
+      const data: ApiResponse = await res.json();
       setLoading(false);
 
-      if (!res.ok) return alert(data.message || "Kuna tatizo limetokea.");
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
 
-      alert("Usajili umefanikiwa");
+      showSuccess(data.messageKey);
       onSubmit?.(form);
 
       setForm({
@@ -53,10 +76,13 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
         educationLevel: "",
       });
 
-      window.location.href = "/login";
+      // redirect baada ya success
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 800);
     } catch (error) {
       setLoading(false);
-      alert("Kuna tatizo la mtandao, jaribu tena.");
+      showError("SERVER_ERROR");
     }
   };
 
@@ -69,11 +95,13 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
         { label: "Siku ya Kuzaliwa", name: "dateOfBirth", type: "date", placeholder: "" },
       ].map((field, i) => (
         <div key={i}>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{field.label}</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {field.label}
+          </label>
           <input
             type={field.type}
             name={field.name}
-            value={(form as any)[field.name]}
+            value={form[field.name as keyof RegisterFormData]}
             onChange={handleChange}
             placeholder={field.placeholder}
             className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
@@ -83,7 +111,9 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
       {/* GENDER */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jinsia</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Jinsia
+        </label>
         <select
           name="gender"
           value={form.gender}
@@ -98,7 +128,9 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
       {/* EDUCATION */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kiwango cha Elimu</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Kiwango cha Elimu
+        </label>
         <select
           name="educationLevel"
           value={form.educationLevel}
@@ -115,7 +147,9 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
       {/* PASSWORD */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Nenosiri</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Nenosiri
+        </label>
         <div className="relative mt-1">
           <input
             type={show ? "text" : "password"}

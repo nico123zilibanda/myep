@@ -1,28 +1,29 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getRequestMetaFromReq } from "@/lib/requestMeta";
+import { MessageKey } from "@/lib/messages";
 
 export const runtime = "nodejs";
 
 export async function PATCH(req: Request) {
   try {
     const user = await getCurrentUser();
+    const meta = getRequestMetaFromReq(req);
+
     if (!user || user.role !== "ADMIN") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey},
+        { status: 401 }
+      );
     }
 
     const { id, answerText } = await req.json();
 
-    if (!id || isNaN(Number(id))) {
+    if (!id || !answerText?.trim()) {
       return NextResponse.json(
-        { message: "Invalid question ID" },
-        { status: 400 }
-      );
-    }
-
-    if (!answerText || !answerText.trim()) {
-      return NextResponse.json(
-        { message: "Answer is required" },
+        { success: false, messageKey: "ACTION_FAILED" satisfies MessageKey},
         { status: 400 }
       );
     }
@@ -41,14 +42,31 @@ export async function PATCH(req: Request) {
     if (error) {
       console.error("SUPABASE UPDATE QUESTION ERROR:", error);
       return NextResponse.json(
-        { message: "Failed to update question" },
+        { success: false, messageKey: "QUESTION_UPDATE_FAILED" satisfies MessageKey},
         { status: 500 }
       );
     }
 
-    return NextResponse.json(data);
-  } catch (err) {
-    console.error("PATCH QUESTION ERROR:", err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    logAudit({
+      action: "UPDATE",
+      entity: "QUESTION",
+      entityId: id,
+      description: "Question answered",
+      userId: user.id,
+      ipAddress: meta.ipAddress,
+      userAgent: meta.userAgent,
+    }).catch(console.error);
+
+    return NextResponse.json({
+      success: true,
+      messageKey: "QUESTION_UPDATE_SUCCESS" satisfies MessageKey,
+      data,
+    });
+  } catch (error) {
+    console.error("PATCH QUESTION ERROR:", error);
+    return NextResponse.json(
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey},
+      { status: 500 }
+    );
   }
 }

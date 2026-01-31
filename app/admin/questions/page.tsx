@@ -9,6 +9,8 @@ import Pagination from "@/components/table/Pagination";
 import CategoryActions from "@/components/table/CategoryActions";
 import Modal from "@/components/ui/Modal";
 import StatusBadge from "@/components/ui/StatusBadge";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
 interface Question {
@@ -17,6 +19,12 @@ interface Question {
   answerText?: string;
   status: "PENDING" | "ANSWERED";
   User?: { fullName?: string };
+}
+
+interface ApiResponse<T = any> {
+  success: boolean;
+  messageKey: MessageKey;
+  data?: T;
 }
 
 /* ================= SKELETON ================= */
@@ -50,24 +58,27 @@ export default function AdminQuestionsPage() {
   const fetchQuestions = async () => {
     try {
       setLoading(true);
+
       const res = await fetch("/api/admin/questions", {
         credentials: "include",
         cache: "no-store",
       });
 
+      const result: ApiResponse<Question[]> = await res.json();
+
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to load questions");
+        showError(result.messageKey ?? "SERVER_ERROR");
+        return;
       }
 
-      const data: Question[] = await res.json();
-      setQuestions(data);
-    } catch (error: any) {
-      alert(error.message);
+      setQuestions(result.data || []);
+    } catch {
+      showError("SERVER_ERROR");
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchQuestions();
@@ -95,33 +106,45 @@ export default function AdminQuestionsPage() {
 
   /* ================= ANSWER ================= */
   const submitAnswer = async () => {
-    if (!selected) return alert("Hakuna swali lililochaguliwa");
-    if (!answer.trim()) return alert("Andika jibu kwanza");
+    if (!selected) {
+      showError("ACTION_FAILED");
+      return;
+    }
+
+    if (!answer.trim()) {
+      showError("ACTION_FAILED");
+      return;
+    }
 
     try {
       const res = await fetch("/api/admin/questions/update", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ id: selected.id, answerText: answer }),
+        body: JSON.stringify({
+          id: selected.id,
+          answerText: answer,
+        }),
       });
 
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
+      const data: ApiResponse = await res.json();
 
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
       setSelected(null);
       setAnswer("");
       fetchQuestions();
     } catch {
-      alert("Imeshindikana kutuma jibu");
+      showError("SERVER_ERROR");
     }
   };
 
   /* ================= DELETE ================= */
-  const handleDelete = async (id: number, questionText: string) => {
-    if (!confirm(`Una uhakika unataka kufuta swali?\n"${questionText}"`))
-      return;
-
+  const handleDelete = async (id: number) => {
     try {
       const res = await fetch("/api/admin/questions/delete", {
         method: "DELETE",
@@ -130,12 +153,17 @@ export default function AdminQuestionsPage() {
         body: JSON.stringify({ id }),
       });
 
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
+      const data: ApiResponse = await res.json();
 
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
       setQuestions((prev) => prev.filter((q) => q.id !== id));
     } catch {
-      alert("Imeshindikana kufuta swali");
+      showError("SERVER_ERROR");
     }
   };
 
@@ -179,13 +207,13 @@ export default function AdminQuestionsPage() {
             ) : (
               paginatedData.map((q) => (
                 <TableRow key={q.id}>
-                  <td className="px-4 py-4 max-w-xs truncate font-medium text-gray-800 dark:text-gray-100">
+                  <td className="px-4 py-4 max-w-xs truncate font-medium">
                     {q.questionText}
                   </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
+                  <td className="px-4 py-4">
                     {q.User?.fullName || "-"}
                   </td>
-                  <td className="px-4 py-4 max-w-xs truncate text-gray-600 dark:text-gray-300">
+                  <td className="px-4 py-4 max-w-xs truncate">
                     {q.answerText || "-"}
                   </td>
                   <td className="px-4 py-4">
@@ -198,9 +226,7 @@ export default function AdminQuestionsPage() {
                         setSelected(q);
                         setAnswer(q.answerText || "");
                       }}
-                      onDelete={() =>
-                        handleDelete(q.id, q.questionText)
-                      }
+                      onDelete={() => handleDelete(q.id)}
                     />
                   </td>
                 </TableRow>
@@ -225,13 +251,19 @@ export default function AdminQuestionsPage() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
+          <p className="text-sm font-medium">
             {selected?.questionText}
           </p>
 
           <textarea
             rows={4}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="
+              w-full rounded-lg border
+              border-gray-300 dark:border-gray-700
+              bg-white dark:bg-gray-900
+              p-3 text-sm
+              focus:outline-none focus:ring-2 focus:ring-blue-500
+            "
             placeholder="Andika jibu hapa..."
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
@@ -255,19 +287,15 @@ export default function AdminQuestionsPage() {
       >
         <div className="space-y-4 text-sm">
           <div>
-            <p className="text-gray-500 dark:text-gray-400 mb-1">
-              Swali
-            </p>
-            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-gray-800 dark:text-gray-100">
+            <p className="text-gray-500 mb-1">Swali</p>
+            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded">
               {viewing?.questionText}
             </p>
           </div>
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 mb-1">
-              Jibu
-            </p>
-            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-gray-800 dark:text-gray-100">
+            <p className="text-gray-500 mb-1">Jibu</p>
+            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded">
               {viewing?.answerText || "Bado halijajibiwa"}
             </p>
           </div>

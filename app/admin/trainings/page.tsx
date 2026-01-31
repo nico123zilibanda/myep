@@ -11,6 +11,8 @@ import Modal from "@/components/ui/Modal";
 import TrainingsForm from "@/components/forms/TrainingsForm";
 import CategoryActions from "@/components/table/CategoryActions";
 import TableSearch from "@/components/table/TableSearch";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
 interface Training {
@@ -19,6 +21,12 @@ interface Training {
   description: string;
   type: "ARTICLE" | "VIDEO" | "PDF";
   resourceUrl: string;
+}
+
+interface ApiResponse<T = any> {
+  success: boolean;
+  messageKey: MessageKey;
+  data?: T;
 }
 
 /* ================= SKELETON ================= */
@@ -57,12 +65,16 @@ export default function TrainingsPage() {
         cache: "no-store",
       });
 
-      if (!res.ok) throw new Error("Failed to load trainings");
-
       const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey ?? "SERVER_ERROR");
+        return;
+      }
+
       setTrainings(data);
-    } catch (error: any) {
-      alert(error.message);
+    } catch {
+      showError("SERVER_ERROR");
     } finally {
       setLoading(false);
     }
@@ -92,45 +104,55 @@ export default function TrainingsPage() {
     page * perPage
   );
 
-  /* ================= ACTIONS ================= */
+  /* ================= DELETE ================= */
   const handleDelete = async (id: number) => {
-    if (!confirm("Una uhakika unataka kufuta training?")) return;
-
     try {
       const res = await fetch(`/api/admin/trainings/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
 
-      if (res.ok) {
-        setTrainings((prev) => prev.filter((t) => t.id !== id));
+      const data: ApiResponse = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
       }
-    } catch (error) {
-      console.error(error);
+
+      showSuccess(data.messageKey);
+      setTrainings((prev) => prev.filter((t) => t.id !== id));
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
+  /* ================= CREATE / UPDATE ================= */
   const handleSubmit = async (formData: FormData) => {
     try {
-      if (editing) {
-        await fetch(`/api/admin/trainings/${editing.id}`, {
-          method: "PATCH",
+      const res = await fetch(
+        editing
+          ? `/api/admin/trainings/${editing.id}`
+          : "/api/admin/trainings",
+        {
+          method: editing ? "PATCH" : "POST",
           body: formData,
           credentials: "include",
-        });
-      } else {
-        await fetch("/api/admin/trainings", {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        });
+        }
+      );
+
+      const data: ApiResponse = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
       }
 
+      showSuccess(data.messageKey);
       setOpen(false);
       setEditing(null);
       fetchTrainings();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
@@ -246,10 +268,7 @@ export default function TrainingsPage() {
                   <td className="px-4 py-4">
                     <button
                       onClick={() => handleView(t)}
-                      className="
-                        text-blue-600 dark:text-blue-400
-                        hover:underline text-sm
-                      "
+                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
                     >
                       {t.type === "PDF" ? "Open PDF" : "View"}
                     </button>

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { getRequestMetaFromReq } from "@/lib/requestMeta";
+import { MessageKey } from "@/lib/messages";
 
 export const runtime = "nodejs";
 
@@ -15,14 +18,18 @@ const getIdFromReq = (req: Request) => {
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();
+
     if (!user || user.role !== "ADMIN") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
+        { status: 401 }
+      );
     }
 
     const id = getIdFromReq(req);
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid category ID" },
+        { success: false, messageKey: "CATEGORY_NOT_FOUND" satisfies MessageKey },
         { status: 400 }
       );
     }
@@ -35,15 +42,18 @@ export async function GET(req: Request) {
 
     if (error || !data) {
       return NextResponse.json(
-        { message: "Category not found" },
+        { success: false, messageKey: "CATEGORY_NOT_FOUND" satisfies MessageKey },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json({ success: true, data });
   } catch (err) {
     console.error("GET CATEGORY ERROR:", err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+      { status: 500 }
+    );
   }
 }
 
@@ -51,22 +61,28 @@ export async function GET(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const user = await getCurrentUser();
+    const meta = getRequestMetaFromReq(req);
+
     if (!user || user.role !== "ADMIN") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
+        { status: 401 }
+      );
     }
 
     const id = getIdFromReq(req);
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid category ID" },
+        { success: false, messageKey: "CATEGORY_NOT_FOUND" satisfies MessageKey },
         { status: 400 }
       );
     }
 
     const { name, description } = await req.json();
+
     if (!name) {
       return NextResponse.json(
-        { message: "Category name is required" },
+        { success: false, messageKey: "ACTION_FAILED" satisfies MessageKey },
         { status: 400 }
       );
     }
@@ -80,15 +96,32 @@ export async function PATCH(req: Request) {
 
     if (error || !data) {
       return NextResponse.json(
-        { message: "Failed to update category" },
+        { success: false, messageKey: "ACTION_FAILED" satisfies MessageKey },
         { status: 500 }
       );
     }
 
-    return NextResponse.json(data);
+    logAudit({
+      action: "UPDATE",
+      entity: "CATEGORY",
+      entityId: id,
+      description: `Category updated to "${name}"`,
+      userId: user.id,
+      ipAddress: meta.ipAddress,
+      userAgent: meta.userAgent,
+    }).catch(console.error);
+
+    return NextResponse.json({
+      success: true,
+      messageKey: "CATEGORY_UPDATE_SUCCESS" satisfies MessageKey,
+      data,
+    });
   } catch (err) {
     console.error("PATCH CATEGORY ERROR:", err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+      { status: 500 }
+    );
   }
 }
 
@@ -96,17 +129,28 @@ export async function PATCH(req: Request) {
 export async function DELETE(req: Request) {
   try {
     const user = await getCurrentUser();
+    const meta = getRequestMetaFromReq(req);
+
     if (!user || user.role !== "ADMIN") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
+        { status: 401 }
+      );
     }
 
     const id = getIdFromReq(req);
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid category ID" },
+        { success: false, messageKey: "CATEGORY_NOT_FOUND" satisfies MessageKey },
         { status: 400 }
       );
     }
+
+    const { data: category } = await supabaseAdmin
+      .from("Category")
+      .select("name")
+      .eq("id", id)
+      .single();
 
     const { error } = await supabaseAdmin
       .from("Category")
@@ -115,14 +159,30 @@ export async function DELETE(req: Request) {
 
     if (error) {
       return NextResponse.json(
-        { message: "Failed to delete category" },
+        { success: false, messageKey: "CATEGORY_FAILED_DELETED" satisfies MessageKey },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ message: "Category deleted successfully" });
+    logAudit({
+      action: "DELETE",
+      entity: "CATEGORY",
+      entityId: id,
+      description: `Category "${category?.name ?? "Unknown"}" deleted`,
+      userId: user.id,
+      ipAddress: meta.ipAddress,
+      userAgent: meta.userAgent,
+    }).catch(console.error);
+
+    return NextResponse.json({
+      success: true,
+      messageKey: "CATEGORY_DELETE_SUCCESS" satisfies MessageKey,
+    });
   } catch (err) {
     console.error("DELETE CATEGORY ERROR:", err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+      { status: 500 }
+    );
   }
 }

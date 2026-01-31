@@ -3,13 +3,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  messageKey: MessageKey;
+  redirectTo?: string;
+}
 
 export default function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<LoginFormData>({
     email: "",
     password: "",
   });
@@ -29,19 +42,22 @@ export default function LoginForm() {
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
+      const data: ApiResponse = await res.json();
+      setLoading(false);
 
       if (!res.ok) {
-        alert(data.message || "Login failed");
-        setLoading(false);
+        showError(data.messageKey);
         return;
       }
 
-      router.replace(data.redirectTo || "/dashboard");
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Server error. Try again later.");
+      showSuccess(data.messageKey);
+
+      setTimeout(() => {
+        router.replace(data.redirectTo || "/dashboard");
+      }, 600);
+    } catch (error) {
       setLoading(false);
+      showError("SERVER_ERROR");
     }
   };
 
@@ -49,7 +65,9 @@ export default function LoginForm() {
     <form className="space-y-5" onSubmit={handleSubmit}>
       {/* EMAIL */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Barua pepe</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Barua pepe
+        </label>
         <input
           type="email"
           name="email"
@@ -62,7 +80,9 @@ export default function LoginForm() {
 
       {/* PASSWORD */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Nenosiri</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Nenosiri
+        </label>
         <div className="relative mt-1">
           <input
             type={showPassword ? "text" : "password"}

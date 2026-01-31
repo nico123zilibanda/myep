@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import QuestionForm from "@/components/youth/QuestionForm";
 import StatusBadge from "@/components/ui/StatusBadge";
+import { showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
 interface Question {
@@ -12,21 +14,39 @@ interface Question {
   status: "PENDING" | "ANSWERED" | "REJECTED";
 }
 
+interface ApiResponse<T = any> {
+  success: boolean;
+  messageKey: MessageKey;
+  data?: T;
+}
+
 /* ================= PAGE ================= */
 export default function YouthQuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /* ================= FETCH QUESTIONS ================= */
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/youth/questions");
-      if (!res.ok) throw new Error("Imeshindikana kupakia maswali");
-      const data = await res.json();
-      setQuestions(data);
+      const res = await fetch("/api/youth/questions", {
+        credentials: "include",
+        cache: "no-store",
+      });
+
+      const result: ApiResponse<Question[]> = await res.json();
+
+      if (!res.ok) {
+        showError(result.messageKey ?? "SERVER_ERROR");
+        setQuestions([]);
+        return;
+      }
+
+      setQuestions(result.data || []);
     } catch (err) {
       console.error(err);
-      alert("Imeshindikana kupakia maswali");
+      showError("SERVER_ERROR");
+      setQuestions([]);
     } finally {
       setLoading(false);
     }
@@ -45,7 +65,9 @@ export default function YouthQuestionsPage() {
 
       {/* My questions */}
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Maswali Yangu</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+          Maswali Yangu
+        </h2>
 
         {/* Loading */}
         {loading && (
@@ -72,7 +94,9 @@ export default function YouthQuestionsPage() {
                 className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-2 hover:shadow-sm transition-shadow duration-200"
               >
                 <div className="flex justify-between items-start">
-                  <p className="font-medium text-gray-800 dark:text-gray-100">{q.questionText}</p>
+                  <p className="font-medium text-gray-800 dark:text-gray-100 truncate">
+                    {q.questionText}
+                  </p>
                   <StatusBadge status={q.status} />
                 </div>
 

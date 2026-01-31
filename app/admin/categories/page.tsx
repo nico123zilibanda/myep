@@ -10,6 +10,9 @@ import CategoryActions from "@/components/table/CategoryActions";
 import Modal from "@/components/ui/Modal";
 import CategoryForm from "@/components/forms/CategoryForm";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
+
 /* ================= TYPES ================= */
 interface Category {
   id: number;
@@ -28,25 +31,27 @@ export default function CategoriesPage() {
 
   /* ================= FETCH ================= */
   const fetchCategories = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/admin/categories", {
-        credentials: "include",
-        cache: "no-store",
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to load categories");
-      }
-      const data: Category[] = await res.json();
-      setCategories(data);
-    } catch (error: any) {
-      console.error("Fetch categories error:", error);
-      alert(error.message);
-    } finally {
-      setLoading(false);
+  try {
+    setLoading(true);
+    const res = await fetch("/api/admin/categories", {
+      credentials: "include",
+      cache: "no-store",
+    });
+    const json = await res.json();
+
+    if (!res.ok) {
+      showError(json.messageKey as MessageKey || "ACTION_FAILED");
+      return;
     }
-  };
+
+    setCategories(json.data || []);
+  } catch (error) {
+    console.error("Fetch categories error:", error);
+    showError("SERVER_ERROR");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchCategories();
@@ -64,85 +69,86 @@ export default function CategoriesPage() {
   );
 
   /* ================= DELETE ================= */
-  const handleDelete = async (id: number, name: string) => {
-    if (!Number.isInteger(id)) {
-      alert("Invalid category ID");
+const handleDelete = async (id: number, name: string) => {
+  if (!Number.isInteger(id)) {
+    showError("ACTION_FAILED");
+    return;
+  }
+  if (!confirm(`Una hakika unataka kufuta category: "${name}"?`)) return;
+
+  try {
+    const res = await fetch(`/api/admin/categories/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      showError(json.messageKey as MessageKey || "ACTION_FAILED");
       return;
     }
-    if (!confirm(`Una hakika unataka kufuta category: "${name}"?`)) return;
-    try {
-      const res = await fetch(`/api/admin/categories/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        alert(result.message || "Imeshindikana kufuta category");
-        return;
-      }
-      setCategories((prev) => prev.filter((c) => c.id !== id));
-      alert(`Category "${name}" imefutwa kwa mafanikio`);
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert("Imeshindikana kufuta category");
-    }
-  };
 
-  /* ================= EDIT / UPDATE ================= */
-  const handleEdit = async (
-    id: number,
-    name: string,
-    description?: string
-  ) => {
-    try {
-      const res = await fetch(`/api/admin/categories/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ name, description }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.message || "Failed to update category");
-        return;
-      }
-      setCategories((prev) =>
-        prev.map((c) => (c.id === id ? data : c))
-      );
-      setOpen(false);
-      setEditing(null);
-    } catch (error) {
-      console.error("PATCH error:", error);
-      alert("Something went wrong");
-    }
-  };
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    showSuccess("CATEGORY_DELETE_SUCCESS");
+  } catch (error) {
+    console.error("Delete error:", error);
+    showError("ACTION_FAILED");
+  }
+};
+
 
   /* ================= CREATE ================= */
-  const handleSubmit = async (form: {
-    name: string;
-    description?: string;
-  }) => {
-    if (editing) {
-      await handleEdit(editing.id, form.name, form.description);
+const handleSubmit = async (form: { name: string; description?: string }) => {
+  if (editing) {
+    await handleEdit(editing.id, form.name, form.description);
+    return;
+  }
+  try {
+    const res = await fetch("/api/admin/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(form),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      showError(json.messageKey as MessageKey || "ACTION_FAILED");
       return;
     }
-    try {
-      const res = await fetch("/api/admin/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Imeshindikana ku-save category");
-      }
-      setCategories((prev) => [data, ...prev]);
-      setOpen(false);
-    } catch (error: any) {
-      alert(error.message);
+
+    setCategories((prev) => [json.data, ...prev]);
+    setOpen(false);
+    showSuccess("CATEGORY_CREATE_SUCCESS");
+  } catch (error) {
+    console.error("Create error:", error);
+    showError("ACTION_FAILED");
+  }
+};
+
+/* ================= EDIT / UPDATE ================= */
+const handleEdit = async (id: number, name: string, description?: string) => {
+  try {
+    const res = await fetch(`/api/admin/categories/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name, description }),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      showError(json.messageKey as MessageKey || "ACTION_FAILED");
+      return;
     }
-  };
+
+    setCategories((prev) => prev.map((c) => (c.id === id ? json.data : c)));
+    setOpen(false);
+    setEditing(null);
+    showSuccess("CATEGORY_UPDATE_SUCCESS");
+  } catch (error) {
+    console.error("PATCH error:", error);
+    showError("ACTION_FAILED");
+  }
+};
+
 
   /* ================= UI ================= */
   return (

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Menu as MenuIcon, MessageCircle, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type NavbarProps = {
   user: {
@@ -32,19 +33,29 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
         });
         const data = await res.json();
         setUnreadCount(Number(data.count) || 0);
-      } catch {}
+      } catch { }
     };
 
     loadCount();
   }, [user.role]);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    router.replace("/login");
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      toast.success(data.message || "Umetoka kwenye mfumo");
+
+      router.replace("/login");
+    } catch (err) {
+      toast.error("Imeshindikana kutoka. Jaribu tena.");
+    }
   };
+
 
   return (
     <header

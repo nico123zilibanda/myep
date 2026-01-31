@@ -5,6 +5,7 @@ import {
   GraduationCap,
   HelpCircle,
   User,
+  Logs,
   Settings,
 } from "lucide-react";
 
@@ -51,6 +52,11 @@ export const menuItems = [
         label: "Profile",
         href: "/admin/profile",
         icon: User,
+      },
+      {
+        label: "Logs",
+        href: "/admin/audit-logs",
+        icon: Logs,
       },
       {
         label: "Settings",

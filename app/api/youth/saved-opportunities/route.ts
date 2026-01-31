@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 /**
  * GET: Pata saved opportunities za youth
@@ -65,6 +66,14 @@ export async function POST(req: Request) {
       .from("SavedOpportunity")
       .insert({ userId: user.id, opportunityId: Number(opportunityId) });
 
+    logAudit({
+      action: "CREATE",
+      entity: "SAVED_OPPORTUNITY",
+      entityId: Number(opportunityId),
+      description: "Youth saved an opportunity",
+      userId: user.id,
+    }).catch(console.error);
+
     if (error) {
       // Handle duplicate save gracefully
       if (error.code === "23505" || error.message.includes("duplicate")) {
@@ -98,6 +107,13 @@ export async function DELETE(req: Request) {
       .from("SavedOpportunity")
       .delete()
       .match({ userId: user.id, opportunityId: Number(opportunityId) });
+    logAudit({
+      action: "DELETE",
+      entity: "SAVED_OPPORTUNITY",
+      entityId: Number(opportunityId),
+      description: "Youth removed saved opportunity",
+      userId: user.id,
+    }).catch(console.error);
 
     if (error) {
       console.error("SUPABASE UNSAVE OPPORTUNITY ERROR:", error);

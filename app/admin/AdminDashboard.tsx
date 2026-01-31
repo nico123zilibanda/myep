@@ -13,7 +13,6 @@ import {
   Briefcase,
   BookOpen,
   MessageCircle,
-  UserPlus,
 } from "lucide-react";
 
 /* ================= TYPES ================= */
@@ -30,6 +29,12 @@ interface Question {
   questionText: string;
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  messageKey?: string;
+  data: T;
+}
+
 interface AdminDashboardProps {
   stats: Stats;
 }
@@ -41,7 +46,7 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
     stats;
 
   const [openModal, setOpenModal] =
-    useState<"youth" | "opportunity" | "training" | "question" | null>(null);
+    useState<"opportunity" | "training" | "question" | null>(null);
 
   const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
@@ -50,15 +55,26 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
 
   const fetchPendingQuestions = async () => {
     setLoadingQuestions(true);
+
     try {
       const res = await fetch("/api/admin/questions?status=PENDING", {
         credentials: "include",
         cache: "no-store",
       });
-      const data = await res.json();
-      setPendingQuestions(data);
-    } catch {
-      alert("Imeshindikana kupakua maswali");
+
+      const result: ApiResponse<Question[]> = await res.json();
+
+      if (!res.ok) {
+        setPendingQuestions([]);
+        return;
+      }
+
+      setPendingQuestions(
+        Array.isArray(result.data) ? result.data : []
+      );
+    } catch (error) {
+      console.error(error);
+      setPendingQuestions([]);
     } finally {
       setLoadingQuestions(false);
     }
@@ -68,8 +84,8 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
 
   return (
     <div className="space-y-12">
-      {/* ========= PAGE HEADER ========= */}
-      <header className="space-y-1">
+      {/* ========= HEADER ========= */}
+      <header>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Muhtasari wa mfumo na vitendo vya haraka
         </p>
@@ -78,48 +94,18 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       {/* ========= STATS ========= */}
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <StatCard
-            title="Vijana"
-            value={vijanaCount}
-            color="blue"
-            icon={<Users />}
-          />
-          <StatCard
-            title="Fursa"
-            value={opportunitiesCount}
-            color="green"
-            icon={<Briefcase />}
-          />
-          <StatCard
-            title="Mafunzo"
-            value={trainingsCount}
-            color="purple"
-            icon={<BookOpen />}
-          />
-          <StatCard
-            title="Maswali"
-            value={questionsCount}
-            color="red"
-            icon={<MessageCircle />}
-          />
+          <StatCard title="Vijana" value={vijanaCount} color="blue" icon={<Users />} />
+          <StatCard title="Fursa" value={opportunitiesCount} color="green" icon={<Briefcase />} />
+          <StatCard title="Mafunzo" value={trainingsCount} color="purple" icon={<BookOpen />} />
+          <StatCard title="Maswali" value={questionsCount} color="red" icon={<MessageCircle />} />
         </div>
       </section>
 
       {/* ========= QUICK ACTIONS ========= */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          Quick Actions
-        </h2>
+        <h2 className="text-lg font-semibold">Quick Actions</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {/* <QuickAction
-            title="Ongeza Kijana"
-            description="Sajili kijana mpya"
-            icon={UserPlus}
-            color="blue"
-            onClick={() => setOpenModal("youth")}
-          /> */}
-
           <QuickAction
             title="Ongeza Fursa"
             description="Ajira, zabuni au mikopo"
@@ -149,14 +135,9 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
         </div>
       </section>
 
-      {/* ========= MODALS ========= */}
-
+      {/* ========= QUESTIONS MODAL ========= */}
       {openModal === "question" && (
-        <Modal
-          title="Maswali Yanayosubiri"
-          open
-          onClose={() => setOpenModal(null)}
-        >
+        <Modal title="Maswali Yanayosubiri" open onClose={() => setOpenModal(null)}>
           <div className="space-y-4">
             {loadingQuestions && (
               <p className="text-sm text-gray-500">Inapakia maswali...</p>
@@ -173,26 +154,19 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                 key={q.id}
                 className="rounded-xl border p-4 bg-gray-50 dark:bg-gray-900 space-y-3"
               >
-                <p className="font-medium text-gray-800 dark:text-gray-100">
-                  {q.questionText}
-                </p>
+                <p className="font-medium">{q.questionText}</p>
 
                 <AnswerForm
                   onSubmit={async (answer) => {
-                    const res = await fetch(
-                      "/api/admin/questions/update",
-                      {
-                        method: "PATCH",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        credentials: "include",
-                        body: JSON.stringify({
-                          id: q.id,
-                          answerText: answer,
-                        }),
-                      }
-                    );
+                    const res = await fetch("/api/admin/questions/update", {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      credentials: "include",
+                      body: JSON.stringify({
+                        id: q.id,
+                        answerText: answer,
+                      }),
+                    });
 
                     if (res.ok) {
                       setPendingQuestions((prev) =>
@@ -207,12 +181,9 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
         </Modal>
       )}
 
+      {/* ========= OPPORTUNITY MODAL ========= */}
       {openModal === "opportunity" && (
-        <Modal
-          title="Ongeza Fursa"
-          open
-          onClose={() => setOpenModal(null)}
-        >
+        <Modal title="Ongeza Fursa" open onClose={() => setOpenModal(null)}>
           <OpportunityForm
             categories={[]}
             onSubmit={() => setOpenModal(null)}
@@ -220,12 +191,9 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
         </Modal>
       )}
 
+      {/* ========= TRAINING MODAL ========= */}
       {openModal === "training" && (
-        <Modal
-          title="Ongeza Mafunzo"
-          open
-          onClose={() => setOpenModal(null)}
-        >
+        <Modal title="Ongeza Mafunzo" open onClose={() => setOpenModal(null)}>
           <TrainingsForm onSubmit={() => setOpenModal(null)} />
         </Modal>
       )}
