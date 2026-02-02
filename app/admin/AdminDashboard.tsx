@@ -103,7 +103,7 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
 
       {/* ========= QUICK ACTIONS ========= */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Quick Actions</h2>
+        <h3 className="text-lg font-semibold">Vitendo vya Haraka</h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <QuickAction

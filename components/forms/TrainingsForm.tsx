@@ -121,7 +121,7 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
     >
       {/* TITLE */}
       <FormInput
-        label="Title"
+        label="Kichwa Cha Funzo Au Tangazo"
         name="title"
         value={form.title}
         onChange={handleChange}
@@ -130,16 +130,16 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
 
       {/* DESCRIPTION */}
       <FormInput
-        label="Description"
+        label="Maelezo"
         name="description"
         value={form.description}
         onChange={handleChange}
-        placeholder="Andika description fupi ya training"
+        placeholder="Andika maaelezo mafupi ya mafunzo"
       />
 
       {/* TRAINING TYPE */}
       <FormSelect
-        label="Training Type"
+        label="Aina Ya Mafunzo"
         name="type"
         value={form.type}
         onChange={handleChange}
@@ -173,7 +173,7 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
       {/* RESOURCE URL */}
       {form.type === "ARTICLE" && (
         <FormInput
-          label="Resource URL"
+          label="URL Ya Rasilimali"
           name="resourceUrl"
           value={form.resourceUrl}
           onChange={handleChange}

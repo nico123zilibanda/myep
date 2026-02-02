@@ -19,27 +19,27 @@ export const menuItems = [
         icon: LayoutDashboard,
       },
       {
-        label: "Categories",
+        label: "Kategoria",
         href: "/admin/categories",
         icon: Briefcase,
       },
       {
-        label: "Opportunities",
+        label: "Fursa",
         href: "/admin/opportunities",
         icon: Briefcase,
       },
       {
-        label: "Trainings",
+        label: "Mafunzo",
         href: "/admin/trainings",
         icon: GraduationCap,
       },
       {
-        label: "Questions",
+        label: "Maswali",
         href: "/admin/questions",
         icon: HelpCircle,
       },
             {
-        label: "Youth",
+        label: "Vijana",
         href: "/admin/youth",
         icon: Users,
       },
@@ -49,17 +49,17 @@ export const menuItems = [
     title: "ACCOUNT",
     items: [
       {
-        label: "Profile",
+        label: "Wasifu",
         href: "/admin/profile",
         icon: User,
       },
       {
-        label: "Logs",
+        label: "Kumbukumbu",
         href: "/admin/audit-logs",
         icon: Logs,
       },
       {
-        label: "Settings",
+        label: "Mpangilio",
         href: "/admin/settings",
         icon: Settings,
       },

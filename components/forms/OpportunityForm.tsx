@@ -89,7 +89,7 @@ export default function OpportunityForm({
       {/* FORM HEADER */}
       <div className="space-y-1">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          Opportunity Details
+          Maelezo Ya Fursa
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Jaza taarifa muhimu za fursa
@@ -99,7 +99,7 @@ export default function OpportunityForm({
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormInput
-          label="Title"
+          label="Kichwa Cha Fursa"
           name="title"
           value={form.title}
           onChange={handleChange}
@@ -108,7 +108,7 @@ export default function OpportunityForm({
         />
 
         <FormInput
-          label="Location"
+          label="Eneo"
           name="location"
           value={form.location}
           onChange={handleChange}
@@ -117,7 +117,7 @@ export default function OpportunityForm({
         />
 
         <FormInput
-          label="Deadline"
+          label="Tarehe Ya Mwisho"
           name="deadline"
           type="date"
           value={form.deadline}
@@ -126,7 +126,7 @@ export default function OpportunityForm({
         />
 
         <FormSelect
-          label="Status"
+          label="Hali"
           name="status"
           value={form.status}
           onChange={handleChange}
@@ -139,7 +139,7 @@ export default function OpportunityForm({
 
         <div className="md:col-span-2">
           <FormInput
-            label="Description"
+            label="Maelezo"
             name="description"
             value={form.description}
             onChange={handleChange}
@@ -149,7 +149,7 @@ export default function OpportunityForm({
 
         <div className="md:col-span-2">
           <FormInput
-            label="Requirements"
+            label="Mahitaji"
             name="requirements"
             value={form.requirements}
             onChange={handleChange}
@@ -159,7 +159,7 @@ export default function OpportunityForm({
 
         <div className="md:col-span-2">
           <FormInput
-            label="How to Apply"
+            label="Jinsi Ya Kutuma Maombi"
             name="howToApply"
             value={form.howToApply}
             onChange={handleChange}
@@ -168,7 +168,7 @@ export default function OpportunityForm({
         </div>
 
         <FormSelect
-          label="Category"
+          label="Kategoria"
           name="categoryId"
           value={form.categoryId}
           onChange={handleChange}
@@ -179,7 +179,7 @@ export default function OpportunityForm({
         />
 
         <FormInput
-          label="Attachment URL"
+          label="URL Ya Kiambatisho"
           name="attachmentUrl"
           value={form.attachmentUrl}
           onChange={handleChange}

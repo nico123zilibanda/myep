@@ -175,7 +175,7 @@ export default function TrainingsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-            Trainings
+            Mafunzo
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Articles, videos na PDFs za mafunzo
@@ -196,13 +196,13 @@ export default function TrainingsPage() {
           "
         >
           <Plus size={16} />
-          Ongeza Training
+          Ongeza Mafunzo
         </button>
       </div>
 
       {/* CREATE / EDIT MODAL */}
       <Modal
-        title={editing ? "Hariri Training" : "Ongeza Training"}
+        title={editing ? "Hariri Mafunzo" : "Ongeza Mafunzo"}
         open={open}
         onClose={() => {
           setOpen(false);
@@ -221,7 +221,7 @@ export default function TrainingsPage() {
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={["Title", "Type", "Description", "Resource", "Actions"]}
+            columns={["Kichwo Cha Mafunzo", "Aina", "Maelezo", "URL", "Actions"]}
           />
 
           <tbody>

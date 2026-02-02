@@ -189,7 +189,7 @@ export default function AdminQuestionsPage() {
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={["Swali", "Aliyeuliza", "Jibu", "Status", "Actions"]}
+            columns={["Swali", "Aliyeuliza", "Jibu", "Hali", "Actions"]}
           />
 
           <tbody>

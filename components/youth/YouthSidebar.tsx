@@ -17,11 +17,11 @@ import clsx from "clsx";
 
 const links = [
   { name: "Dashboard", href: "/youth", icon: Home },
-  { name: "Opportunities", href: "/youth/opportunities", icon: Briefcase },
-  { name: "Saved Opportunities", href: "/youth/saved-opportunities", icon: Bookmark },
-  { name: "Trainings", href: "/youth/trainings", icon: GraduationCap },
-  { name: "Questions", href: "/youth/questions", icon: FileQuestion },
-  { name: "Profile", href: "/youth/profile", icon: User },
+  { name: "Fursa", href: "/youth/opportunities", icon: Briefcase },
+  { name: "Fursa Zilizohifadhiwa", href: "/youth/saved-opportunities", icon: Bookmark },
+  { name: "Mafunzo/Tangazo", href: "/youth/trainings", icon: GraduationCap },
+  { name: "Maswali", href: "/youth/questions", icon: FileQuestion },
+  { name: "Wasifu", href: "/youth/profile", icon: User },
 ];
 
 export default function YouthSidebar({

@@ -215,7 +215,7 @@ export default function OpportunitiesPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-            Opportunities
+            Fursa
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Manage opportunities zote za mfumo
@@ -229,7 +229,7 @@ export default function OpportunitiesPage() {
           }}
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
         >
-          + Ongeza Opportunity
+          + Ongeza Fursa
         </button>
       </div>
 
@@ -257,7 +257,7 @@ export default function OpportunitiesPage() {
       {/* TABLE */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
         <DataTable>
-          <TableHeader columns={["Title", "Deadline", "Category", "Actions"]} />
+          <TableHeader columns={["Kichwa", "Tarehe Ya Mwisho", "Kategori", "Actions"]} />
           <tbody>
             {loading ? (
               <TableSkeleton rows={perPage} />

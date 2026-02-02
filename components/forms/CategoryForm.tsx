@@ -58,10 +58,10 @@ export default function CategoryForm({
       {/* FORM HEADER */}
       <div className="space-y-1">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          Category Details
+          Maelezo Ya Kategoria
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Ongeza au hariri category ya fursa au mafunzo
+          Ongeza au hariri kategoria ya fursa au mafunzo
         </p>
       </div>
 
