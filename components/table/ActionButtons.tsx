@@ -17,44 +17,50 @@ export default function ActionButtons({
   onPublish,
   onDelete,
 }: ActionButtonsProps) {
-  const baseBtnClasses = `
-    p-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-1 
-    transition text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700
-  `;
+  const base =
+    "p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-1";
 
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex items-center gap-2 flex-wrap">
+      {/* VIEW */}
       {onView && (
-        <button onClick={onView} className={baseBtnClasses} title="View">
+        <button
+          onClick={onView}
+          title="Angalia"
+          className={`${base} text-gray-600 hover:bg-gray-100 focus:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-800`}
+        >
           <Eye size={16} />
         </button>
       )}
 
+      {/* EDIT */}
       {onEdit && (
         <button
           onClick={onEdit}
-          className={`${baseBtnClasses} text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900`}
-          title="Edit"
+          title="Hariri"
+          className={`${base} text-blue-600 hover:bg-blue-100 focus:ring-blue-400 dark:text-blue-400 dark:hover:bg-blue-900`}
         >
           <Pencil size={16} />
         </button>
       )}
 
+      {/* PUBLISH */}
       {onPublish && status !== "PUBLISHED" && (
         <button
           onClick={onPublish}
-          className={`${baseBtnClasses} text-green-600 hover:bg-green-100 dark:hover:bg-green-900`}
-          title="Publish"
+          title="Chapisha"
+          className={`${base} text-green-600 hover:bg-green-100 focus:ring-green-400 dark:text-green-400 dark:hover:bg-green-900`}
         >
           <CheckCircle size={16} />
         </button>
       )}
 
+      {/* DELETE (DESTRUCTIVE) */}
       {onDelete && (
         <button
           onClick={onDelete}
-          className={`${baseBtnClasses} text-red-600 hover:bg-red-100 dark:hover:bg-red-900`}
-          title="Delete"
+          title="Futa"
+          className={`${base} text-red-600 hover:bg-red-100 focus:ring-red-400 dark:text-red-400 dark:hover:bg-red-900`}
         >
           <Trash2 size={16} />
         </button>

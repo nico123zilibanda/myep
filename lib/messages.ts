@@ -54,9 +54,18 @@ QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
   YOUTH_DELETE_SUCCESS: "Kijana amefutwa kwa mafanikio.",
   YOUTH_NOT_FOUND: "Kijana hajapatikana.",
   YOUTH_FETCH_FAILED: "Imeshindikana kupata vijana.",
+  YOUTH_STATUS_UPDATE_SUCCESS: " Status imehariliwa kikamilifu",
   // ================= GENERIC =================
   ACTION_SUCCESS: "Kitendo kimefanikiwa.",
   ACTION_FAILED: "Kitendo hakijafanikiwa. Tafadhali jaribu tena.",
   UNAUTHORIZED: "Huna ruhusa ya kufanya kitendo hiki.",
   SERVER_ERROR: "Hitilafu ya mfumo. Tafadhali jaribu tena baadaye.",
+
+  // ================= CONFIRMATION =================
+CONFIRM_DELETE_TITLE: "Thibitisha Kufuta",
+CONFIRM_DELETE_DESCRIPTION:
+  "Je, una uhakika unataka kufuta taarifa hii? Kitendo hiki hakiwezi kurejeshwa.",
+
+CONFIRM_ACTION_YES: "Ndiyo, Futa",
+CONFIRM_ACTION_CANCEL: "Ghairi",
 } as const;

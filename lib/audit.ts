@@ -16,11 +16,13 @@ export type AuditAction =
   | "ANSWER"
   | "SAVE";
 
+
 export type AuditEntity =
   | "USER"
   | "CATEGORY"
   | "OPPORTUNITY"
   | "TRAINING"
+  | "PROFILE"
   | "QUESTION"
   | "AUTH"
   | "YOUTH"

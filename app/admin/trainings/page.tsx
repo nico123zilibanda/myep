@@ -9,8 +9,9 @@ import TableRow from "@/components/table/TableRow";
 import Pagination from "@/components/table/Pagination";
 import Modal from "@/components/ui/Modal";
 import TrainingsForm from "@/components/forms/TrainingsForm";
-import CategoryActions from "@/components/table/CategoryActions";
+import ActionButtons from "@/components/table/ActionButtons";
 import TableSearch from "@/components/table/TableSearch";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { showSuccess, showError } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
@@ -29,21 +30,6 @@ interface ApiResponse<T = any> {
   data?: T;
 }
 
-/* ================= SKELETON ================= */
-function TableSkeleton({ rows = 5 }: { rows?: number }) {
-  return (
-    <>
-      {Array.from({ length: rows }).map((_, i) => (
-        <TableRow key={i}>
-          <td colSpan={5} className="px-4 py-4">
-            <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-          </td>
-        </TableRow>
-      ))}
-    </>
-  );
-}
-
 /* ================= PAGE ================= */
 export default function TrainingsPage() {
   const [trainings, setTrainings] = useState<Training[]>([]);
@@ -52,6 +38,10 @@ export default function TrainingsPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Training | null>(null);
   const [viewing, setViewing] = useState<Training | null>(null);
+
+  // delete confirmation
+  const [deleteTarget, setDeleteTarget] = useState<Training | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -104,13 +94,20 @@ export default function TrainingsPage() {
     page * perPage
   );
 
-  /* ================= DELETE ================= */
-  const handleDelete = async (id: number) => {
+  /* ================= DELETE (CONFIRMED) ================= */
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
     try {
-      const res = await fetch(`/api/admin/trainings/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      setDeleting(true);
+
+      const res = await fetch(
+        `/api/admin/trainings/${deleteTarget.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
       const data: ApiResponse = await res.json();
 
@@ -119,10 +116,16 @@ export default function TrainingsPage() {
         return;
       }
 
+      setTrainings((prev) =>
+        prev.filter((t) => t.id !== deleteTarget.id)
+      );
+
       showSuccess(data.messageKey);
-      setTrainings((prev) => prev.filter((t) => t.id !== id));
+      setDeleteTarget(null);
     } catch {
       showError("SERVER_ERROR");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -170,7 +173,7 @@ export default function TrainingsPage() {
 
   /* ================= UI ================= */
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -187,13 +190,7 @@ export default function TrainingsPage() {
             setEditing(null);
             setOpen(true);
           }}
-          className="
-            inline-flex items-center justify-center gap-2
-            rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
-            text-white hover:bg-blue-700 transition
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-            w-full sm:w-auto
-          "
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
         >
           <Plus size={16} />
           Ongeza Mafunzo
@@ -212,6 +209,48 @@ export default function TrainingsPage() {
         <TrainingsForm initialData={editing} onSubmit={handleSubmit} />
       </Modal>
 
+      {/* DELETE CONFIRM MODAL */}
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+        title="Thibitisha Kufuta"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Je, una uhakika unataka kufuta mafunzo{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              "{deleteTarget?.title}"
+            </span>
+            ?
+          </p>
+
+          <p className="text-xs text-red-600">
+            Kitendo hiki hakiwezi kurejeshwa.
+          </p>
+
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              disabled={deleting}
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+            >
+              Ghairi
+            </button>
+
+            <button
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
       {/* SEARCH */}
       <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
         <TableSearch value={search} onChange={setSearch} />
@@ -221,42 +260,36 @@ export default function TrainingsPage() {
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={["Kichwo Cha Mafunzo", "Aina", "Maelezo", "URL", "Actions"]}
+            columns={["Kichwa", "Aina", "Maelezo", "Resource", "Actions"]}
           />
 
           <tbody>
             {loading ? (
-              <TableSkeleton rows={perPage} />
+              Array.from({ length: perPage }).map((_, i) => (
+                <TableRow key={i}>
+                  <td colSpan={5} className="px-4 py-6">
+                    <Skeleton className="h-4 w-full rounded" />
+                  </td>
+                </TableRow>
+              ))
             ) : paginatedData.length === 0 ? (
               <TableRow>
                 <td
                   colSpan={5}
-                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                  className="px-4 py-10 text-center text-gray-500"
                 >
-                  <p className="text-sm">Hakuna training iliyopatikana</p>
-                  <p className="text-xs mt-1">
-                    Jaribu search tofauti au ongeza mpya
-                  </p>
+                  Hakuna mafunzo yaliyopatikana
                 </td>
               </TableRow>
             ) : (
               paginatedData.map((t) => (
                 <TableRow key={t.id}>
-                  <td className="px-4 py-4 font-medium text-gray-800 dark:text-gray-100">
+                  <td className="px-4 py-4 font-medium">
                     {t.title}
                   </td>
 
                   <td className="px-4 py-4">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full font-medium
-                        ${
-                          t.type === "ARTICLE"
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                            : t.type === "VIDEO"
-                            ? "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300"
-                            : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
-                        }`}
-                    >
+                    <span className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-800">
                       {t.type}
                     </span>
                   </td>
@@ -268,19 +301,19 @@ export default function TrainingsPage() {
                   <td className="px-4 py-4">
                     <button
                       onClick={() => handleView(t)}
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
+                      className="text-blue-600 hover:underline text-sm"
                     >
                       {t.type === "PDF" ? "Open PDF" : "View"}
                     </button>
                   </td>
 
                   <td className="px-4 py-4">
-                    <CategoryActions
+                    <ActionButtons
                       onEdit={() => {
                         setEditing(t);
                         setOpen(true);
                       }}
-                      onDelete={() => handleDelete(t.id)}
+                      onDelete={() => setDeleteTarget(t)}
                     />
                   </td>
                 </TableRow>

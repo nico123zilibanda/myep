@@ -59,6 +59,11 @@ export default function OpportunitiesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Opportunity | null>(null);
+
+  // delete confirmation
+  const [deleteTarget, setDeleteTarget] = useState<Opportunity | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -102,7 +107,6 @@ export default function OpportunitiesPage() {
       }
 
       setCategories(result.data || []);
-
     } catch {
       showError("SERVER_ERROR");
     }
@@ -113,7 +117,6 @@ export default function OpportunitiesPage() {
     fetchCategories();
   }, []);
 
-  /* Reset page on search */
   useEffect(() => {
     setPage(1);
   }, [search]);
@@ -130,13 +133,20 @@ export default function OpportunitiesPage() {
     page * perPage
   );
 
-  /* ================= DELETE ================= */
-  const handleDelete = async (id: number) => {
+  /* ================= DELETE (CONFIRMED) ================= */
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
     try {
-      const res = await fetch(`/api/admin/opportunities/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      setDeleting(true);
+
+      const res = await fetch(
+        `/api/admin/opportunities/${deleteTarget.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
       const data: ApiResponse = await res.json();
 
@@ -146,9 +156,14 @@ export default function OpportunitiesPage() {
       }
 
       showSuccess(data.messageKey);
-      setOpportunities((prev) => prev.filter((o) => o.id !== id));
+      setOpportunities((prev) =>
+        prev.filter((o) => o.id !== deleteTarget.id)
+      );
+      setDeleteTarget(null);
     } catch {
       showError("SERVER_ERROR");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -210,7 +225,7 @@ export default function OpportunitiesPage() {
 
   /* ================= UI ================= */
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -233,7 +248,7 @@ export default function OpportunitiesPage() {
         </button>
       </div>
 
-      {/* MODAL */}
+      {/* CREATE / EDIT MODAL */}
       <Modal
         title={editing ? "Hariri Opportunity" : "Ongeza Opportunity"}
         open={open}
@@ -249,6 +264,48 @@ export default function OpportunitiesPage() {
         />
       </Modal>
 
+      {/* DELETE CONFIRM MODAL */}
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+        title="Thibitisha Kufuta"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Je, una uhakika unataka kufuta fursa{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              "{deleteTarget?.title}"
+            </span>
+            ?
+          </p>
+
+          <p className="text-xs text-red-600">
+            Kitendo hiki hakiwezi kurejeshwa.
+          </p>
+
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              disabled={deleting}
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+            >
+              Ghairi
+            </button>
+
+            <button
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
       {/* SEARCH */}
       <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
         <TableSearch value={search} onChange={setSearch} />
@@ -257,7 +314,9 @@ export default function OpportunitiesPage() {
       {/* TABLE */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
         <DataTable>
-          <TableHeader columns={["Kichwa", "Tarehe Ya Mwisho", "Kategori", "Actions"]} />
+          <TableHeader
+            columns={["Kichwa", "Tarehe Ya Mwisho", "Kategori", "Actions"]}
+          />
           <tbody>
             {loading ? (
               <TableSkeleton rows={perPage} />
@@ -284,7 +343,7 @@ export default function OpportunitiesPage() {
                         setEditing(o);
                         setOpen(true);
                       }}
-                      onDelete={() => handleDelete(o.id)}
+                      onDelete={() => setDeleteTarget(o)}
                     />
                   </td>
                 </TableRow>

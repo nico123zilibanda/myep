@@ -141,7 +141,9 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
           <option>Elimu ya Msingi</option>
           <option>Kidato cha Nne</option>
           <option>Kidato cha Sita</option>
-          <option>Chuo</option>
+          <option>Astashahada (certificate)</option>
+          <option>Stashahada (Diploma)</option>
+          <option>Shahada (Degree)</option>
         </select>
       </div>
 

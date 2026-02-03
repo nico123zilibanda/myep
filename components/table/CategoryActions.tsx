@@ -8,39 +8,41 @@ interface Props {
   onDelete?: () => void;
 }
 
-export default function CategoryActions({ onView, onEdit, onDelete }: Props) {
-  const btnBase = "p-2 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400";
+export default function CategoryActions({
+  onView,
+  onEdit,
+  onDelete,
+}: Props) {
+  const base =
+    "p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-1";
 
   return (
-    <div className="flex gap-2">
-      {/* View */}
+    <div className="flex items-center gap-2">
       {onView && (
         <button
           onClick={onView}
-          className={`${btnBase} text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800`}
-          title="View"
+          title="Angalia"
+          className={`${base} text-gray-600 hover:bg-gray-100 focus:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-800`}
         >
           <Eye size={16} />
         </button>
       )}
 
-      {/* Edit */}
       {onEdit && (
         <button
           onClick={onEdit}
-          className={`${btnBase} text-blue-600 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900`}
-          title="Edit"
+          title="Hariri"
+          className={`${base} text-blue-600 hover:bg-blue-100 focus:ring-blue-400 dark:text-blue-400 dark:hover:bg-blue-900`}
         >
           <Pencil size={16} />
         </button>
       )}
 
-      {/* Delete */}
       {onDelete && (
         <button
           onClick={onDelete}
-          className={`${btnBase} text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900`}
-          title="Delete"
+          title="Futa"
+          className={`${base} text-red-600 hover:bg-red-100 focus:ring-red-400 dark:text-red-400 dark:hover:bg-red-900`}
         >
           <Trash2 size={16} />
         </button>

@@ -6,12 +6,15 @@ import TableHeader from "@/components/table/TableHeader";
 import TableRow from "@/components/table/TableRow";
 import TableSearch from "@/components/table/TableSearch";
 import Pagination from "@/components/table/Pagination";
-import CategoryActions from "@/components/table/CategoryActions";
+import ActionButtons from "@/components/table/ActionButtons";
 import Modal from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { showSuccess, showError } from "@/lib/toast";
+import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
 interface Youth {
-  id: string;
+  id: number;
   fullName?: string;
   email?: string | null;
   phone?: string | null;
@@ -22,19 +25,10 @@ interface Youth {
   createdAt?: string | null;
 }
 
-/* ================= SKELETON ================= */
-function TableSkeleton({ rows = 5 }: { rows?: number }) {
-  return (
-    <>
-      {Array.from({ length: rows }).map((_, i) => (
-        <TableRow key={i}>
-          <td colSpan={7} className="px-4 py-4">
-            <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-          </td>
-        </TableRow>
-      ))}
-    </>
-  );
+interface ApiResponse<T = any> {
+  success: boolean;
+  messageKey: MessageKey;
+  data?: T;
 }
 
 /* ================= PAGE ================= */
@@ -44,7 +38,12 @@ export default function YouthPage() {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
   const [viewing, setViewing] = useState<Youth | null>(null);
+
+  // delete confirmation
+  const [deleteTarget, setDeleteTarget] = useState<Youth | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   /* ================= FETCH ================= */
   const fetchYouth = async () => {
@@ -56,10 +55,16 @@ export default function YouthPage() {
       });
 
       const data = await res.json();
-      if (Array.isArray(data)) setYouth(data);
-      else setYouth([]);
-    } catch (err) {
-      console.error("Failed to load youth:", err);
+
+      if (!res.ok) {
+        showError(data.messageKey ?? "SERVER_ERROR");
+        setYouth([]);
+        return;
+      }
+
+      setYouth(data.data ?? data);
+    } catch {
+      showError("SERVER_ERROR");
       setYouth([]);
     } finally {
       setLoading(false);
@@ -75,14 +80,13 @@ export default function YouthPage() {
     setPage(1);
   }, [search]);
 
-  /* ================= FILTER ================= */
+  /* ================= FILTER + PAGINATION ================= */
   const filtered = youth.filter(
     (v) =>
       (v.fullName ?? "").toLowerCase().includes(search.toLowerCase()) ||
       (v.email ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
-  /* ================= PAGINATION ================= */
   const perPage = 5;
   const totalPages = Math.ceil(filtered.length / perPage);
 
@@ -91,73 +95,75 @@ export default function YouthPage() {
     page * perPage
   );
 
-  /* ================= ACTIONS ================= */
-  const toggleStatus = async (id: string, isActive: boolean) => {
+  /* ================= STATUS TOGGLE ================= */
+  const toggleStatus = async (v: Youth) => {
     try {
-      await fetch(`/api/admin/youth/${id}`, {
+      const res = await fetch(`/api/admin/youth/${v.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isActive: !isActive }),
+        body: JSON.stringify({ isActive: !v.isActive }),
         credentials: "include",
       });
+
+      const data: ApiResponse = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
       fetchYouth();
-    } catch (err) {
-      console.error("Failed to toggle status:", err);
+    } catch {
+      showError("SERVER_ERROR");
     }
   };
 
-  const handleDelete = async (id: string, name?: string) => {
-    if (!confirm(`Una uhakika unataka kufuta account ya ${name ?? "kijana"}?`))
-      return;
+  /* ================= DELETE (CONFIRMED) ================= */
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
 
     try {
-      await fetch(`/api/admin/youth/${id}`, {
+      setDeleting(true);
+
+      const res = await fetch(`/api/admin/youth/${deleteTarget.id}`, {
         method: "DELETE",
         credentials: "include",
       });
-      setYouth((prev) => prev.filter((v) => v.id !== id));
-    } catch (err) {
-      console.error("Failed to delete youth:", err);
+
+      const data: ApiResponse = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey);
+        return;
+      }
+
+      showSuccess(data.messageKey);
+      setYouth((prev) =>
+        prev.filter((x) => x.id !== deleteTarget.id)
+      );
+      setDeleteTarget(null);
+    } catch {
+      showError("SERVER_ERROR");
+    } finally {
+      setDeleting(false);
     }
   };
 
   /* ================= UI ================= */
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-            Vijana
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Orodha ya vijana waliojisajili kwenye mfumo
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/api/admin/youth/export/csv"
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition"
-          >
-            Export CSV
-          </a>
-          <a
-            href="/api/admin/youth/export/excel"
-            className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm transition"
-          >
-            Export Excel
-          </a>
-          <a
-            href="/api/admin/youth/export/pdf"
-            className="px-3 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 text-sm transition"
-          >
-            Export PDF
-          </a>
-        </div>
+      <div>
+        <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          Vijana
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Orodha ya vijana waliojisajili kwenye mfumo
+        </p>
       </div>
 
-      {/* SEARCH (DARK MODE FIXED) */}
+      {/* SEARCH */}
       <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
         <TableSearch value={search} onChange={setSearch} />
       </div>
@@ -179,12 +185,18 @@ export default function YouthPage() {
 
           <tbody>
             {loading ? (
-              <TableSkeleton rows={perPage} />
+              Array.from({ length: perPage }).map((_, i) => (
+                <TableRow key={i}>
+                  <td colSpan={7} className="px-4 py-6">
+                    <Skeleton className="h-4 w-full rounded" />
+                  </td>
+                </TableRow>
+              ))
             ) : paginatedData.length === 0 ? (
               <TableRow>
                 <td
                   colSpan={7}
-                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                  className="px-4 py-10 text-center text-gray-500"
                 >
                   Hakuna vijana waliopatikana
                 </td>
@@ -192,40 +204,35 @@ export default function YouthPage() {
             ) : (
               paginatedData.map((v) => (
                 <TableRow key={v.id}>
-                  <td className="px-4 py-4 font-medium text-gray-800 dark:text-gray-100">
+                  <td className="px-4 py-4 font-medium">
                     {v.fullName ?? "-"}
                   </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
-                    {v.email ?? "-"}
-                  </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
-                    {v.phone ?? "-"}
-                  </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
+                  <td className="px-4 py-4">{v.email ?? "-"}</td>
+                  <td className="px-4 py-4">{v.phone ?? "-"}</td>
+                  <td className="px-4 py-4">
                     {v.educationLevel ?? "-"}
                   </td>
                   <td className="px-4 py-4">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium
-                        ${
-                          v.isActive
-                            ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
-                            : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
-                        }`}
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        v.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
                     >
                       {v.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
+                  <td className="px-4 py-4">
                     {v.createdAt
                       ? new Date(v.createdAt).toLocaleDateString()
                       : "-"}
                   </td>
                   <td className="px-4 py-4">
-                    <CategoryActions
+                    <ActionButtons
                       onView={() => setViewing(v)}
-                      onEdit={() => toggleStatus(v.id, v.isActive)}
-                      onDelete={() => handleDelete(v.id, v.fullName)}
+                      onEdit={() => toggleStatus(v)}
+                      onDelete={() => setDeleteTarget(v)}
                     />
                   </td>
                 </TableRow>
@@ -242,35 +249,64 @@ export default function YouthPage() {
         onPageChange={setPage}
       />
 
+      {/* DELETE CONFIRM MODAL */}
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+        title="Thibitisha Kufuta"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Je, una uhakika unataka kumfuta{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              "{deleteTarget?.fullName}"
+            </span>
+            ?
+          </p>
+
+          <p className="text-xs text-red-600">
+            Kitendo hiki hakiwezi kurejeshwa.
+          </p>
+
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              disabled={deleting}
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+            >
+              Ghairi
+            </button>
+
+            <button
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
       {/* VIEW MODAL */}
       <Modal
         title="Wasifu wa Kijana"
         open={!!viewing}
         onClose={() => setViewing(null)}
-        size="md"
       >
         {viewing && (
-          <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+          <div className="space-y-3 text-sm">
             <p><strong>Jina:</strong> {viewing.fullName ?? "-"}</p>
             <p><strong>Email:</strong> {viewing.email ?? "-"}</p>
             <p><strong>Simu:</strong> {viewing.phone ?? "-"}</p>
             <p><strong>Elimu:</strong> {viewing.educationLevel ?? "-"}</p>
             <p><strong>Jinsia:</strong> {viewing.gender ?? "-"}</p>
             <p>
-              <strong>Tarehe ya Kuzaliwa:</strong>{" "}
-              {viewing.dateOfBirth
-                ? new Date(viewing.dateOfBirth).toLocaleDateString()
-                : "-"}
-            </p>
-            <p>
               <strong>Status:</strong>{" "}
               {viewing.isActive ? "Active" : "Inactive"}
-            </p>
-            <p>
-              <strong>Amejiunga:</strong>{" "}
-              {viewing.createdAt
-                ? new Date(viewing.createdAt).toLocaleDateString()
-                : "-"}
             </p>
           </div>
         )}

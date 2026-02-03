@@ -6,9 +6,10 @@ import TableHeader from "@/components/table/TableHeader";
 import TableRow from "@/components/table/TableRow";
 import TableSearch from "@/components/table/TableSearch";
 import Pagination from "@/components/table/Pagination";
-import CategoryActions from "@/components/table/CategoryActions";
+import ActionButtons from "@/components/table/ActionButtons";
 import Modal from "@/components/ui/Modal";
 import StatusBadge from "@/components/ui/StatusBadge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { showSuccess, showError } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
@@ -27,21 +28,6 @@ interface ApiResponse<T = any> {
   data?: T;
 }
 
-/* ================= SKELETON ================= */
-function TableSkeleton({ rows = 5 }: { rows?: number }) {
-  return (
-    <>
-      {Array.from({ length: rows }).map((_, i) => (
-        <TableRow key={i}>
-          <td colSpan={5} className="px-4 py-4">
-            <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-          </td>
-        </TableRow>
-      ))}
-    </>
-  );
-}
-
 /* ================= PAGE ================= */
 export default function AdminQuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -53,6 +39,10 @@ export default function AdminQuestionsPage() {
   const [selected, setSelected] = useState<Question | null>(null);
   const [viewing, setViewing] = useState<Question | null>(null);
   const [answer, setAnswer] = useState("");
+
+  // delete confirmation
+  const [deleteTarget, setDeleteTarget] = useState<Question | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   /* ================= FETCH ================= */
   const fetchQuestions = async () => {
@@ -78,7 +68,6 @@ export default function AdminQuestionsPage() {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchQuestions();
@@ -144,13 +133,17 @@ export default function AdminQuestionsPage() {
   };
 
   /* ================= DELETE ================= */
-  const handleDelete = async (id: number) => {
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
     try {
+      setDeleting(true);
+
       const res = await fetch("/api/admin/questions/delete", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id: deleteTarget.id }),
       });
 
       const data: ApiResponse = await res.json();
@@ -161,15 +154,18 @@ export default function AdminQuestionsPage() {
       }
 
       showSuccess(data.messageKey);
-      setQuestions((prev) => prev.filter((q) => q.id !== id));
+      setQuestions((prev) => prev.filter((q) => q.id !== deleteTarget.id));
+      setDeleteTarget(null);
     } catch {
       showError("SERVER_ERROR");
+    } finally {
+      setDeleting(false);
     }
   };
 
   /* ================= UI ================= */
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div>
         <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
@@ -194,7 +190,13 @@ export default function AdminQuestionsPage() {
 
           <tbody>
             {loading ? (
-              <TableSkeleton rows={perPage} />
+              Array.from({ length: perPage }).map((_, i) => (
+                <TableRow key={i}>
+                  <td colSpan={5} className="px-4 py-6">
+                    <Skeleton className="h-4 w-full rounded" />
+                  </td>
+                </TableRow>
+              ))
             ) : paginatedData.length === 0 ? (
               <TableRow>
                 <td
@@ -220,13 +222,13 @@ export default function AdminQuestionsPage() {
                     <StatusBadge status={q.status} />
                   </td>
                   <td className="px-4 py-4">
-                    <CategoryActions
+                    <ActionButtons
                       onView={() => setViewing(q)}
                       onEdit={() => {
                         setSelected(q);
                         setAnswer(q.answerText || "");
                       }}
-                      onDelete={() => handleDelete(q.id)}
+                      onDelete={() => setDeleteTarget(q)}
                     />
                   </td>
                 </TableRow>
@@ -242,6 +244,48 @@ export default function AdminQuestionsPage() {
         totalPages={totalPages}
         onPageChange={setPage}
       />
+
+      {/* DELETE CONFIRM MODAL */}
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+        title="Thibitisha Kufuta"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Je, una uhakika unataka kufuta swali
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {" "}{deleteTarget?.questionText}
+            </span>
+            ?
+          </p>
+
+          <p className="text-xs text-red-600">
+            Kitendo hiki hakiwezi kurejeshwa.
+          </p>
+
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              disabled={deleting}
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+            >
+              Ghairi
+            </button>
+
+            <button
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* ANSWER MODAL */}
       <Modal
