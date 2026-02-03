@@ -9,28 +9,16 @@ import type { MessageKey } from "@/lib/messages";
 export const runtime = "nodejs";
 
 /* ================= GET PROFILE ================= */
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const user = await getCurrentUser();
 
     if (!user || user.role !== "ADMIN") {
       return NextResponse.json(
-        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
+        { success: false, messageKey: "UNAUTHORIZED" },
         { status: 401 }
       );
     }
-
-    const url = new URL(req.url);
-    const id = Number(url.pathname.split("/").pop());
-    const currentUserId = Number(user.id);
-
-    if (isNaN(id) || isNaN(currentUserId) || id !== currentUserId) {
-      return NextResponse.json(
-        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
-        { status: 403 }
-      );
-    }
-
 
     const { data, error } = await supabaseAdmin
       .from("User")
@@ -49,13 +37,13 @@ export async function GET(req: Request) {
           name
         )
       `)
-      .eq("id", id)
+      .eq("id", user.id)
       .single();
 
     if (error || !data) {
       console.error("GET PROFILE ERROR:", error);
       return NextResponse.json(
-        { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+        { success: false, messageKey: "SERVER_ERROR" },
         { status: 500 }
       );
     }
@@ -67,11 +55,12 @@ export async function GET(req: Request) {
   } catch (err) {
     console.error("GET PROFILE EXCEPTION:", err);
     return NextResponse.json(
-      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+      { success: false, messageKey: "SERVER_ERROR" },
       { status: 500 }
     );
   }
 }
+
 
 /* ================= UPDATE PROFILE ================= */
 export async function PATCH(req: Request) {
@@ -81,22 +70,10 @@ export async function PATCH(req: Request) {
 
     if (!user || user.role !== "ADMIN") {
       return NextResponse.json(
-        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey},
         { status: 401 }
       );
     }
-
-    const url = new URL(req.url);
-    const id = Number(url.pathname.split("/").pop());
-    const currentUserId = Number(user.id);
-
-    if (isNaN(id) || isNaN(currentUserId) || id !== currentUserId) {
-      return NextResponse.json(
-        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
-        { status: 403 }
-      );
-    }
-
 
     const {
       fullName,
@@ -104,17 +81,16 @@ export async function PATCH(req: Request) {
       gender,
       dateOfBirth,
       educationLevel,
-      password,
     } = await req.json();
 
     if (!fullName || typeof fullName !== "string") {
       return NextResponse.json(
-        { success: false, messageKey: "ACTION_FAILED" satisfies MessageKey },
+        { success: false, messageKey: "ACTION_FAILED" satisfies MessageKey},
         { status: 400 }
       );
     }
 
-    const updateData: any = {
+    const updateData = {
       fullName,
       phone: phone || null,
       gender: gender || null,
@@ -123,26 +99,15 @@ export async function PATCH(req: Request) {
       updatedAt: new Date(),
     };
 
-    if (password) {
-      if (typeof password !== "string" || password.length < 8) {
-        return NextResponse.json(
-          { success: false, messageKey: "ACTION_FAILED" satisfies MessageKey },
-          { status: 400 }
-        );
-      }
-
-      updateData.passwordHash = await bcrypt.hash(password, 10);
-    }
-
     const { error } = await supabaseAdmin
       .from("User")
       .update(updateData)
-      .eq("id", id);
+      .eq("id", user.id);
 
     if (error) {
       console.error("UPDATE PROFILE ERROR:", error);
       return NextResponse.json(
-        { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+        { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey},
         { status: 500 }
       );
     }
@@ -150,7 +115,7 @@ export async function PATCH(req: Request) {
     logAudit({
       action: "UPDATE",
       entity: "PROFILE",
-      entityId: id,
+      entityId: user.id,
       description: "Admin updated own profile",
       userId: user.id,
       ipAddress: meta.ipAddress,
@@ -164,8 +129,9 @@ export async function PATCH(req: Request) {
   } catch (err) {
     console.error("PATCH PROFILE ERROR:", err);
     return NextResponse.json(
-      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey},
       { status: 500 }
     );
   }
 }
+

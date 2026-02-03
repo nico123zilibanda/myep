@@ -48,6 +48,7 @@ QUESTION_UPDATE_FAILED: "Imeshindikana kuhifadhi jibu.",
 
 QUESTION_DELETE_SUCCESS: "Swali limefutwa kikamilifu.",
 QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
+
         // ================= YOUTH =================
   YOUTH_CREATE_SUCCESS: "Kijana ameongezwa kwa mafanikio.",
   YOUTH_UPDATE_SUCCESS: "Kijana amehaririwa kwa mafanikio.",
@@ -55,6 +56,13 @@ QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
   YOUTH_NOT_FOUND: "Kijana hajapatikana.",
   YOUTH_FETCH_FAILED: "Imeshindikana kupata vijana.",
   YOUTH_STATUS_UPDATE_SUCCESS: " Status imehariliwa kikamilifu",
+
+          // ================= PASSWORD =================
+  PASSWORD_CHANGED: "Password amehaririwa kwa mafanikio.",
+  INVALID_PASSWORD: "Neno siri halifanani, jalibu tena.",
+  PASSWORD_FETCH_FAILED: "Imeshindikana kupata vijana.",
+  PASSWORD_STATUS_UPDATE_SUCCESS: " Status imehariliwa kikamilifu",
+
   // ================= GENERIC =================
   ACTION_SUCCESS: "Kitendo kimefanikiwa.",
   ACTION_FAILED: "Kitendo hakijafanikiwa. Tafadhali jaribu tena.",

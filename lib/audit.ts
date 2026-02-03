@@ -23,6 +23,7 @@ export type AuditEntity =
   | "OPPORTUNITY"
   | "TRAINING"
   | "PROFILE"
+  | "PASSWORD"
   | "QUESTION"
   | "AUTH"
   | "YOUTH"
