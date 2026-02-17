@@ -40,7 +40,6 @@ export default function AdminQuestionsPage() {
   const [viewing, setViewing] = useState<Question | null>(null);
   const [answer, setAnswer] = useState("");
 
-  // delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<Question | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -73,10 +72,7 @@ export default function AdminQuestionsPage() {
     fetchQuestions();
   }, []);
 
-  /* Reset page on search */
-  useEffect(() => {
-    setPage(1);
-  }, [search]);
+  useEffect(() => setPage(1), [search]);
 
   /* ================= FILTER + PAGINATION ================= */
   const filtered = questions.filter(
@@ -87,7 +83,6 @@ export default function AdminQuestionsPage() {
 
   const perPage = 5;
   const totalPages = Math.ceil(filtered.length / perPage);
-
   const paginatedData = filtered.slice(
     (page - 1) * perPage,
     page * perPage
@@ -95,12 +90,7 @@ export default function AdminQuestionsPage() {
 
   /* ================= ANSWER ================= */
   const submitAnswer = async () => {
-    if (!selected) {
-      showError("ACTION_FAILED");
-      return;
-    }
-
-    if (!answer.trim()) {
+    if (!selected || !answer.trim()) {
       showError("ACTION_FAILED");
       return;
     }
@@ -168,21 +158,21 @@ export default function AdminQuestionsPage() {
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div>
-        <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+        <h1 className="text-xl font-semibold text-(--text-primary)">
           Maswali ya Vijana
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm opacity-70">
           Maswali yaliyoulizwa na vijana na majibu yake
         </p>
       </div>
 
       {/* SEARCH */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
+      <div className="card border-default p-4 shadow">
         <TableSearch value={search} onChange={setSearch} />
       </div>
 
       {/* TABLE */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
+      <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader
             columns={["Swali", "Aliyeuliza", "Jibu", "Hali", "Actions"]}
@@ -201,21 +191,21 @@ export default function AdminQuestionsPage() {
               <TableRow>
                 <td
                   colSpan={5}
-                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                  className="px-4 py-10 text-center opacity-70"
                 >
                   Hakuna maswali yaliyopatikana
                 </td>
               </TableRow>
             ) : (
               paginatedData.map((q) => (
-                <TableRow key={q.id}>
-                  <td className="px-4 py-4 max-w-xs truncate font-medium">
+                <TableRow key={q.id} className="hover:shadow-sm transition">
+                  <td className="px-4 py-4 max-w-xs truncate font-medium text-(--text-primary)">
                     {q.questionText}
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-4 opacity-70">
                     {q.User?.fullName || "-"}
                   </td>
-                  <td className="px-4 py-4 max-w-xs truncate">
+                  <td className="px-4 py-4 max-w-xs truncate opacity-70">
                     {q.answerText || "-"}
                   </td>
                   <td className="px-4 py-4">
@@ -248,22 +238,20 @@ export default function AdminQuestionsPage() {
       {/* DELETE CONFIRM MODAL */}
       <Modal
         open={!!deleteTarget}
-        onClose={() => {
-          if (!deleting) setDeleteTarget(null);
-        }}
+        onClose={() => { if (!deleting) setDeleteTarget(null); }}
         title="Thibitisha Kufuta"
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Je, una uhakika unataka kufuta swali
-            <span className="font-semibold text-gray-900 dark:text-white">
+          <p className="text-sm opacity-70">
+            Je, una uhakika unataka kufuta swali: "
+            <span className="font-semibold text-(--text-primary)">
               {" "}{deleteTarget?.questionText}
-            </span>
+            </span> "
             ?
           </p>
 
-          <p className="text-xs text-red-600">
+          <p className="text-xs opacity-70">
             Kitendo hiki hakiwezi kurejeshwa.
           </p>
 
@@ -271,7 +259,13 @@ export default function AdminQuestionsPage() {
             <button
               disabled={deleting}
               onClick={() => setDeleteTarget(null)}
-              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+              className="
+          rounded-lg px-4 py-2 text-sm
+          border border-default
+          hover:shadow-sm
+          disabled:opacity-50
+          transition
+        "
             >
               Ghairi
             </button>
@@ -279,13 +273,20 @@ export default function AdminQuestionsPage() {
             <button
               onClick={confirmDelete}
               disabled={deleting}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+              className="
+          rounded-lg px-4 py-2 text-sm font-medium
+          bg-(--btn-primary) text-(--btn-text)
+          hover:shadow-sm
+          disabled:opacity-60
+          transition
+        "
             >
               {deleting ? "Inafuta..." : "Ndiyo, Futa"}
             </button>
           </div>
         </div>
       </Modal>
+
 
       {/* ANSWER MODAL */}
       <Modal
@@ -295,19 +296,19 @@ export default function AdminQuestionsPage() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm font-medium">
+          <p className="text-sm font-medium text-(--text-primary)">
             {selected?.questionText}
           </p>
 
           <textarea
             rows={4}
             className="
-              w-full rounded-lg border
-              border-gray-300 dark:border-gray-700
-              bg-white dark:bg-gray-900
-              p-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500
-            "
+        w-full rounded-lg p-3
+        card border-default
+        focus:outline-none
+        focus:ring-2 focus:ring-(--btn-focus)
+        transition
+      "
             placeholder="Andika jibu hapa..."
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
@@ -315,12 +316,19 @@ export default function AdminQuestionsPage() {
 
           <button
             onClick={submitAnswer}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+            className="
+        w-full
+        bg-(--btn-primary) text-(--btn-text)
+        py-2 rounded-lg
+        hover:shadow-sm
+        transition
+      "
           >
             Tuma Jibu
           </button>
         </div>
       </Modal>
+
 
       {/* VIEW MODAL */}
       <Modal
@@ -331,15 +339,15 @@ export default function AdminQuestionsPage() {
       >
         <div className="space-y-4 text-sm">
           <div>
-            <p className="text-gray-500 mb-1">Swali</p>
-            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded">
+            <p className="opacity-70 mb-1">Swali</p>
+            <p className="card border-default p-3 rounded">
               {viewing?.questionText}
             </p>
           </div>
 
           <div>
-            <p className="text-gray-500 mb-1">Jibu</p>
-            <p className="bg-gray-100 dark:bg-gray-800 p-3 rounded">
+            <p className="opacity-70 mb-1">Jibu</p>
+            <p className="card border-default p-3 rounded">
               {viewing?.answerText || "Bado halijajibiwa"}
             </p>
           </div>
@@ -349,6 +357,7 @@ export default function AdminQuestionsPage() {
           </div>
         </div>
       </Modal>
+
     </div>
   );
 }

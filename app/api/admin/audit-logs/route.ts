@@ -1,7 +1,7 @@
-export const runtime = "nodejs";
-
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
     entity,
     description,
     ipAddress,
+    userAgent,
     createdAt,
     User:userId (
       id,

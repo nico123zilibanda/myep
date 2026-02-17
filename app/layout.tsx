@@ -1,8 +1,10 @@
 import "./globals.css";
 import AuthGate from "@/components/providers/AuthGate";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "sonner";
+
 export const metadata = {
-  title: "Mfumo wa Fursa za Vijana - Mlele",
+  title: "Mleledc.com",
 };
 
 export default function RootLayout({
@@ -12,13 +14,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sw" suppressHydrationWarning>
-      <body className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-        <AuthGate>
-          {children}
-          <Toaster richColors position="top-right" />
-
-        </AuthGate>
+      <body>
+        <ThemeProvider>
+          <AuthGate>
+            {children}
+             <Toaster richColors position="top-right" />
+          </AuthGate>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+
+

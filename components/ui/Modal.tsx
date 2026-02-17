@@ -31,7 +31,7 @@ export default function Modal({
       className="
         fixed inset-0 z-50
         flex items-center justify-center
-        bg-black/40 dark:bg-black/70
+        bg-black/40
         px-4
       "
     >
@@ -40,22 +40,21 @@ export default function Modal({
           relative w-full ${sizeClasses[size]}
           max-h-[90vh] overflow-y-auto
           rounded-xl shadow-xl
-          bg-white dark:bg-gray-900
-          border border-gray-200 dark:border-gray-800
+          card border-default
           animate-in fade-in zoom-in-95
         `}
       >
-        {/* Header */}
+        {/* HEADER */}
         <div
           className="
             sticky top-0 z-10
             flex items-center justify-between
             px-6 py-4
-            border-b border-gray-200 dark:border-gray-800
-            bg-white dark:bg-gray-900
+            border-b border-default
+            bg-inherit
           "
         >
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+          <h2 className="text-lg font-semibold text-(--text-primary)">
             {title}
           </h2>
 
@@ -63,9 +62,10 @@ export default function Modal({
             onClick={onClose}
             className="
               rounded-md p-1
-              text-gray-500 hover:text-gray-700
-              dark:text-gray-400 dark:hover:text-gray-200
-              hover:bg-gray-100 dark:hover:bg-gray-800
+              opacity-70 hover:opacity-100
+              bg-black/5
+              focus:outline-none
+              focus:ring-2 focus:ring-(--btn-focus)
               transition
             "
           >
@@ -73,8 +73,8 @@ export default function Modal({
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 text-gray-700 dark:text-gray-300">
+        {/* CONTENT */}
+        <div className="p-6 opacity-90">
           {children}
         </div>
       </div>

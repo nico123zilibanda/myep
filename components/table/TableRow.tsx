@@ -12,7 +12,8 @@ export default function TableRow({ children, className }: TableRowProps) {
   return (
     <tr
       className={clsx(
-        "border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200",
+        "border-b last:border-0 hover:opacity-80 transition-colors duration-200",
+        "border-(--border)",
         className
       )}
     >

@@ -22,24 +22,18 @@ export default function Menu({ isCollapsed, onItemClick }: MenuProps) {
     >
       {/* MENU */}
       <nav className="flex-1 text-sm space-y-6">
-        {menuItems.map(section => (
+        {menuItems.map((section) => (
           <div key={section.title}>
             {/* SECTION TITLE */}
             {!isCollapsed && (
-              <p
-                className="
-                  px-3 mb-2
-                  text-[11px] uppercase tracking-widest
-                  text-gray-400 dark:text-gray-500
-                "
-              >
+              <p className="px-3 mb-2 text-[11px] uppercase tracking-widest opacity-60">
                 {section.title}
               </p>
             )}
 
             {/* LINKS */}
             <div className="flex flex-col gap-1">
-              {section.items.map(item => {
+              {section.items.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
 
@@ -53,8 +47,8 @@ export default function Menu({ isCollapsed, onItemClick }: MenuProps) {
                       "group relative flex items-center rounded-xl px-3 py-2.5 transition-all duration-200",
                       isCollapsed ? "justify-center" : "gap-3",
                       isActive
-                        ? "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 font-medium"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        ? "bg-blue-500/10 text-blue-600 font-medium"
+                        : "opacity-80 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5"
                     )}
                   >
                     {/* ACTIVE INDICATOR */}
@@ -73,14 +67,14 @@ export default function Menu({ isCollapsed, onItemClick }: MenuProps) {
                       className={clsx(
                         "shrink-0 transition-colors",
                         isActive
-                          ? "text-blue-600 dark:text-blue-300"
-                          : "text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200"
+                          ? "text-blue-600"
+                          : "opacity-60 group-hover:opacity-100"
                       )}
                     />
 
                     {/* LABEL */}
                     {!isCollapsed && (
-                      <span className=" truncate">
+                      <span className="truncate">
                         {item.label}
                       </span>
                     )}
@@ -94,7 +88,7 @@ export default function Menu({ isCollapsed, onItemClick }: MenuProps) {
 
       {/* FOOTER */}
       {!isCollapsed && (
-        <div className="px-3 py-4 text-xs text-gray-400 dark:text-gray-500">
+        <div className="px-3 py-4 text-xs opacity-50">
           © {new Date().getFullYear()} Admin Panel
         </div>
       )}

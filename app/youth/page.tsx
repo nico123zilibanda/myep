@@ -53,13 +53,14 @@ export default function YouthDashboard() {
   }, []);
 
   return (
-    <div className="space-y-8 animate-fadeIn">
+    <div className="space-y-8 animate-fadeIn p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div className="space-y-1">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100">
+        <h1 className="text-3xl sm:text-4xl font-bold text-(--text-primary)">
           {getGreeting()} {user?.name ?? ""} 👋
         </h1>
-        <p className="text-gray-500 dark:text-gray-300 text-sm sm:text-base">
+
+        <p className="text-sm sm:text-base opacity-70">
           Hapa utaona fursa na mafunzo yaliyoandaliwa kwa ajili yako
         </p>
       </div>
@@ -88,20 +89,24 @@ export default function YouthDashboard() {
 
       {/* INFO BOX */}
       <div
-        className={`${
+        className={
           loading
-            ? "animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-xl"
-            : "bg-blue-50 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-xl p-6 flex items-start gap-3 shadow-sm"
-        }`}
+            ? "animate-pulse h-24 rounded-xl card border-default"
+            : "card border-default rounded-xl p-6 flex items-start gap-3 shadow-sm"
+        }
       >
         {!loading && (
           <>
-            <Info className="text-blue-600 dark:text-blue-400 mt-1" size={20} />
+            <div className="p-2 rounded-md bg-black/5">
+              <Info size={20} />
+            </div>
+
             <div>
-              <h3 className="font-semibold text-blue-800 dark:text-blue-300">
+              <h3 className="font-semibold text-(--text-primary)">
                 Kumbuka
               </h3>
-              <p className="text-sm text-blue-700 dark:text-blue-200">
+
+              <p className="text-sm opacity-70">
                 Fursa na mafunzo haya hayahitaji ku-apply ndani ya mfumo.
                 Utapewa maelekezo ya moja kwa moja jinsi ya kufikia fursa husika.
               </p>
@@ -110,9 +115,9 @@ export default function YouthDashboard() {
         )}
       </div>
 
-      {/* LOADING / EMPTY STATES (Optional) */}
+      {/* LOADING STATE */}
       {loading && (
-        <div className="text-center py-6 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-6 opacity-70">
           Inapakia dashboard...
         </div>
       )}

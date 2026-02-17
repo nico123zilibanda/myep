@@ -5,7 +5,7 @@ export function getRequestMetaFromReq(req: Request) {
     null;
 
   return {
-    ipAddress: ip ? ip.split(",")[0].trim() : null, // 🧠 important
+    ipAddress: ip ? ip.split(",")[0].trim() : null,
     userAgent: req.headers.get("user-agent"),
   };
 }

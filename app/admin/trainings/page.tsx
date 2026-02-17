@@ -39,7 +39,6 @@ export default function TrainingsPage() {
   const [editing, setEditing] = useState<Training | null>(null);
   const [viewing, setViewing] = useState<Training | null>(null);
 
-  // delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<Training | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -74,7 +73,6 @@ export default function TrainingsPage() {
     fetchTrainings();
   }, []);
 
-  /* Reset page on search */
   useEffect(() => {
     setPage(1);
   }, [search]);
@@ -88,13 +86,12 @@ export default function TrainingsPage() {
 
   const perPage = 5;
   const totalPages = Math.ceil(filtered.length / perPage);
-
   const paginatedData = filtered.slice(
     (page - 1) * perPage,
     page * perPage
   );
 
-  /* ================= DELETE (CONFIRMED) ================= */
+  /* ================= DELETE ================= */
   const confirmDelete = async () => {
     if (!deleteTarget) return;
 
@@ -177,10 +174,10 @@ export default function TrainingsPage() {
       {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          <h1 className="text-xl font-semibold text-(--text-primary)">
             Mafunzo
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm opacity-70">
             Articles, videos na PDFs za mafunzo
           </p>
         </div>
@@ -190,7 +187,7 @@ export default function TrainingsPage() {
             setEditing(null);
             setOpen(true);
           }}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
+          className="inline-flex items-center gap-2 rounded-lg bg-(--btn-primary) px-4 py-2 text-sm font-medium text-(--btn-text) hover:shadow-lg transition"
         >
           <Plus size={16} />
           Ongeza Mafunzo
@@ -209,55 +206,66 @@ export default function TrainingsPage() {
         <TrainingsForm initialData={editing} onSubmit={handleSubmit} />
       </Modal>
 
-      {/* DELETE CONFIRM MODAL */}
-      <Modal
-        open={!!deleteTarget}
-        onClose={() => {
-          if (!deleting) setDeleteTarget(null);
-        }}
-        title="Thibitisha Kufuta"
-        size="sm"
+{/* DELETE CONFIRM MODAL */}
+<Modal
+  open={!!deleteTarget}
+  onClose={() => { if (!deleting) setDeleteTarget(null); }}
+  title="Thibitisha Kufuta"
+  size="sm"
+>
+  <div className="space-y-4">
+    <p className="text-sm opacity-70">
+      Je, una uhakika unataka kufuta mafunzo: "
+      <span className="font-semibold text-(--text-primary)">
+        {" "}{deleteTarget?.title}
+      </span> "
+      ?
+    </p>
+
+    <p className="text-xs opacity-70">
+      Kitendo hiki hakiwezi kurejeshwa.
+    </p>
+
+    <div className="flex justify-end gap-3 pt-4">
+      <button
+        disabled={deleting}
+        onClick={() => setDeleteTarget(null)}
+        className="
+          rounded-lg px-4 py-2 text-sm
+          border border-default
+          hover:shadow-sm
+          disabled:opacity-50
+          transition
+        "
       >
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Je, una uhakika unataka kufuta mafunzo{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              "{deleteTarget?.title}"
-            </span>
-            ?
-          </p>
+        Ghairi
+      </button>
 
-          <p className="text-xs text-red-600">
-            Kitendo hiki hakiwezi kurejeshwa.
-          </p>
+      <button
+        onClick={confirmDelete}
+        disabled={deleting}
+        className="
+          rounded-lg px-4 py-2 text-sm font-medium
+          bg-(--btn-primary) text-(--btn-text)
+          hover:shadow-sm
+          disabled:opacity-60
+          transition
+        "
+      >
+        {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+      </button>
+    </div>
+  </div>
+</Modal>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              disabled={deleting}
-              onClick={() => setDeleteTarget(null)}
-              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
-            >
-              Ghairi
-            </button>
-
-            <button
-              onClick={confirmDelete}
-              disabled={deleting}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
-            >
-              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
-            </button>
-          </div>
-        </div>
-      </Modal>
 
       {/* SEARCH */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
+      <div className="card border-default p-4 shadow">
         <TableSearch value={search} onChange={setSearch} />
       </div>
 
       {/* TABLE */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
+      <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader
             columns={["Kichwa", "Aina", "Maelezo", "Resource", "Actions"]}
@@ -274,34 +282,31 @@ export default function TrainingsPage() {
               ))
             ) : paginatedData.length === 0 ? (
               <TableRow>
-                <td
-                  colSpan={5}
-                  className="px-4 py-10 text-center text-gray-500"
-                >
+                <td colSpan={5} className="px-4 py-10 text-center opacity-70">
                   Hakuna mafunzo yaliyopatikana
                 </td>
               </TableRow>
             ) : (
               paginatedData.map((t) => (
-                <TableRow key={t.id}>
-                  <td className="px-4 py-4 font-medium">
+                <TableRow key={t.id} className="hover:shadow-sm transition">
+                  <td className="px-4 py-4 font-medium text-(--text-primary)">
                     {t.title}
                   </td>
 
                   <td className="px-4 py-4">
-                    <span className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-800">
+                    <span className="px-2 py-1 text-xs rounded-full bg-(--badge-bg) text-(--badge-text)">
                       {t.type}
                     </span>
                   </td>
 
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">
+                  <td className="px-4 py-4 opacity-70 truncate max-w-xs">
                     {t.description}
                   </td>
 
                   <td className="px-4 py-4">
                     <button
                       onClick={() => handleView(t)}
-                      className="text-blue-600 hover:underline text-sm"
+                      className="text-(--btn-primary) hover:underline text-sm"
                     >
                       {t.type === "PDF" ? "Open PDF" : "View"}
                     </button>

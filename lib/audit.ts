@@ -25,6 +25,7 @@ export type AuditEntity =
   | "PROFILE"
   | "PASSWORD"
   | "QUESTION"
+  | "AUDIT_LOG"
   | "AUTH"
   | "YOUTH"
   | "SAVED_OPPORTUNITY";

@@ -1,110 +1,83 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Home,
-  User,
-  Briefcase,
-  GraduationCap,
-  FileQuestion,
-  Bookmark,
-  ChevronLeft,
-  X,
-} from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { youthMenuItems } from "./menuItems";
 import clsx from "clsx";
 
-const links = [
-  { name: "Dashboard", href: "/youth", icon: Home },
-  { name: "Fursa", href: "/youth/opportunities", icon: Briefcase },
-  { name: "Fursa Zilizohifadhiwa", href: "/youth/saved-opportunities", icon: Bookmark },
-  { name: "Mafunzo/Tangazo", href: "/youth/trainings", icon: GraduationCap },
-  { name: "Maswali", href: "/youth/questions", icon: FileQuestion },
-  { name: "Wasifu", href: "/youth/profile", icon: User },
-];
+interface YouthMenuProps {
+  isCollapsed: boolean;
+  onItemClick?: () => void;
+}
 
-export default function YouthSidebar({
-  mobileOpen,
-  onClose,
-}: {
-  mobileOpen: boolean;
-  onClose: () => void;
-}) {
+export default function YouthMenu({ isCollapsed, onItemClick }: YouthMenuProps) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
-
-  const sidebarContent = (
-    <aside
-      className={clsx(
-        "h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300",
-        collapsed ? "w-20" : "w-64"
-      )}
-    >
-      {/* Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b">
-        {!collapsed && (
-          <span className="font-bold text-blue-600 dark:text-blue-400">
-            Youth Portal
-          </span>
-        )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          <ChevronLeft
-            size={16}
-            className={clsx("transition-transform", collapsed && "rotate-180")}
-          />
-        </button>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 px-2 py-4 space-y-1">
-        {links.map((l) => {
-          const Icon = l.icon;
-          const active = pathname === l.href;
-
-          return (
-            <Link
-              key={l.name}
-              href={l.href}
-              onClick={onClose}
-              className={clsx(
-                "flex items-center gap-3 px-3 py-2.5 rounded-xl transition",
-                collapsed && "justify-center",
-                active
-                  ? "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 font-medium"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              )}
-            >
-              <Icon size={18} />
-              {!collapsed && <span>{l.name}</span>}
-            </Link>
-          );
-        })}
-      </nav>
-      {/* Footer */}
-        {!collapsed && (
-          <div className="mt-auto px-3 py-4 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-200 dark:border-gray-800">
-            © {new Date().getFullYear()} Youth Portal
-          </div>
-        )}
-    </aside>
-  );
 
   return (
-    <>
-      {/* Desktop */}
-      <div className="hidden lg:block">{sidebarContent}</div>
+    <div
+      className={clsx(
+        "flex flex-col h-full transition-all duration-300",
+        isCollapsed ? "px-1" : "px-3"
+      )}
+    >
+      {/* MENU */}
+      <nav className="flex-1 text-sm space-y-6">
+        {youthMenuItems.map((section) => (
+          <div key={section.title}>
+            {!isCollapsed && (
+              <p className="px-3 mb-2 text-[11px] uppercase tracking-widest opacity-60">
+                {section.title}
+              </p>
+            )}
 
-      {/* Mobile */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-          <div className="relative z-50 h-full w-64">{sidebarContent}</div>
+            <div className="flex flex-col gap-1">
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={onItemClick}
+                    title={isCollapsed ? item.label : undefined}
+                    className={clsx(
+                      "group relative flex items-center rounded-xl px-3 py-2.5 transition-all duration-200",
+                      isCollapsed ? "justify-center" : "gap-3",
+                      isActive
+                        ? "bg-blue-500/10 text-blue-600 font-medium"
+                        : "opacity-80 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5"
+                    )}
+                  >
+                    <span
+                      className={clsx(
+                        "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r bg-blue-500 transition-all",
+                        isActive && !isCollapsed ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+
+                    <Icon
+                      size={18}
+                      className={clsx(
+                        "shrink-0 transition-colors",
+                        isActive ? "text-blue-600" : "opacity-60 group-hover:opacity-100"
+                      )}
+                    />
+
+                    {!isCollapsed && <span className="truncate">{item.label}</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      {!isCollapsed && (
+        <div className="px-3 py-4 text-xs opacity-50">
+          © {new Date().getFullYear()} Youth Portal
         </div>
       )}
-    </>
+    </div>
   );
 }

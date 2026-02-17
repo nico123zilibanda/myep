@@ -1,6 +1,8 @@
 "use client";
 
+import { CategoryInput } from "@/lib/validators/category";
 import { useEffect, useState } from "react";
+
 import DataTable from "@/components/table/DataTable";
 import TableHeader from "@/components/table/TableHeader";
 import TableRow from "@/components/table/TableRow";
@@ -10,10 +12,12 @@ import ActionButtons from "@/components/table/ActionButtons";
 import Modal from "@/components/ui/Modal";
 import CategoryForm from "@/components/forms/CategoryForm";
 import { Skeleton } from "@/components/ui/Skeleton";
+
 import { showSuccess, showError } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
+
 interface Category {
   id: number;
   name: string;
@@ -21,12 +25,12 @@ interface Category {
 }
 
 /* ================= PAGE ================= */
+
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
 
-  // delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -35,13 +39,16 @@ export default function CategoriesPage() {
   const [loading, setLoading] = useState(false);
 
   /* ================= FETCH ================= */
+
   const fetchCategories = async () => {
     try {
       setLoading(true);
+
       const res = await fetch("/api/admin/categories", {
         credentials: "include",
         cache: "no-store",
       });
+
       const json = await res.json();
 
       if (!res.ok) {
@@ -62,31 +69,35 @@ export default function CategoriesPage() {
     fetchCategories();
   }, []);
 
+  /* ================= ENSURE EDIT DATA BEFORE MODAL ================= */
+
+  useEffect(() => {
+    if (editing) setOpen(true);
+  }, [editing]);
+
   /* ================= FILTER + PAGINATION ================= */
+
   const filtered = categories.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
+
   const perPage = 5;
   const totalPages = Math.ceil(filtered.length / perPage);
-  const paginatedData = filtered.slice(
-    (page - 1) * perPage,
-    page * perPage
-  );
 
-  /* ================= DELETE (CONFIRMED) ================= */
+  const paginatedData = filtered.slice((page - 1) * perPage, page * perPage);
+
+  /* ================= DELETE ================= */
+
   const confirmDelete = async () => {
     if (!deleteTarget) return;
 
     try {
       setDeleting(true);
 
-      const res = await fetch(
-        `/api/admin/categories/${deleteTarget.id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`/api/admin/categories/${deleteTarget.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       const json = await res.json();
 
@@ -95,9 +106,7 @@ export default function CategoriesPage() {
         return;
       }
 
-      setCategories((prev) =>
-        prev.filter((c) => c.id !== deleteTarget.id)
-      );
+      setCategories((prev) => prev.filter((c) => c.id !== deleteTarget.id));
 
       showSuccess("CATEGORY_DELETE_SUCCESS");
       setDeleteTarget(null);
@@ -109,19 +118,18 @@ export default function CategoriesPage() {
     }
   };
 
-  /* ================= CREATE ================= */
-  const handleSubmit = async (form: {
-    name: string;
-    description?: string;
-  }) => {
-    if (editing) {
-      await handleEdit(editing.id, form.name, form.description);
-      return;
-    }
+  /* ================= CREATE / UPDATE ================= */
 
+  const handleSubmit = async (form: CategoryInput) => {
     try {
-      const res = await fetch("/api/admin/categories", {
-        method: "POST",
+      const url = editing
+        ? `/api/admin/categories/${editing.id}`
+        : "/api/admin/categories";
+
+      const method = editing ? "PATCH" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(form),
@@ -129,76 +137,60 @@ export default function CategoriesPage() {
 
       const json = await res.json();
 
+      // 🔥 IMPORTANT PART — field validation
       if (!res.ok) {
+        if (json.errors) {
+          // RHF itazipokea (Step 2)
+          throw { fieldErrors: json.errors };
+        }
+
         showError((json.messageKey as MessageKey) || "ACTION_FAILED");
         return;
       }
 
-      setCategories((prev) => [json.data, ...prev]);
-      setOpen(false);
-      showSuccess("CATEGORY_CREATE_SUCCESS");
-    } catch (error) {
-      console.error("Create error:", error);
-      showError("ACTION_FAILED");
-    }
-  };
-
-  /* ================= EDIT ================= */
-  const handleEdit = async (
-    id: number,
-    name: string,
-    description?: string
-  ) => {
-    try {
-      const res = await fetch(`/api/admin/categories/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ name, description }),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        showError((json.messageKey as MessageKey) || "ACTION_FAILED");
-        return;
-      }
-
-      setCategories((prev) =>
-        prev.map((c) => (c.id === id ? json.data : c))
+      showSuccess(
+        editing ? "CATEGORY_UPDATE_SUCCESS" : "CATEGORY_CREATE_SUCCESS"
       );
 
       setOpen(false);
       setEditing(null);
-      showSuccess("CATEGORY_UPDATE_SUCCESS");
-    } catch (error) {
-      console.error("PATCH error:", error);
+
+      await fetchCategories();
+    } catch (err: any) {
+      console.error("Save category error:", err);
+
+      // pass field errors to form
+      if (err?.fieldErrors) {
+        throw err;
+      }
+
       showError("ACTION_FAILED");
     }
   };
 
   /* ================= UI ================= */
+
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      {/* Header */}
+      {/* HEADER */}
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-          Kategoria
-        </h1>
+        <h1 className="text-2xl font-bold text-(--text-primary)">Kategoria</h1>
+
         <button
           onClick={() => {
             setEditing(null);
             setOpen(true);
           }}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-shadow shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-300 px-5 py-2 text-sm font-medium"
         >
           + Ongeza Kategori
         </button>
       </div>
 
-      {/* CREATE / EDIT MODAL */}
+      {/* FORM MODAL */}
+
       <Modal
-        key={editing ? editing.id : "new"}
         title={editing ? "Hariri Kategori" : "Ongeza Kategori"}
         open={open}
         onClose={() => {
@@ -208,60 +200,43 @@ export default function CategoriesPage() {
         size="sm"
       >
         <CategoryForm
-          initialData={editing || undefined}
+          initialData={editing ?? undefined}
           onSubmit={handleSubmit}
         />
       </Modal>
 
-      {/* DELETE CONFIRM MODAL */}
+      {/* DELETE MODAL */}
+
       <Modal
         open={!!deleteTarget}
-        onClose={() => {
-          if (!deleting) setDeleteTarget(null);
-        }}
+        onClose={() => !deleting && setDeleteTarget(null)}
         title="Thibitisha Kufuta"
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Je, una uhakika unataka kufuta category{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              "{deleteTarget?.name}"
-            </span>
-            ?
+          <p>
+            Je, unataka kufuta <b>{deleteTarget?.name}</b> ?
           </p>
 
-          <p className="text-xs text-red-600">
-            Kitendo hiki hakiwezi kurejeshwa.
-          </p>
+          <div className="flex justify-end gap-3">
+            <button onClick={() => setDeleteTarget(null)}>Ghairi</button>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              disabled={deleting}
-              onClick={() => setDeleteTarget(null)}
-              className="rounded-lg px-4 py-2 text-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
-            >
-              Ghairi
-            </button>
-
-            <button
-              onClick={confirmDelete}
-              disabled={deleting}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
-            >
+            <button onClick={confirmDelete}>
               {deleting ? "Inafuta..." : "Ndiyo, Futa"}
             </button>
           </div>
         </div>
       </Modal>
 
-      {/* Search */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
+      {/* SEARCH */}
+
+      <div className="card border-default p-4 shadow">
         <TableSearch value={search} onChange={setSearch} />
       </div>
 
-      {/* Table */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
+      {/* TABLE */}
+
+      <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader columns={["Jina", "Maelezo", "Actions"]} />
 
@@ -269,41 +244,31 @@ export default function CategoriesPage() {
             {loading ? (
               Array.from({ length: 5 }).map((_, idx) => (
                 <TableRow key={idx}>
-                  <td colSpan={3} className="px-4 py-6">
+                  <td colSpan={5} className="px-4 py-6">
                     <Skeleton className="h-4 w-full rounded" />
                   </td>
                 </TableRow>
               ))
             ) : paginatedData.length === 0 ? (
               <TableRow>
-                <td
-                  colSpan={3}
-                  className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
-                >
+                <td colSpan={3} className="px-4 py-10 text-center opacity-70">
                   Hakuna category
                 </td>
               </TableRow>
             ) : (
               paginatedData.map((cat) => (
-                <TableRow
-                  key={cat.id}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <td className="px-4 py-4 font-medium">
-                    {cat.name}
-                  </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300">
-                    {cat.description || "-"}
-                  </td>
+                <TableRow key={cat.id}>
                   <td className="px-4 py-4">
+                    {cat.name}
+                    </td>
+                  <td className="px-4 py-4">
+                    {cat.description || "-"}
+                    </td>
+                  <td>
                     <ActionButtons
-                      onEdit={() => {
-                        setEditing(cat);
-                        setOpen(true);
-                      }}
+                      onEdit={() => setEditing(cat)}
                       onDelete={() => setDeleteTarget(cat)}
                     />
-
                   </td>
                 </TableRow>
               ))
@@ -312,12 +277,9 @@ export default function CategoriesPage() {
         </DataTable>
       </div>
 
-      {/* Pagination */}
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      {/* PAGINATION */}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

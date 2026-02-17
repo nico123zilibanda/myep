@@ -4,52 +4,38 @@ import { getCurrentUser } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 import { getRequestMetaFromReq } from "@/lib/requestMeta";
 import { MessageKey } from "@/lib/messages";
+import { CategorySchema } from "@/lib/validators/category";
 
-// ================= GET ALL CATEGORIES =================
+// ================= GET ALL =================
 export async function GET() {
   try {
     const user = await getCurrentUser();
 
     if (!user || user.role !== "ADMIN") {
       return NextResponse.json(
-        {
-          success: false,
-          messageKey: "UNAUTHORIZED" satisfies MessageKey,
-        },
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
         { status: 401 }
       );
     }
 
-    const { data: categories, error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("Category")
       .select("*")
       .order("createdAt", { ascending: false });
 
-    if (error) {
-      console.error("SUPABASE GET CATEGORIES ERROR:", error);
-      return NextResponse.json(
-        {
-          success: false,
-          messageKey: "CATEGORY_FETCH_FAILED" satisfies MessageKey,
-        },
-        { status: 500 }
-      );
-    }
+    if (error) throw error;
 
-    return NextResponse.json({ success: true, data: categories });
+    return NextResponse.json({ success: true, data });
   } catch (err) {
-    console.error("CATEGORIES GET ERROR:", err);
+    console.error(err);
     return NextResponse.json(
-      {
-        success: false,
-        messageKey: "SERVER_ERROR" satisfies MessageKey,
-      },
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
       { status: 500 }
     );
   }
 }
 
-// ================= CREATE CATEGORY =================
+// ================= CREATE =================
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();
@@ -57,27 +43,28 @@ export async function POST(req: Request) {
 
     if (!user || user.role !== "ADMIN") {
       return NextResponse.json(
-        {
-          success: false,
-          messageKey: "UNAUTHORIZED" satisfies MessageKey,
-        },
+        { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
         { status: 401 }
       );
     }
 
-    const { name, description } = await req.json();
+    const body = await req.json();
+    const parsed = CategorySchema.safeParse(body);
 
-    if (!name) {
+    if (!parsed.success) {
       return NextResponse.json(
         {
           success: false,
-          messageKey: "ACTION_FAILED" satisfies MessageKey,
+          messageKey: "VALIDATION_ERROR",
+          errors: parsed.error.flatten().fieldErrors,
         },
         { status: 400 }
       );
     }
 
-    const { data: category, error } = await supabaseAdmin
+    const { name, description } = parsed.data;
+
+    const { data, error } = await supabaseAdmin
       .from("Category")
       .insert({ name, description })
       .select()
@@ -85,12 +72,11 @@ export async function POST(req: Request) {
 
     if (error) throw error;
 
-    // Audit log
     logAudit({
       action: "CREATE",
       entity: "CATEGORY",
-      entityId: category.id,
-      description: `Category "${category.name}" created`,
+      entityId: data.id,
+      description: `Category "${data.name}" created`,
       userId: user.id,
       role: user.role,
       ipAddress: meta.ipAddress,
@@ -101,17 +87,14 @@ export async function POST(req: Request) {
       {
         success: true,
         messageKey: "CATEGORY_CREATE_SUCCESS" satisfies MessageKey,
-        data: category,
+        data,
       },
       { status: 201 }
     );
   } catch (err) {
-    console.error("CATEGORY POST ERROR:", err);
+    console.error(err);
     return NextResponse.json(
-      {
-        success: false,
-        messageKey: "SERVER_ERROR" satisfies MessageKey,
-      },
+      { success: false, messageKey: "SERVER_ERROR" satisfies MessageKey },
       { status: 500 }
     );
   }

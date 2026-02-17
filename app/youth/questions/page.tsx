@@ -7,6 +7,7 @@ import { showError } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
+
 interface Question {
   id: number;
   questionText: string;
@@ -21,13 +22,14 @@ interface ApiResponse<T = any> {
 }
 
 /* ================= PAGE ================= */
+
 export default function YouthQuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /* ================= FETCH QUESTIONS ================= */
   const fetchQuestions = async () => {
     setLoading(true);
+
     try {
       const res = await fetch("/api/youth/questions", {
         credentials: "include",
@@ -57,15 +59,15 @@ export default function YouthQuestionsPage() {
   }, []);
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto p-6">
-      {/* Ask question */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Ask Question */}
+      <div className="border border-default rounded-xl p-6">
         <QuestionForm onSuccess={fetchQuestions} />
       </div>
 
-      {/* My questions */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+      {/* My Questions */}
+      <div className="border border-default rounded-xl p-6">
+        <h2 className="text-xl font-semibold mb-4 text-(--text-primary)">
           Maswali Yangu
         </h2>
 
@@ -73,35 +75,36 @@ export default function YouthQuestionsPage() {
         {loading && (
           <div className="space-y-4 animate-pulse">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+              <div key={i} className="h-24 bg-black/10 rounded-xl" />
             ))}
           </div>
         )}
 
-        {/* Empty state */}
+        {/* Empty */}
         {!loading && questions.length === 0 && (
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm opacity-70">
             Bado hujauliza swali lolote
           </p>
         )}
 
-        {/* Questions list */}
+        {/* Questions */}
         {!loading && questions.length > 0 && (
           <div className="space-y-4 max-h-125 overflow-y-auto">
             {questions.map((q) => (
               <div
                 key={q.id}
-                className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-2 hover:shadow-sm transition-shadow duration-200"
+                className="border border-default rounded-xl p-4 space-y-2 hover:shadow-sm transition"
               >
-                <div className="flex justify-between items-start">
-                  <p className="font-medium text-gray-800 dark:text-gray-100 truncate">
+                <div className="flex justify-between items-start gap-3">
+                  <p className="font-medium text-(--text-primary) truncate">
                     {q.questionText}
                   </p>
+
                   <StatusBadge status={q.status} />
                 </div>
 
                 {q.answerText && (
-                  <div className="bg-green-50 dark:bg-green-900 p-3 rounded text-sm text-gray-700 dark:text-green-100">
+                  <div className="bg-green-500/10 p-3 rounded text-sm">
                     <strong>Jibu:</strong> {q.answerText}
                   </div>
                 )}

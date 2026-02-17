@@ -7,21 +7,26 @@ import TableRow from "@/components/table/TableRow";
 import TableSearch from "@/components/table/TableSearch";
 import Pagination from "@/components/table/Pagination";
 import { Skeleton } from "@/components/ui/Skeleton";
+import Modal from "@/components/ui/Modal";
+import ActionButtons from "@/components/table/ActionButtons";
+import { showSuccess, showError } from "@/lib/toast";
 
 /* ================= TYPES ================= */
-interface AuditLog {
+interface User {
+  id: string;
   fullName: string;
-  id: number;
+  email: string;
+}
+
+interface AuditLog {
+  userAgent: string | null;
+  id: string;
   action: string;
   entity: string;
   description?: string | null;
   ipAddress?: string | null;
   createdAt: string;
-    User?: {
-    id: number;
-    fullName: string;
-    email: string;
-  } | null;
+  User?: User | null;
 }
 
 /* ================= PAGE ================= */
@@ -30,6 +35,10 @@ export default function AuditLogsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AuditLog | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const perPage = 8;
 
   /* ================= FETCH ================= */
   const fetchLogs = async () => {
@@ -40,16 +49,17 @@ export default function AuditLogsPage() {
         cache: "no-store",
       });
 
+      const result = await res.json();
+
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to load audit logs");
+        throw new Error(result.messageKey || "SERVER_ERROR");
       }
 
-      const result = await res.json();
       setLogs(result.data || []);
-    } catch (error: any) {
-      console.error("Fetch audit logs error:", error);
-      alert(error.message);
+    } catch (err: any) {
+      console.error("Fetch audit logs error:", err);
+      showError(err.message || "SERVER_ERROR");
+      setLogs([]);
     } finally {
       setLoading(false);
     }
@@ -60,104 +70,179 @@ export default function AuditLogsPage() {
   }, []);
 
   /* ================= FILTER + PAGINATION ================= */
-  const filtered = logs.filter(
-    (log) =>
-      log.action.toLowerCase().includes(search.toLowerCase()) ||
-      log.entity.toLowerCase().includes(search.toLowerCase()) ||
-      (log.description ?? "").toLowerCase().includes(search.toLowerCase())
+  const filtered = logs.filter((log) =>
+    [log.action, log.entity, log.description ?? ""]
+      .some((field) => field.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const perPage = 8;
   const totalPages = Math.ceil(filtered.length / perPage);
-  const paginatedData = filtered.slice(
-    (page - 1) * perPage,
-    page * perPage
-  );
+  const paginatedData = filtered.slice((page - 1) * perPage, page * perPage);
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      setDeleting(true);
+
+      const res = await fetch(
+        `/api/admin/audit-logs/${deleteTarget.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey || "SERVER_ERROR");
+        return;
+      }
+
+      showSuccess(data.messageKey);
+
+      setLogs(prev => prev.filter(l => l.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch {
+      showError("SERVER_ERROR");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  function getDeviceName(userAgent?: string | null) {
+    if (!userAgent) return "-";
+
+    const ua = userAgent.toLowerCase();
+
+    if (ua.includes("windows")) return "Windows";
+    if (ua.includes("mac os")) return "Mac Os";
+    if (ua.includes("android")) return "Android";
+    if (ua.includes("iphone")) return "iPhone";
+    if (ua.includes("ipad")) return "iPad";
+    if (ua.includes("linux")) return "Linux";
+
+    return "Unknown Device";
+  }
 
   /* ================= UI ================= */
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+        <h1 className="text-2xl font-bold text-(--text-primary)">
           Audit Logs
         </h1>
       </div>
 
-      {/* Search */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow border border-gray-200 dark:border-gray-800">
+      {/* SEARCH */}
+      <div className="card border-default p-4 shadow">
         <TableSearch value={search} onChange={setSearch} />
       </div>
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => { if (!deleting) setDeleteTarget(null); }}
+        title="Thibitisha Kufuta"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm opacity-70">
+            Una uhakika unataka kufuta audit hii?
+          </p>
 
-      {/* Table */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto transition-all duration-200">
+          <p className="text-xs opacity-70">
+            Kitendo hiki hakiwezi kurejeshwa.
+          </p>
+
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              disabled={deleting}
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-lg px-4 py-2 text-sm border border-default"
+            >
+              Ghairi
+            </button>
+
+            <button
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="rounded-lg px-4 py-2 text-sm font-medium bg-(--btn-primary) text-(--btn-text)"
+            >
+              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* TABLE */}
+      <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={[
-              "Action",
-              "Entity",
-              "Description",
-              "User",
-              "IP Address",
-              "Date",
-            ]}
+            columns={["Action", "Entity", "Description", "User", "IP Address", "Mac Address", "Date", "Remove"]}
           />
 
           <tbody>
-            {loading ? (
-              Array.from({ length: perPage }).map((_, idx) => (
+            {loading
+              ? Array.from({ length: perPage }).map((_, idx) => (
                 <TableRow key={idx}>
-                  <td colSpan={6} className="px-4 py-6">
+                  <td colSpan={8} className="px-4 py-6">
                     <Skeleton className="h-4 w-full rounded" />
                   </td>
                 </TableRow>
               ))
-            ) : paginatedData.length === 0 ? (
-              <TableRow>
-                <td
-                  colSpan={6}
-                  className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
-                >
-                  Hakuna audit logs
-                </td>
-              </TableRow>
-            ) : (
-              paginatedData.map((log) => (
-                <TableRow
-                  key={log.id}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <td className="px-4 py-4 font-medium text-blue-600 dark:text-blue-400">
-                    {log.action}
-                  </td>
-                  <td className="px-4 py-4 text-gray-700 dark:text-gray-300">
-                    {log.entity}
-                  </td>
-                  <td className="px-4 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">
-                    {log.description || "-"}
-                  </td>
-                  <td className="px-4 py-4 text-gray-700 dark:text-gray-300">
-                     {log.User?.fullName ?? "-"}
-                  </td>
-                  <td className="px-4 py-4 text-gray-500 dark:text-gray-400">
-                    {log.ipAddress ?? "-"}
-                  </td>
-                  <td className="px-4 py-4 text-gray-500 dark:text-gray-400">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </td>
-                </TableRow>
-              ))
-            )}
+              : paginatedData.length === 0
+                ? (
+                  <TableRow>
+                    <td
+                      colSpan={6}
+                      className="px-4 py-8 text-center opacity-70"
+                    >
+                      Hakuna audit logs
+                    </td>
+                  </TableRow>
+                )
+                : paginatedData.map((log) => (
+                  <TableRow
+                    key={log.id}
+                    className="hover:shadow-sm transition"
+                  >
+                    <td className="px-4 py-4 font-medium text-(--text-primary)">
+                      {log.action}
+                    </td>
+                    <td className="px-4 py-4 text-(--text-secondary)">
+                      {log.entity}
+                    </td>
+                    <td className="px-4 py-4 opacity-70 truncate max-w-xs">
+                      {log.description || "-"}
+                    </td>
+                    <td className="px-4 py-4 text-(--text-secondary)">
+                      {log.User?.fullName ?? "-"}
+                    </td>
+                    <td className="px-4 py-4 opacity-70">
+                      {log.ipAddress ?? "-"}
+                    </td>
+                    <td className="px-4 py-4 opacity-70">
+                      {getDeviceName(log.userAgent)}
+                    </td>
+
+                    <td className="px-4 py-4 opacity-70">
+                      {new Date(log.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-4">
+                      <ActionButtons
+                        onDelete={() => setDeleteTarget(log)}
+                      />
+                    </td>
+
+                  </TableRow>
+                ))}
           </tbody>
         </DataTable>
+
       </div>
 
-      {/* Pagination */}
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      {/* PAGINATION */}
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

@@ -13,6 +13,9 @@ export const messages = {
 
   AUTH_LOGOUT_SUCCESS: "Umetoka kwenye mfumo salama.",
 
+  // ================= AUDIT-LOGS =================
+  AUDIT_DELETE_SUCCESS: "Kumbukumbu imefutwa kikamilifu",
+  AUDIT_NOT_FOUND: "Audit haijapatikana",
   // ================= CATEGORY =================
   CATEGORY_CREATE_SUCCESS: "Category imeongezwa kwa mafanikio.",
   CATEGORY_UPDATE_SUCCESS: "Category imehaririwa kwa mafanikio.",
@@ -21,7 +24,7 @@ export const messages = {
   CATEGORY_NOT_FOUND: "Category haijapatikana.",
   CATEGORY_FETCH_FAILED: "Imeshindikana kupata categories.",
 
-    // ================= OPPORTUNITY =================
+  // ================= OPPORTUNITY =================
   OPPORTUNITY_CREATE_SUCCESS: "Fursa imeongezwa kwa mafanikio.",
   OPPORTUNITY_UPDATE_SUCCESS: "Fursa imehaririwa kwa mafanikio.",
   OPPORTUNITY_FAILED_DELETED: "Fursa haijafutwa kwa mafanikio.",
@@ -29,27 +32,28 @@ export const messages = {
   OPPORTUNITY_NOT_FOUND: "Fursa haijapatikana.",
   OPPORTUNITY_FETCH_FAILED: "Imeshindikana kupata Fursa.",
 
-    // ================= TRAINING =================
+  // ================= TRAINING =================
   TRAINING_CREATE_SUCCESS: "Funzo limeongezwa kwa mafanikio.",
   TRAINING_UPDATE_SUCCESS: "Funzo limehaririwa kwa mafanikio.",
   TRAINING_DELETE_SUCCESS: "Funzo limefutwa kwa mafanikio.",
   TRAINING_NOT_FOUND: "Funzo halijapatikana.",
   TRAINING_FETCH_FAILED: "Imeshindikana kupata Mafunzo.",
 
-// ================= QUESTIONS =================
-QUESTION_FETCH_SUCCESS: "Maswali yamepatikana.",
-QUESTION_FETCH_FAILED: "Imeshindikana kupata maswali.",
+  // ================= QUESTIONS =================
+  QUESTION_FETCH_SUCCESS: "Maswali yamepatikana.",
+  QUESTION_FETCH_FAILED: "Imeshindikana kupata maswali.",
+  QUESTION_SAVED: "swali limejibiwa kikamilifu",
 
-QUESTION_CREATE_SUCCESS: "Swali lako limewasilishwa kikamilifu.",
-QUESTION_CREATE_FAILED: "Imeshindikana kuwasilisha swali.",
+  QUESTION_CREATE_SUCCESS: "Swali lako limewasilishwa kikamilifu.",
+  QUESTION_CREATE_FAILED: "Imeshindikana kuwasilisha swali.",
 
-QUESTION_UPDATE_SUCCESS: "Jibu limehifadhiwa kikamilifu.",
-QUESTION_UPDATE_FAILED: "Imeshindikana kuhifadhi jibu.",
+  QUESTION_UPDATE_SUCCESS: "Jibu limehifadhiwa kikamilifu.",
+  QUESTION_UPDATE_FAILED: "Imeshindikana kuhifadhi jibu.",
 
-QUESTION_DELETE_SUCCESS: "Swali limefutwa kikamilifu.",
-QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
+  QUESTION_DELETE_SUCCESS: "Swali limefutwa kikamilifu.",
+  QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
 
-        // ================= YOUTH =================
+  // ================= YOUTH =================
   YOUTH_CREATE_SUCCESS: "Kijana ameongezwa kwa mafanikio.",
   YOUTH_UPDATE_SUCCESS: "Kijana amehaririwa kwa mafanikio.",
   YOUTH_DELETE_SUCCESS: "Kijana amefutwa kwa mafanikio.",
@@ -57,7 +61,7 @@ QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
   YOUTH_FETCH_FAILED: "Imeshindikana kupata vijana.",
   YOUTH_STATUS_UPDATE_SUCCESS: " Status imehariliwa kikamilifu",
 
-          // ================= PASSWORD =================
+  // ================= PASSWORD =================
   PASSWORD_CHANGED: "Password amehaririwa kwa mafanikio.",
   INVALID_PASSWORD: "Neno siri halifanani, jalibu tena.",
   PASSWORD_FETCH_FAILED: "Imeshindikana kupata vijana.",
@@ -70,10 +74,10 @@ QUESTION_DELETE_FAILED: "Imeshindikana kufuta swali.",
   SERVER_ERROR: "Hitilafu ya mfumo. Tafadhali jaribu tena baadaye.",
 
   // ================= CONFIRMATION =================
-CONFIRM_DELETE_TITLE: "Thibitisha Kufuta",
-CONFIRM_DELETE_DESCRIPTION:
-  "Je, una uhakika unataka kufuta taarifa hii? Kitendo hiki hakiwezi kurejeshwa.",
+  CONFIRM_DELETE_TITLE: "Thibitisha Kufuta",
+  CONFIRM_DELETE_DESCRIPTION:
+    "Je, una uhakika unataka kufuta taarifa hii? Kitendo hiki hakiwezi kurejeshwa.",
 
-CONFIRM_ACTION_YES: "Ndiyo, Futa",
-CONFIRM_ACTION_CANCEL: "Ghairi",
+  CONFIRM_ACTION_YES: "Ndiyo, Futa",
+  CONFIRM_ACTION_CANCEL: "Ghairi",
 } as const;

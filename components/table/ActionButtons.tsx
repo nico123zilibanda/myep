@@ -27,7 +27,7 @@ export default function ActionButtons({
         <button
           onClick={onView}
           title="Angalia"
-          className={`${base} text-gray-600 hover:bg-gray-100 focus:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-800`}
+          className={`${base} text-(--foreground) hover:opacity-80 focus:ring-(--border)`}
         >
           <Eye size={16} />
         </button>
@@ -38,7 +38,7 @@ export default function ActionButtons({
         <button
           onClick={onEdit}
           title="Hariri"
-          className={`${base} text-blue-600 hover:bg-blue-100 focus:ring-blue-400 dark:text-blue-400 dark:hover:bg-blue-900`}
+          className={`${base} text-blue-600 hover:opacity-80 focus:ring-blue-400`}
         >
           <Pencil size={16} />
         </button>
@@ -49,18 +49,18 @@ export default function ActionButtons({
         <button
           onClick={onPublish}
           title="Chapisha"
-          className={`${base} text-green-600 hover:bg-green-100 focus:ring-green-400 dark:text-green-400 dark:hover:bg-green-900`}
+          className={`${base} text-green-600 hover:opacity-80 focus:ring-green-400`}
         >
           <CheckCircle size={16} />
         </button>
       )}
 
-      {/* DELETE (DESTRUCTIVE) */}
+      {/* DELETE */}
       {onDelete && (
         <button
           onClick={onDelete}
           title="Futa"
-          className={`${base} text-red-600 hover:bg-red-100 focus:ring-red-400 dark:text-red-400 dark:hover:bg-red-900`}
+          className={`${base} text-red-600 hover:opacity-80 focus:ring-red-400`}
         >
           <Trash2 size={16} />
         </button>

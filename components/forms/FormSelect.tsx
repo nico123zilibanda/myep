@@ -24,7 +24,6 @@ export default function FormSelect({
 }: FormSelectProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      {/* LABEL */}
       <label
         htmlFor={name}
         className="text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -33,7 +32,6 @@ export default function FormSelect({
         {required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
 
-      {/* SELECT */}
       <select
         id={name}
         name={name}
@@ -41,32 +39,35 @@ export default function FormSelect({
         onChange={onChange}
         aria-invalid={!!error}
         className={`
-          rounded-lg border
-          bg-white dark:bg-gray-900
-          px-3 py-2.5 text-sm
-          text-gray-800 dark:text-gray-100
+          w-full rounded-xl
+          border border-(--border)
+          bg-(--card)
+          px-4 py-2.5 text-sm
+          text-(--foreground)
+          placeholder:opacity-50
           transition-all duration-200
-          focus:outline-none focus:ring-2
-          ${
-            error
-              ? "border-red-500 focus:ring-red-500"
-              : "border-gray-300 dark:border-gray-700 focus:ring-blue-500"
-          }
+          focus:outline-none focus:ring-2 focus:ring-(--btn-focus)
+          disabled:opacity-50 disabled:cursor-not-allowed
+          ${error ? "border-red-500 focus:ring-red-500" : ""}
         `}
       >
-        <option value="">Chagua</option>
-        {options.map(opt => (
-          <option key={opt.value} value={opt.value}>
+        <option value="" className="bg-white dark:bg-gray-900">
+          Chagua
+        </option>
+
+        {options.map((opt) => (
+          <option
+            key={opt.value}
+            value={opt.value}
+            className="bg-white dark:bg-gray-900"
+          >
             {opt.label}
           </option>
         ))}
       </select>
 
-      {/* ERROR */}
       {error && (
-        <span className="text-xs text-red-600 dark:text-red-400">
-          {error}
-        </span>
+        <span className="text-xs text-red-600 dark:text-red-400">{error}</span>
       )}
     </div>
   );

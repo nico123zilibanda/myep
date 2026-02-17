@@ -112,11 +112,12 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
     <form
       onSubmit={handleSubmit}
       className="
-        space-y-6
-        bg-white dark:bg-gray-900
-        p-6 rounded-xl
-        border border-gray-200 dark:border-gray-800
-        shadow-sm
+    space-y-6
+    bg-(--card)
+    p-6 rounded-xl
+    border border-(--border)
+    shadow-sm
+    transition-colors
       "
     >
       {/* TITLE */}
@@ -156,12 +157,19 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
           <label className="font-medium text-gray-700">
             Upload {form.type}
           </label>
+
           <input
             type="file"
             accept={form.type === "VIDEO" ? "video/*" : "application/pdf"}
             onChange={handleFileChange}
-            className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className=" 
+            border rounded-lg p-2
+            bg-(--card) border-(--border)
+            text-(--foreground)
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+            transition hover:opacity-80"
           />
+          
           {file && (
             <p className="text-xs text-green-600 mt-1">
               ✔ {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
@@ -185,13 +193,11 @@ export default function TrainingsForm({ onSubmit, initialData }: TrainingsFormPr
       <button
         type="submit"
         className="
-          w-full
-          flex items-center justify-center gap-2
-          bg-blue-600 hover:bg-blue-700
-          disabled:bg-blue-400
-          text-white py-3 rounded-lg
-          font-medium shadow-sm
-          transition
+            w-full flex items-center justify-center gap-2
+            bg-blue-600 hover:bg-blue-700
+            text-white py-3 rounded-lg
+            font-medium shadow-sm
+            transition
         "
       >
         {submitting && <Loader2 className="h-5 w-5 animate-spin" />}

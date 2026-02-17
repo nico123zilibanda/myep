@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Menu as MenuIcon, MessageCircle, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -12,15 +11,32 @@ type NavbarProps = {
     email: string;
     fullName: string;
     role: "ADMIN" | "YOUTH";
-    image?: string | null;
+    image?: string | null; // unused, we will show initials
   };
-  onMenuClick?: () => void; // ✅ ADDED
+  onMenuClick?: () => void;
 };
 
 export default function Navbar({ user, onMenuClick }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const router = useRouter();
+
+  // Function to get initials from fullName
+  const getInitials = (name: string) => {
+    const names = name.trim().split(" ");
+    if (names.length === 1) return names[0][0].toUpperCase();
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  };
+
+  // Dynamic color based on user name
+  const stringToColor = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${hash % 360}, 60%, 50%)`;
+  };
+  const userColor = stringToColor(user.fullName);
 
   useEffect(() => {
     if (user.role !== "ADMIN") return;
@@ -33,7 +49,7 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
         });
         const data = await res.json();
         setUnreadCount(Number(data.count) || 0);
-      } catch { }
+      } catch {}
     };
 
     loadCount();
@@ -45,28 +61,25 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
         method: "POST",
         credentials: "include",
       });
-
       const data = await res.json();
-
       toast.success(data.message || "Umetoka kwenye mfumo");
-
       router.replace("/login");
     } catch (err) {
       toast.error("Imeshindikana kutoka. Jaribu tena.");
     }
   };
 
-
   return (
     <header
       className="
         sticky top-0 z-40
         h-16 w-full
-        bg-white/80 dark:bg-gray-900/80
+        bg-(--card)/80
         backdrop-blur
-        border-b border-gray-200 dark:border-gray-800
+        border-b border-(--border)
         flex items-center justify-between
         px-4 md:px-6
+        transition-colors
       "
     >
       {/* LEFT */}
@@ -74,18 +87,12 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
         {/* MOBILE MENU BUTTON */}
         <button
           onClick={onMenuClick}
-          className="
-            lg:hidden
-            p-2 rounded-lg
-            text-gray-600 dark:text-gray-300
-            hover:bg-gray-100 dark:hover:bg-gray-800
-            transition
-          "
+          className="lg:hidden p-2 rounded-lg text-(--foreground) hover:opacity-80 transition"
         >
           <MenuIcon size={22} />
         </button>
 
-        <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-100 hidden md:block">
+        <h1 className="text-lg font-semibold text-(--foreground) hidden md:block">
           Admin Dashboard
         </h1>
       </div>
@@ -96,12 +103,7 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
         {user.role === "ADMIN" && (
           <button
             onClick={() => router.push("/admin/questions")}
-            className="
-              relative p-2 rounded-xl
-              text-gray-600 dark:text-gray-300
-              hover:bg-gray-100 dark:hover:bg-gray-800
-              transition
-            "
+            className="relative p-2 rounded-xl text-(--foreground) hover:opacity-80 transition"
           >
             <MessageCircle size={20} />
             {unreadCount > 0 && (
@@ -112,64 +114,58 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
           </button>
         )}
 
-        {/* User */}
+        {/* User avatar + initials */}
         <div
-          onClick={() => setOpen(v => !v)}
-          className="
-            flex items-center gap-2 cursor-pointer
-            rounded-xl px-2 py-1.5
-            hover:bg-gray-100 dark:hover:bg-gray-800
-            transition
-          "
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-2 cursor-pointer rounded-xl px-2 py-1.5 hover:opacity-80 transition"
         >
-          <Image
-            src={user.image || "/avatar.png"}
-            alt="avatar"
-            width={34}
-            height={34}
-            className="rounded-full border border-gray-300 dark:border-gray-700"
-          />
-
-          <div className="hidden md:flex flex-col leading-tight">
-            <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-              {user.fullName}
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              {user.role}
-            </span>
+          {/* Avatar */}
+          <div
+            className="
+              w-10 h-10
+              rounded-full
+              flex items-center justify-center
+              text-white font-medium text-sm
+              border transition-transform duration-200
+              hover:scale-105
+            "
+            style={{ backgroundColor: userColor, borderColor: "var(--border)" }}
+          >
+            {getInitials(user.fullName)}
           </div>
 
-          <ChevronDown size={16} className="text-gray-400 hidden md:block" />
+          {/* Name + role */}
+          <div className="hidden md:flex flex-col leading-tight">
+            <span className="text-sm font-medium text-(--foreground)">
+              {user.fullName}
+            </span>
+            <span className="text-xs opacity-70">{user.role}</span>
+          </div>
+
+          <ChevronDown
+            size={16}
+            className="hidden md:block opacity-60 text-(--foreground)"
+          />
         </div>
 
         {/* Dropdown */}
         {open && (
-          <div
-            className="
-              absolute right-0 top-14 w-44
-              bg-white dark:bg-gray-900
-              border border-gray-200 dark:border-gray-800
-              rounded-xl shadow-xl
-              text-sm z-50
-              overflow-hidden
-              animate-in fade-in zoom-in-95
-            "
-          >
+          <div className="absolute right-0 top-14 w-44 bg-(--card) border border-(--border) rounded-xl shadow-xl text-sm z-50 overflow-hidden animate-in fade-in zoom-in-95 transition-colors">
             <button
               onClick={() => {
                 setOpen(false);
                 router.push("/profile");
               }}
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="w-full px-4 py-2 text-left hover:opacity-80 transition"
             >
               Profile
             </button>
 
-            <div className="h-px bg-gray-200 dark:bg-gray-800" />
+            <div className="h-px bg-(--border)" />
 
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-2 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+              className="w-full px-4 py-2 text-left text-red-600 hover:opacity-80 transition"
             >
               Logout
             </button>

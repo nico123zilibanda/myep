@@ -14,6 +14,7 @@ interface OpportunityFormProps {
   onSubmit: (data: any) => Promise<void> | void;
   initialData?: any;
   categories: Category[];
+  
 }
 
 export default function OpportunityForm({
@@ -79,11 +80,12 @@ export default function OpportunityForm({
     <form
       onSubmit={handleSubmit}
       className="
-        space-y-6
-        bg-white dark:bg-gray-900
-        p-6 rounded-xl
-        border border-gray-200 dark:border-gray-800
-        shadow-sm
+    space-y-6
+    bg-(--card)
+    p-6 rounded-xl
+    border border-(--border)
+    shadow-sm
+    transition-colors
       "
     >
       {/* FORM HEADER */}

@@ -26,10 +26,10 @@ export default function FormInput({
       {/* LABEL */}
       <label
         htmlFor={name}
-        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        className="text-sm font-medium text-(--text-primary)"
       >
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-red-600 ml-0.5">*</span>}
       </label>
 
       {/* INPUT */}
@@ -43,25 +43,22 @@ export default function FormInput({
         disabled={disabled}
         aria-invalid={!!error}
         className={`
-          rounded-lg border
-          bg-white dark:bg-gray-900
-          px-3 py-2.5 text-sm
-          text-gray-800 dark:text-gray-100
-          placeholder-gray-400 dark:placeholder-gray-500
+          w-full rounded-xl
+          border border-(--border)
+          bg-(--card)
+          px-4 py-2.5 text-sm
+          text-(--foreground)
+          placeholder:opacity-50
           transition-all duration-200
-          focus:outline-none focus:ring-2
-          disabled:opacity-60 disabled:cursor-not-allowed
-          ${
-            error
-              ? "border-red-500 focus:ring-red-500"
-              : "border-gray-300 dark:border-gray-700 focus:ring-blue-500"
-          }
+          focus:outline-none focus:ring-2 focus:ring-(--btn-focus)
+          disabled:opacity-50 disabled:cursor-not-allowed
+          ${error ? "border-red-500 focus:ring-red-500" : ""}
         `}
       />
 
       {/* ERROR */}
       {error && (
-        <span className="text-xs text-red-600 dark:text-red-400">
+        <span role="alert" className="text-xs text-red-600">
           {error}
         </span>
       )}

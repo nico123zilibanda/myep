@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatCard from "@/components/StatCard";
 import QuickAction from "@/components/QuickActions";
 import Modal from "@/components/ui/Modal";
 import AnswerForm from "@/components/forms/AnswerForm";
 import OpportunityForm from "@/components/forms/OpportunityForm";
 import TrainingsForm from "@/components/forms/TrainingsForm";
+import { showSuccess, showError } from "@/lib/toast";
 
 import {
   Users,
@@ -29,10 +30,15 @@ interface Question {
   questionText: string;
 }
 
-interface ApiResponse<T> {
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface ApiResponse<T = any> {
   success: boolean;
   messageKey?: string;
-  data: T;
+  data?: T;
 }
 
 interface AdminDashboardProps {
@@ -51,7 +57,77 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
   const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
 
-  /* ================= HANDLERS ================= */
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  /* ================= FETCH CATEGORIES ================= */
+
+  useEffect(() => {
+    fetch("/api/admin/categories", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setCategories(data.data || []))
+      .catch(() => setCategories([]));
+  }, []);
+
+  /* ================= OPPORTUNITY SUBMIT ================= */
+
+  const handleOpportunitySubmit = async (form: any) => {
+    try {
+      setSubmitting(true);
+
+      const res = await fetch("/api/admin/opportunities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.messageKey || "SERVER_ERROR");
+        return;
+      }
+
+      showSuccess(data.messageKey);
+      setOpenModal(null);
+    } catch {
+      showError("SERVER_ERROR");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /* ================= TRAINING SUBMIT ================= */
+
+const handleTrainingSubmit = async (formData: FormData) => {
+  try {
+    setSubmitting(true);
+
+    const res = await fetch("/api/admin/trainings", {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.messageKey || "SERVER_ERROR");
+      return;
+    }
+
+    showSuccess(data.messageKey);
+    setOpenModal(null);
+  } catch {
+    showError("SERVER_ERROR");
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+
+  /* ================= QUESTIONS ================= */
 
   const fetchPendingQuestions = async () => {
     setLoadingQuestions(true);
@@ -69,11 +145,8 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
         return;
       }
 
-      setPendingQuestions(
-        Array.isArray(result.data) ? result.data : []
-      );
-    } catch (error) {
-      console.error(error);
+      setPendingQuestions(result.data || []);
+    } catch {
       setPendingQuestions([]);
     } finally {
       setLoadingQuestions(false);
@@ -84,12 +157,6 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
 
   return (
     <div className="space-y-12">
-      {/* ========= HEADER ========= */}
-      <header>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Muhtasari wa mfumo na vitendo vya haraka
-        </p>
-      </header>
 
       {/* ========= STATS ========= */}
       <section>
@@ -139,21 +206,14 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       {openModal === "question" && (
         <Modal title="Maswali Yanayosubiri" open onClose={() => setOpenModal(null)}>
           <div className="space-y-4">
-            {loadingQuestions && (
-              <p className="text-sm text-gray-500">Inapakia maswali...</p>
-            )}
+            {loadingQuestions && <p>Inapakia...</p>}
 
             {!loadingQuestions && pendingQuestions.length === 0 && (
-              <p className="text-sm text-gray-500">
-                Hakuna maswali yanayosubiri.
-              </p>
+              <p>Hakuna maswali.</p>
             )}
 
             {pendingQuestions.map((q) => (
-              <div
-                key={q.id}
-                className="rounded-xl border p-4 bg-gray-50 dark:bg-gray-900 space-y-3"
-              >
+              <div key={q.id} className="border rounded-xl p-4 space-y-3">
                 <p className="font-medium">{q.questionText}</p>
 
                 <AnswerForm
@@ -169,8 +229,9 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                     });
 
                     if (res.ok) {
+                      showSuccess("QUESTION_SAVED");
                       setPendingQuestions((prev) =>
-                        prev.filter((item) => item.id !== q.id)
+                        prev.filter((x) => x.id !== q.id)
                       );
                     }
                   }}
@@ -185,8 +246,8 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       {openModal === "opportunity" && (
         <Modal title="Ongeza Fursa" open onClose={() => setOpenModal(null)}>
           <OpportunityForm
-            categories={[]}
-            onSubmit={() => setOpenModal(null)}
+            categories={categories}
+            onSubmit={handleOpportunitySubmit}
           />
         </Modal>
       )}
@@ -194,7 +255,9 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
       {/* ========= TRAINING MODAL ========= */}
       {openModal === "training" && (
         <Modal title="Ongeza Mafunzo" open onClose={() => setOpenModal(null)}>
-          <TrainingsForm onSubmit={() => setOpenModal(null)} />
+          <TrainingsForm
+            onSubmit={handleTrainingSubmit}
+          />
         </Modal>
       )}
     </div>

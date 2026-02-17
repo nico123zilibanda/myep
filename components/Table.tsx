@@ -11,7 +11,7 @@ const Table = ({
 }) => {
   return (
     <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-      <table className="w-full min-w-[600px] divide-y divide-gray-200 dark:divide-gray-700">
+      <table className="w-full min-w-150 divide-y divide-gray-200 dark:divide-gray-700">
         {/* HEADER */}
         <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>

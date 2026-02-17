@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: "class", // 🔥 hii ndiyo inaruhusu dark mode kwa button
+export default {
+  darkMode: "class",
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx,mjs}",
+    "./components/**/*.{js,ts,jsx,tsx,mjs}",
   ],
   theme: {
     extend: {},
