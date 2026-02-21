@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 interface YouthTopbarProps {
   user: {
-    id: string;
+    id: number;
     fullName: string;
     email: string;
     role: "YOUTH" | "ADMIN";

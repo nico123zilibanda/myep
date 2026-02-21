@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 interface LoginFormData {
@@ -18,6 +19,7 @@ interface ApiResponse {
 }
 
 export default function LoginForm() {
+  const { showSuccess, showError } = useAppToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -55,7 +57,7 @@ export default function LoginForm() {
       setTimeout(() => {
         router.replace(data.redirectTo || "/dashboard");
       }, 600);
-    } catch (error) {
+    } catch {
       setLoading(false);
       showError("SERVER_ERROR");
     }
@@ -71,6 +73,7 @@ export default function LoginForm() {
         <input
           type="email"
           name="email"
+          required
           value={form.email}
           onChange={handleChange}
           placeholder="example@email.com"
@@ -83,15 +86,18 @@ export default function LoginForm() {
         <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Nenosiri
         </label>
+
         <div className="relative mt-1">
           <input
             type={showPassword ? "text" : "password"}
             name="password"
+            required
             value={form.password}
             onChange={handleChange}
             placeholder="Andika nenosiri lako"
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
+
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
@@ -101,6 +107,16 @@ export default function LoginForm() {
           </button>
         </div>
       </div>
+
+      {/* FORGOT PASSWORD */}
+      {/* <div className="text-right">
+        <Link
+          href="/forgot-password"
+          className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+        >
+          Umesahau nenosiri?
+        </Link>
+      </div> */}
 
       {/* SUBMIT */}
       <button
@@ -112,11 +128,15 @@ export default function LoginForm() {
         Ingia
       </button>
 
+      {/* REGISTER */}
       <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-4">
         Bado huna akaunti?{" "}
-        <a href="/register" className="text-indigo-600 dark:text-indigo-400 underline">
+        <Link
+          href="/register"
+          className="text-indigo-600 dark:text-indigo-400 underline"
+        >
           Jisajili
-        </a>
+        </Link>
       </p>
     </form>
   );

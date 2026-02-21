@@ -3,9 +3,11 @@
 import { useState } from "react";
 import FormInput from "@/components/forms/FormInput";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 
 export default function ChangePasswordForm() {
+const { showSuccess, showError } = useAppToast();
+
   const [form, setForm] = useState({
     password: "",
     confirmPassword: "",

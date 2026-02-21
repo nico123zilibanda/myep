@@ -12,7 +12,7 @@ export default function AuthLayout({
   subtitle: string;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700 px-4 dark:from-gray-800 dark:to-gray-900 transition-colors">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-600 to-indigo-700 px-4 dark:from-gray-800 dark:to-gray-900 transition-colors">
       <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 space-y-6 transition-colors">
         
         {/* HEADER */}

@@ -1,10 +1,13 @@
 import { cookies } from "next/headers";
-import { verifyJwt, JwtPayload } from "./jwt";
+import { verifyJwt } from "./jwt";
+import { supabaseAdmin } from "./supabaseAdmin";
 
-export type CurrentUser = JwtPayload & {
-  id: string;
-  email:string;
-  fullName:string;
+export type CurrentUser = {
+  id: number;
+  email: string;
+  fullName: string;
+  role: "ADMIN" | "YOUTH";
+  language: "sw" | "en";
 };
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
@@ -16,10 +19,26 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   const payload = verifyJwt(token);
   if (!payload) return null;
 
+  // 🔥 Fetch fresh user from DB
+  const { data: user, error } = await supabaseAdmin
+    .from("User")
+    .select(`
+      id,
+      email,
+      fullName,
+      language,
+      Role(name)
+    `)
+    .eq("id", payload.id)
+    .single();
+
+  if (error || !user) return null;
+
   return {
-    id: payload.id.toString(),
-    email: payload.email,
-    role: payload.role,        // ✅ now "ADMIN" | "YOUTH"
-    fullName: payload.fullName
+    id: user.id,
+    email: user.email,
+    fullName: user.fullName,
+    role: user.Role.name,
+    language: user.language,
   };
 }

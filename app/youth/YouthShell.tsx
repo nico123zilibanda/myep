@@ -20,7 +20,7 @@ export default function YouthShell({ user, children }: Props) {
   return (
     <div
       style={{ backgroundColor: "var(--app-bg)", color: "var(--text-primary)" }}
-      className="min-h-screen flex transition-colors"
+      className="h-screen flex bg-(--background) transition-colors overflow-hidden"
     >
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside

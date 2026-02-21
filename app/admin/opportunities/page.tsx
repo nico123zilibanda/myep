@@ -10,7 +10,7 @@ import Modal from "@/components/ui/Modal";
 import OpportunityForm from "@/components/forms/OpportunityForm";
 import ActionButtons from "@/components/table/ActionButtons";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
@@ -57,6 +57,8 @@ function TableSkeleton({ rows = 5 }: { rows?: number }) {
 
 /* ================= PAGE ================= */
 export default function OpportunitiesPage() {
+  const { showSuccess, showError } = useAppToast();
+  
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [open, setOpen] = useState(false);

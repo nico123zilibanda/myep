@@ -1,18 +1,23 @@
-// lib/toast.ts
-// Centralized toast handler using `sonner`
-// Senior pattern: UI messages resolved from messageKey
+"use client";
 
 import { toast } from "sonner";
-import { messages, MessageKey } from "@/lib/messages";
+import translate from "./i18n/translate";
+import { MessageKey } from "./messages";
+import { useLanguage } from "./i18n/LanguageContext";
+export function useAppToast() {
+  const { lang } = useLanguage();
 
-export function showSuccess(messageKey: MessageKey) {
-  toast.success(messages[messageKey]);
+function showSuccess(messageKey: MessageKey) {
+  toast.success(translate(messageKey, lang));
 }
 
-export function showError(messageKey: MessageKey) {
-  toast.error(messages[messageKey]);
+function showError(messageKey: MessageKey) {
+  toast.error(translate(messageKey, lang));
 }
 
-export function showInfo(messageKey: MessageKey) {
-  toast(messages[messageKey]);
+function showInfo(messageKey: MessageKey) {
+  toast(translate(messageKey, lang));
+}
+
+  return { showSuccess, showError, showInfo };
 }

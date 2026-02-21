@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import QuestionForm from "@/components/youth/QuestionForm";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
@@ -24,6 +24,7 @@ interface ApiResponse<T = any> {
 /* ================= PAGE ================= */
 
 export default function YouthQuestionsPage() {
+  const { showSuccess, showError } = useAppToast();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +40,7 @@ export default function YouthQuestionsPage() {
       const result: ApiResponse<Question[]> = await res.json();
 
       if (!res.ok) {
-        showError(result.messageKey ?? "SERVER_ERROR");
+        showError(result.messageKey as MessageKey || "SERVER_ERROR");
         setQuestions([]);
         return;
       }

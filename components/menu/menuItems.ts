@@ -8,38 +8,37 @@ import {
   Logs,
   Settings,
 } from "lucide-react";
-
 export const menuItems = [
   {
     title: "MAIN",
     items: [
       {
-        label: "Dashboard",
+        label: "DASHBOARD",
         href: "/admin",
         icon: LayoutDashboard,
       },
       {
-        label: "Kategoria",
+        label: "CATEGORY",
         href: "/admin/categories",
         icon: Briefcase,
       },
       {
-        label: "Fursa",
+        label: "OPPORTUNITY",
         href: "/admin/opportunities",
         icon: Briefcase,
       },
       {
-        label: "Mafunzo",
+        label: "TRAININGS",
         href: "/admin/trainings",
         icon: GraduationCap,
       },
       {
-        label: "Maswali",
+        label: "QUESTIONS",
         href: "/admin/questions",
         icon: HelpCircle,
       },
             {
-        label: "Vijana",
+        label: "YOUTH",
         href: "/admin/youth",
         icon: Users,
       },
@@ -49,17 +48,17 @@ export const menuItems = [
     title: "ACCOUNT",
     items: [
       {
-        label: "Wasifu",
+        label: "PROFILE",
         href: "/admin/profile",
         icon: User,
       },
       {
-        label: "Kumbukumbu",
+        label: "LOGS",
         href: "/admin/audit-logs",
         icon: Logs,
       },
       {
-        label: "Mpangilio",
+        label: "SETTINGS",
         href: "/admin/settings",
         icon: Settings,
       },

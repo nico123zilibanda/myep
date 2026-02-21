@@ -1,0 +1,90 @@
+{
+  "ADMIN_DASHBOARD": "Admin Dashboard",
+  "PROFILE": "Profile",
+  "LOGOUT": "Logout",
+
+  "DASHBOARD": "Dashboard",
+  "CATEGORY": "Category",
+  "OPPORTUNITY": "Opportunity",
+  "TRAININGS": "Trainings",
+  "QUESTIONS": "Questions",
+  "YOUTH": "Youth",
+  "LOGS": "Logs",
+  "SETTINGS": "Settings",
+
+  "AUTH_REGISTER_SUCCESS": "Registration successful 🎉 Welcome to the system.",
+  "AUTH_REGISTER_FAILED": "Registration failed. Please try again.",
+  "AUTH_REGISTER_EMAIL_EXISTS": "This email is already registered.",
+  "AUTH_LOGIN_SUCCESS": "Login successful.",
+  "AUTH_LOGIN_FAILED": "Invalid email or password.",
+  "AUTH_LOGIN_BLOCKED": "Your account is not activated. Please contact the administrator.",
+  "AUTH_LOGOUT_SUCCESS": "Logged out successfully.",
+
+  "AUDIT_DELETE_SUCCESS": "Record deleted successfully.",
+  "AUDIT_NOT_FOUND": "Audit record not found.",
+
+  "LANGUAGE_UPDATE_SUCCESS": "Language updated successfully.",
+
+  "CATEGORY_CREATE_SUCCESS": "Category created successfully.",
+  "CATEGORY_UPDATE_SUCCESS": "Category updated successfully.",
+  "CATEGORY_DELETE_SUCCESS": "Category deleted successfully.",
+  "CATEGORY_FAILED_DELETED": "Category could not be deleted.",
+  "CATEGORY_NOT_FOUND": "Category not found.",
+  "CATEGORY_FETCH_FAILED": "Failed to fetch categories.",
+
+  "OPPORTUNITY_CREATE_SUCCESS": "Opportunity created successfully.",
+  "OPPORTUNITY_UPDATE_SUCCESS": "Opportunity updated successfully.",
+  "OPPORTUNITY_FAILED_DELETED": "Opportunity could not be deleted.",
+  "OPPORTUNITY_DELETE_SUCCESS": "Opportunity deleted successfully.",
+  "OPPORTUNITY_NOT_FOUND": "Opportunity not found.",
+  "OPPORTUNITY_FETCH_FAILED": "Failed to fetch opportunities.",
+
+  "TRAINING_CREATE_SUCCESS": "Training created successfully.",
+  "TRAINING_UPDATE_SUCCESS": "Training updated successfully.",
+  "TRAINING_DELETE_SUCCESS": "Training deleted successfully.",
+  "TRAINING_NOT_FOUND": "Training not found.",
+  "TRAINING_FETCH_FAILED": "Failed to fetch trainings.",
+
+  "QUESTION_FETCH_SUCCESS": "Questions fetched successfully.",
+  "QUESTION_FETCH_FAILED": "Failed to fetch questions.",
+  "QUESTION_SAVED": "Question answered successfully.",
+
+  "QUESTION_CREATE_SUCCESS": "Your question has been submitted successfully.",
+  "QUESTION_CREATE_FAILED": "Failed to submit your question.",
+
+  "QUESTION_UPDATE_SUCCESS": "Answer saved successfully.",
+  "QUESTION_UPDATE_FAILED": "Failed to save answer.",
+
+  "QUESTION_DELETE_SUCCESS": "Question deleted successfully.",
+  "QUESTION_DELETE_FAILED": "Failed to delete question.",
+
+  "YOUTH_CREATE_SUCCESS": "Youth added successfully.",
+  "YOUTH_UPDATE_SUCCESS": "Youth updated successfully.",
+  "YOUTH_DELETE_SUCCESS": "Youth deleted successfully.",
+  "YOUTH_NOT_FOUND": "Youth not found.",
+  "YOUTH_FETCH_FAILED": "Failed to fetch youth records.",
+  "YOUTH_STATUS_UPDATE_SUCCESS": "Status updated successfully.",
+
+  "PASSWORD_CHANGED": "Password updated successfully.",
+  "INVALID_PASSWORD": "Passwords do not match. Please try again.",
+  "PASSWORD_FETCH_FAILED": "Failed to fetch records.",
+  "PASSWORD_STATUS_UPDATE_SUCCESS": "Status updated successfully.",
+  "PASSWORD_TOO_SHORT": "Password is too short.",
+  "PASSWORD_NOT_MATCH": "Passwords do not match.",
+  "PASSWORD_RESET_SUCCESS": "Password has been reset successfully.",
+  "RESET_EMAIL_SENT_FAILED": "Failed to send reset email.",
+  "RESET_EMAIL_SENT": "Reset email has been sent.",
+
+  "TOKEN_INVALID": "Invalid token.",
+
+  "CONFIRM_DELETE_TITLE": "Confirm Deletion",
+  "CONFIRM_DELETE_DESCRIPTION": "Are you sure you want to delete this record? This action cannot be undone.",
+
+  "CONFIRM_ACTION_YES": "Yes, Delete",
+  "CONFIRM_ACTION_CANCEL": "Cancel",
+
+  "ACTION_SUCCESS": "Action completed successfully.",
+  "ACTION_FAILED": "Action failed. Please try again.",
+  "UNAUTHORIZED": "You are not authorized to perform this action.",
+  "SERVER_ERROR": "System error. Please try again later."
+}

@@ -12,7 +12,7 @@ import TrainingsForm from "@/components/forms/TrainingsForm";
 import ActionButtons from "@/components/table/ActionButtons";
 import TableSearch from "@/components/table/TableSearch";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
@@ -32,6 +32,7 @@ interface ApiResponse<T = any> {
 
 /* ================= PAGE ================= */
 export default function TrainingsPage() {
+  const { showSuccess, showError } = useAppToast();
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
 

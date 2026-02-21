@@ -14,7 +14,8 @@ export type AuditAction =
   | "REGISTER"
   | "PUBLISH"
   | "ANSWER"
-  | "SAVE";
+  | "SAVE"
+  | "PASSWORD_RESET_REQUEST";
 
 
 export type AuditEntity =
@@ -36,7 +37,7 @@ interface AuditLogInput {
   entity: AuditEntity;
   entityId?: string | number | null;
 
-  userId?: string | null;
+  userId?: number | null;
   role?: "ADMIN" | "YOUTH" | null;
 
   description: string;

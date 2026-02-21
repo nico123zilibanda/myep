@@ -13,7 +13,7 @@ import Modal from "@/components/ui/Modal";
 import CategoryForm from "@/components/forms/CategoryForm";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast} from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
@@ -27,6 +27,8 @@ interface Category {
 /* ================= PAGE ================= */
 
 export default function CategoriesPage() {
+  const { showSuccess, showError } = useAppToast();
+  
   const [categories, setCategories] = useState<Category[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);

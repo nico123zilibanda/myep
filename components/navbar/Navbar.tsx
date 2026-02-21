@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { Menu as MenuIcon, MessageCircle, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 type NavbarProps = {
   user: {
-    id: string;
+    id: number;
     email: string;
     fullName: string;
     role: "ADMIN" | "YOUTH";
@@ -20,6 +21,7 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const router = useRouter();
+  const t = useDictionary();
 
   // Function to get initials from fullName
   const getInitials = (name: string) => {
@@ -93,8 +95,8 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
         </button>
 
         <h1 className="text-lg font-semibold text-(--foreground) hidden md:block">
-          Admin Dashboard
-        </h1>
+         {t("ADMIN_DASHBOARD")}
+         </h1>
       </div>
 
       {/* RIGHT */}
@@ -158,7 +160,7 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
               }}
               className="w-full px-4 py-2 text-left hover:opacity-80 transition"
             >
-              Profile
+              {t("PROFILE")}
             </button>
 
             <div className="h-px bg-(--border)" />
@@ -167,7 +169,7 @@ export default function Navbar({ user, onMenuClick }: NavbarProps) {
               onClick={handleLogout}
               className="w-full px-4 py-2 text-left text-red-600 hover:opacity-80 transition"
             >
-              Logout
+              {t("LOGOUT")}
             </button>
           </div>
         )}

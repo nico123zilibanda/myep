@@ -18,7 +18,7 @@ export default function AdminShell({ user, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-(--background) transition-colors">
+    <div className="h-screen flex bg-(--background) transition-colors overflow-hidden">
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside
         className={clsx(

@@ -7,7 +7,7 @@ import Modal from "@/components/ui/Modal";
 import AnswerForm from "@/components/forms/AnswerForm";
 import OpportunityForm from "@/components/forms/OpportunityForm";
 import TrainingsForm from "@/components/forms/TrainingsForm";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 
 import {
   Users,
@@ -48,6 +48,8 @@ interface AdminDashboardProps {
 /* ================= COMPONENT ================= */
 
 export default function AdminDashboard({ stats }: AdminDashboardProps) {
+const { showSuccess, showError } = useAppToast();
+
   const { vijanaCount, opportunitiesCount, trainingsCount, questionsCount } =
     stats;
 

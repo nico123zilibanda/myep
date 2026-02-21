@@ -9,7 +9,7 @@ import Pagination from "@/components/table/Pagination";
 import ActionButtons from "@/components/table/ActionButtons";
 import Modal from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 /* ================= TYPES ================= */
@@ -33,6 +33,8 @@ interface ApiResponse<T = any> {
 
 /* ================= PAGE ================= */
 export default function YouthPage() {
+  const { showSuccess, showError } = useAppToast();
+
   const [youth, setYouth] = useState<Youth[]>([]);
   const [loading, setLoading] = useState(false);
 

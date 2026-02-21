@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import FormInput from "@/components/forms/FormInput";
 import FormSelect from "@/components/forms/FormSelect";
 import { Loader2 } from "lucide-react";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 
 export default function ProfileForm() {
+const { showSuccess, showError } = useAppToast();
+  
   const [form, setForm] = useState<any>(null);
   const [initialForm, setInitialForm] = useState<any>(null);
   const [loading, setLoading] = useState(true);

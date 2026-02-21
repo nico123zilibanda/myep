@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
+import { MessageKey } from "@/lib/messages";
 
 export async function GET() {
   const user = await getCurrentUser();
 
   if (!user) {
     return NextResponse.json(
-      { message: "Not authenticated" },
+      { success: false, messageKey: "UNAUTHORIZED" satisfies MessageKey },
       { status: 401 }
     );
   }

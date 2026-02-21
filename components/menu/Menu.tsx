@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { menuItems } from "./menuItems";
 import clsx from "clsx";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 interface MenuProps {
   isCollapsed: boolean;
@@ -12,7 +13,7 @@ interface MenuProps {
 
 export default function Menu({ isCollapsed, onItemClick }: MenuProps) {
   const pathname = usePathname();
-
+  const t = useDictionary();
   return (
     <div
       className={clsx(
@@ -75,7 +76,7 @@ export default function Menu({ isCollapsed, onItemClick }: MenuProps) {
                     {/* LABEL */}
                     {!isCollapsed && (
                       <span className="truncate">
-                        {item.label}
+                        {t(item.label)}
                       </span>
                     )}
                   </Link>

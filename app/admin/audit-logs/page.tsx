@@ -9,7 +9,7 @@ import Pagination from "@/components/table/Pagination";
 import { Skeleton } from "@/components/ui/Skeleton";
 import Modal from "@/components/ui/Modal";
 import ActionButtons from "@/components/table/ActionButtons";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 
 /* ================= TYPES ================= */
 interface User {
@@ -31,6 +31,8 @@ interface AuditLog {
 
 /* ================= PAGE ================= */
 export default function AuditLogsPage() {
+  const { showSuccess, showError } = useAppToast();
+  
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
