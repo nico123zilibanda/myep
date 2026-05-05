@@ -14,7 +14,7 @@ import TableSearch from "@/components/table/TableSearch";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
-
+import { useDictionary } from "@/lib/i18n/useDictionary";
 /* ================= TYPES ================= */
 interface Training {
   id: number;
@@ -33,6 +33,7 @@ interface ApiResponse<T = any> {
 /* ================= PAGE ================= */
 export default function TrainingsPage() {
   const { showSuccess, showError } = useAppToast();
+  const t = useDictionary();
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -176,10 +177,10 @@ export default function TrainingsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-(--text-primary)">
-            Mafunzo
+            {t("TRAININGS_TITLE")}
           </h1>
           <p className="text-sm opacity-70">
-            Articles, videos na PDFs za mafunzo
+            {t("TRAININGS_DESCRIPTION")}
           </p>
         </div>
 
@@ -191,13 +192,13 @@ export default function TrainingsPage() {
           className="inline-flex items-center gap-2 rounded-lg bg-(--btn-primary) px-4 py-2 text-sm font-medium text-(--btn-text) hover:shadow-lg transition"
         >
           <Plus size={16} />
-          Ongeza Mafunzo
+          {t("ADD_TRAINING")}
         </button>
       </div>
 
       {/* CREATE / EDIT MODAL */}
       <Modal
-        title={editing ? "Hariri Mafunzo" : "Ongeza Mafunzo"}
+        title={editing ? t("EDIT_TRAINING") : t("ADD_TRAINING")}
         open={open}
         onClose={() => {
           setOpen(false);
@@ -207,57 +208,57 @@ export default function TrainingsPage() {
         <TrainingsForm initialData={editing} onSubmit={handleSubmit} />
       </Modal>
 
-{/* DELETE CONFIRM MODAL */}
-<Modal
-  open={!!deleteTarget}
-  onClose={() => { if (!deleting) setDeleteTarget(null); }}
-  title="Thibitisha Kufuta"
-  size="sm"
->
-  <div className="space-y-4">
-    <p className="text-sm opacity-70">
-      Je, una uhakika unataka kufuta mafunzo: "
-      <span className="font-semibold text-(--text-primary)">
-        {" "}{deleteTarget?.title}
-      </span> "
-      ?
-    </p>
+      {/* DELETE CONFIRM MODAL */}
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => { if (!deleting) setDeleteTarget(null); }}
+        title={t("CONFIRM_DELETE_TITLE")}
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm opacity-70">
+            {t("TRAINING_DELETE_CONFIRM")}
+            <span className="font-semibold text-(--text-primary)">
+              {" "}{deleteTarget?.title}
+            </span> "
+            ?
+          </p>
 
-    <p className="text-xs opacity-70">
-      Kitendo hiki hakiwezi kurejeshwa.
-    </p>
+          <p className="text-xs opacity-70">
+            {t("DELETE_WARNING")}
+          </p>
 
-    <div className="flex justify-end gap-3 pt-4">
-      <button
-        disabled={deleting}
-        onClick={() => setDeleteTarget(null)}
-        className="
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              disabled={deleting}
+              onClick={() => setDeleteTarget(null)}
+              className="
           rounded-lg px-4 py-2 text-sm
           border border-default
           hover:shadow-sm
           disabled:opacity-50
           transition
         "
-      >
-        Ghairi
-      </button>
+            >
+              {t("CANCEL")}
+            </button>
 
-      <button
-        onClick={confirmDelete}
-        disabled={deleting}
-        className="
+            <button
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="
           rounded-lg px-4 py-2 text-sm font-medium
           bg-(--btn-primary) text-(--btn-text)
           hover:shadow-sm
           disabled:opacity-60
           transition
         "
-      >
-        {deleting ? "Inafuta..." : "Ndiyo, Futa"}
-      </button>
-    </div>
-  </div>
-</Modal>
+            >
+              {deleting ? t("DELETING") : t("CONFIRM_DELETE")}
+            </button>
+          </div>
+        </div>
+      </Modal>
 
 
       {/* SEARCH */}
@@ -269,8 +270,13 @@ export default function TrainingsPage() {
       <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={["Kichwa", "Aina", "Maelezo", "Resource", "Actions"]}
-          />
+            columns={[
+              t("TABLE_T_TITLE"),
+              t("TABLE_T_TYPE"),
+              t("TABLE_T_DESCRIPTION"),
+              t("TABLE_T_RESOURCES"),
+              t("TABLE_T_ACTIONS"),
+            ]} />
 
           <tbody>
             {loading ? (
@@ -284,7 +290,7 @@ export default function TrainingsPage() {
             ) : paginatedData.length === 0 ? (
               <TableRow>
                 <td colSpan={5} className="px-4 py-10 text-center opacity-70">
-                  Hakuna mafunzo yaliyopatikana
+                  {t("NO_TRAININGS_FOUND")}
                 </td>
               </TableRow>
             ) : (

@@ -1,5 +1,5 @@
 import AppearanceSettings from "@/components/settings/AppearanceSettings";
-import LanguageSettings from "@/components/settings/LanguageSettings";
+// import LanguageSettings from "@/components/settings/LanguageSettings";
 
 export default function SettingsPage() {
   return (
@@ -13,7 +13,7 @@ export default function SettingsPage() {
       </div>
 
       <AppearanceSettings />
-      <LanguageSettings />
+      {/* <LanguageSettings /> */}
 
     </div>
   );

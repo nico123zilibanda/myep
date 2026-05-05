@@ -1,16 +1,19 @@
+"use client"
 import ProfileForm from "@/components/profile/ProfileForm";
 import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
-
+import { useDictionary } from "@/lib/i18n/useDictionary";
 export default function ProfilePage() {
+    const t = useDictionary();
+  
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-semibold text-(--text-primary)">
-          Profile
+          {t("PROFILE_PAGE_TITLE")}
         </h1>
         <p className="text-sm opacity-70">
-          Manage your personal information and security settings
+          {t("PROFILE_DESCRIPTION")}
         </p>
       </div>
 

@@ -67,7 +67,7 @@ export default function HomePage() {
                   href="/admin"
                   className="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-indigo-700 transition"
                 >
-                  Admin Panel
+                  Ingia
                 </Link>
               </div>
             </div>

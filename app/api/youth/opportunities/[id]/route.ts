@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
 
-
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
-    const pathSegments = url.pathname.split("/"); 
+    const pathSegments = url.pathname.split("/");
     const id = Number(pathSegments[pathSegments.length - 1]); // last segment
 
     if (!id || isNaN(id)) {
@@ -21,18 +20,22 @@ export async function GET(req: Request) {
     // fetch opportunity
     const { data, error } = await supabaseAdmin
       .from("Opportunity")
-      .select(`
-        id,
-        title,
-        description,
-        requirements,
-        howToApply,
-        deadline,
-        location,
-        status,
-        Category:categoryId(name),
-        SavedOpportunity(userId)
-      `)
+      .select(
+        `
+  id,
+  title,
+  description,
+  requirements,
+  howToApply,
+  deadline,
+  location,
+  status,
+  resourceType,
+  resourceUrl,
+  Category:categoryId(name),
+  SavedOpportunity(userId)
+`,
+      )
       .eq("id", id)
       .single();
 
@@ -41,9 +44,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Not found" }, { status: 404 });
     }
 
-    const isSaved = data.SavedOpportunity?.some(
-      (s: any) => s.userId === user.id
-    ) ?? false;
+    const isSaved =
+      data.SavedOpportunity?.some((s: any) => s.userId === user.id) ?? false;
 
     return NextResponse.json({
       id: data.id,
@@ -53,8 +55,13 @@ export async function GET(req: Request) {
       howToApply: data.howToApply,
       deadline: data.deadline,
       location: data.location,
+
       Category: data.Category ?? null,
       isSaved,
+
+      // 🔥 ADD THIS (VERY IMPORTANT)
+      resourceType: data.resourceType ?? null,
+      resourceUrl: data.resourceUrl ?? null,
     });
   } catch (err) {
     console.error("YOUTH GET OPPORTUNITY ERROR:", err);

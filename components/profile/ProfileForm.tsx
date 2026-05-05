@@ -5,10 +5,12 @@ import FormInput from "@/components/forms/FormInput";
 import FormSelect from "@/components/forms/FormSelect";
 import { Loader2 } from "lucide-react";
 import { useAppToast } from "@/lib/toast";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 export default function ProfileForm() {
-const { showSuccess, showError } = useAppToast();
-  
+  const { showSuccess, showError } = useAppToast();
+  const t = useDictionary();
+
   const [form, setForm] = useState<any>(null);
   const [initialForm, setInitialForm] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -84,7 +86,7 @@ const { showSuccess, showError } = useAppToast();
   if (!form) {
     return (
       <div className="text-sm text-red-500">
-        Imeshindikana kupakia taarifa za profile
+        {t("PROFILE_LOAD_FAILED")}
       </div>
     );
   }
@@ -99,18 +101,17 @@ const { showSuccess, showError } = useAppToast();
       {/* HEADER */}
       <div className="space-y-1">
         <h3 className="text-lg font-semibold text-(--text-primary)">
-          Taarifa za Wasifu
+          {t("PROFILE_INFO_TITLE")}
         </h3>
-
         <p className="text-sm opacity-70">
-          Sasisha taarifa zako binafsi
+          {t("PROFILE_INFO_SUBTITLE")}
         </p>
       </div>
 
       {/* FORM GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormInput
-          label="Jina Kamili"
+          labelKey="PROFILE_FULLNAME_LABEL"
           name="fullName"
           value={form.fullName}
           onChange={handleChange}
@@ -118,7 +119,7 @@ const { showSuccess, showError } = useAppToast();
         />
 
         <FormInput
-          label="Barua Pepe"
+          labelKey="EMAIL_LABEL"
           name="email"
           value={form.email}
           disabled
@@ -126,25 +127,25 @@ const { showSuccess, showError } = useAppToast();
         />
 
         <FormInput
-          label="Namba ya Simu"
+          labelKey="PROFILE_PHONE_LABEL"
           name="phone"
           value={form.phone || ""}
           onChange={handleChange}
         />
 
         <FormSelect
-          label="Jinsia"
+          labelKey="PROFILE_GENDER_LABEL"
           name="gender"
           value={form.gender || ""}
           onChange={handleChange}
           options={[
-            { value: "Male", label: "Mwanaume" },
-            { value: "Female", label: "Mwanamke" },
+            { value: "Male", label: t("GENDER_MALE") },
+            { value: "Female", label: t("GENDER_FEMALE") },
           ]}
         />
 
         <FormInput
-          label="Tarehe ya Kuzaliwa"
+          labelKey="PROFILE_DOB_LABEL"
           name="dateOfBirth"
           type="date"
           value={form.dateOfBirth}
@@ -152,21 +153,21 @@ const { showSuccess, showError } = useAppToast();
         />
 
         <FormSelect
-          label="Kiwango cha Elimu"
+          labelKey="PROFILE_EDUCATION_LABEL"
           name="educationLevel"
           value={form.educationLevel || ""}
           onChange={handleChange}
           options={[
-            { value: "PRIMARY", label: "Elimu ya Msingi" },
-            { value: "O_LEVEL", label: "Kidato cha Nne" },
-            { value: "CERTIFICATE", label: "Astashahada (Certificate)" },
-            { value: "DIPLOMA", label: "Stashahada (Diploma)" },
-            { value: "DEGREE", label: "Shahada (Degree)" },
+            { value: "PRIMARY", label: t("EDU_PRIMARY") },
+            { value: "O_LEVEL", label: t("EDU_O_LEVEL") },
+            { value: "CERTIFICATE", label: t("EDU_CERTIFICATE") },
+            { value: "DIPLOMA", label: t("EDU_DIPLOMA") },
+            { value: "DEGREE", label: t("EDU_DEGREE") },
           ]}
         />
 
         <FormInput
-          label="Role"
+          labelKey="PROFILE_ROLE_LABEL"
           name="role"
           value={form.roles?.name}
           disabled
@@ -175,7 +176,7 @@ const { showSuccess, showError } = useAppToast();
       </div>
 
       <p className="text-xs opacity-70">
-        Barua pepe na role haziwezi kubadilishwa
+        {t("PROFILE_EMAIL_LOCKED_NOTE")}
       </p>
 
       {/* SUBMIT */}
@@ -193,7 +194,9 @@ const { showSuccess, showError } = useAppToast();
         "
       >
         {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-        {isSubmitting ? "Inahifadhi..." : "Hifadhi Mabadiliko"}
+        {isSubmitting
+          ? t("PROFILE_SAVING_BUTTON")
+          : t("PROFILE_SAVE_BUTTON")}
       </button>
     </form>
   );

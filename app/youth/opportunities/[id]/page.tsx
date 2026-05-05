@@ -2,22 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { MapPin, Calendar, Folder, Clock, Info, ArrowLeft } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Folder,
+  Clock,
+  Info,
+  ArrowLeft,
+  Video,
+  FileText,
+  ExternalLink,
+} from "lucide-react";
 import Link from "next/link";
 
-/* ================= TYPES ================= */
-interface Opportunity {
-  id: number;
-  title: string;
-  description: string;
-  requirements: string;
-  howToApply: string;
-  deadline: string;
-  location: string;
-  Category?: { name: string };
-}
+import { Opportunity } from "@/types/opportunity";
 
-/* ================= PAGE ================= */
 export default function OpportunityDetailsPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
@@ -51,10 +50,7 @@ export default function OpportunityDetailsPage() {
       <div className="max-w-4xl space-y-4 animate-pulse">
         <div className="h-6 w-1/4 bg-black/10 rounded" />
         <div className="h-10 w-3/4 bg-black/10 rounded" />
-        <div className="h-4 w-1/2 bg-black/10 rounded" />
         <div className="h-48 bg-black/10 rounded" />
-        <div className="h-24 bg-black/10 rounded" />
-        <div className="h-32 bg-black/10 rounded" />
       </div>
     );
   }
@@ -63,6 +59,8 @@ export default function OpportunityDetailsPage() {
 
   const deadline = new Date(opportunity.deadline);
   const isExpired = deadline < new Date();
+
+  const { resourceType, resourceUrl } = opportunity;
 
   return (
     <div className="max-w-4xl space-y-8">
@@ -93,6 +91,16 @@ export default function OpportunityDetailsPage() {
             <Clock size={12} />
             {isExpired ? "Imefungwa" : "Bado Wazi"}
           </span>
+
+          {/* RESOURCE BADGE */}
+          {resourceType && (
+            <span className="text-xs px-2 py-1 rounded-full bg-blue-500/10 text-blue-600 flex items-center gap-1">
+              {resourceType === "VIDEO" && <Video size={12} />}
+              {resourceType === "PDF" && <FileText size={12} />}
+              {resourceType === "LINK" && <ExternalLink size={12} />}
+              {resourceType}
+            </span>
+          )}
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-bold">
@@ -115,10 +123,75 @@ export default function OpportunityDetailsPage() {
         </div>
       </div>
 
+      {/* ✅ RESOURCE SECTION (NOW CORRECT) */}
+      {resourceType && resourceUrl && (
+        <section className="card border-default rounded-xl p-6 space-y-5">
+          {/* HEADER */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600">
+              {resourceType === "VIDEO" && <Video size={20} />}
+              {resourceType === "PDF" && <FileText size={20} />}
+              {resourceType === "LINK" && <ExternalLink size={20} />}
+            </div>
+
+            <div>
+              <h2 className="font-semibold">
+                {resourceType === "VIDEO" && "Video ya Mafunzo"}
+                {resourceType === "PDF" && "Hati ya PDF"}
+                {resourceType === "LINK" && "Tembelea Link"}
+              </h2>
+
+              <p className="text-xs opacity-60">
+                {resourceType === "VIDEO" && "Tazama video hapa chini"}
+                {resourceType === "PDF" && "Soma au pakua PDF"}
+                {resourceType === "LINK" && "Fungua link kwa taarifa zaidi"}
+              </p>
+            </div>
+          </div>
+
+          {/* CONTENT */}
+          {resourceType === "VIDEO" && (
+            <video
+              src={resourceUrl}
+              controls
+              className="w-full rounded-lg"
+            />
+          )}
+
+          {resourceType === "PDF" && (
+            <div className="space-y-3">
+              <iframe
+                src={resourceUrl}
+                className="w-full h-[500px] rounded-lg border"
+              />
+              <a
+                href={resourceUrl}
+                target="_blank"
+                className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+              >
+                Fungua PDF
+                <ExternalLink size={14} />
+              </a>
+            </div>
+          )}
+
+          {resourceType === "LINK" && (
+            <a
+              href={resourceUrl}
+              target="_blank"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700"
+            >
+              Tembelea Link
+              <ExternalLink size={14} />
+            </a>
+          )}
+        </section>
+      )}
+
       {/* DESCRIPTION */}
       <section className="card border-default rounded-xl p-6 space-y-2">
         <h2 className="font-semibold">Maelezo ya Fursa</h2>
-        <p className="opacity-70 text-sm">
+        <p className="opacity-70 text-sm whitespace-pre-line">
           {opportunity.description}
         </p>
       </section>
@@ -134,16 +207,18 @@ export default function OpportunityDetailsPage() {
       )}
 
       {/* HOW TO APPLY */}
-      <section className="card border-default rounded-xl p-6 space-y-2">
-        <div className="flex items-center gap-2">
-          <Info size={18} className="opacity-70" />
-          <h2 className="font-semibold">Jinsi ya Kuomba</h2>
-        </div>
+      {opportunity.howToApply && (
+        <section className="card border-default rounded-xl p-6 space-y-2">
+          <div className="flex items-center gap-2">
+            <Info size={18} className="opacity-70" />
+            <h2 className="font-semibold">Jinsi ya Kuomba</h2>
+          </div>
 
-        <p className="text-sm opacity-70 whitespace-pre-line">
-          {opportunity.howToApply}
-        </p>
-      </section>
+          <p className="text-sm opacity-70 whitespace-pre-line">
+            {opportunity.howToApply}
+          </p>
+        </section>
+      )}
     </div>
   );
 }

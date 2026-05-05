@@ -18,17 +18,18 @@ export default function AdminShell({ user, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="h-screen flex bg-(--background) transition-colors overflow-hidden">
+    <div className="h-screen flex bg-background transition-colors overflow-hidden">
+
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside
         className={clsx(
-          "hidden lg:flex flex-col transition-all duration-300",
+          "hidden lg:flex flex-col border-r border-border transition-all duration-300 ease-out",
           sidebarCollapsed ? "w-20" : "w-64",
-          "bg-(--card) border-r border-(--border)"
+          "bg-card"
         )}
       >
         {/* SIDEBAR HEADER */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-(--border)">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-border">
           <div className="flex items-center gap-2 overflow-hidden">
             <Image src="/logo.png" alt="logo" width={32} height={32} />
             {!sidebarCollapsed && (
@@ -39,13 +40,16 @@ export default function AdminShell({ user, children }: Props) {
           </div>
 
           <button
-            onClick={() => setSidebarCollapsed(prev => !prev)}
-            className="p-1.5 rounded-lg text-(--foreground) hover:opacity-80 transition"
+            onClick={() => setSidebarCollapsed((prev) => !prev)}
+            className="p-2 rounded-lg hover:bg-muted transition"
             title={sidebarCollapsed ? "Expand" : "Collapse"}
           >
             <ChevronLeft
               size={16}
-              className={clsx("transition-transform", sidebarCollapsed && "rotate-180")}
+              className={clsx(
+                "transition-transform duration-300",
+                sidebarCollapsed && "rotate-180"
+              )}
             />
           </button>
         </div>
@@ -58,21 +62,32 @@ export default function AdminShell({ user, children }: Props) {
 
       {/* ================= MOBILE SIDEBAR ================= */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden mt-6">
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Overlay */}
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn"
             onClick={() => setMobileOpen(false)}
           />
 
-          <aside className="relative z-50 w-64 h-full bg-(--card) border-r border-(--border)">
-            <div className="h-16 flex items-center justify-between px-4 border-b border-(--border)">
-              <span className="font-bold text-blue-600">Mlele Portal</span>
-              <button onClick={() => setMobileOpen(false)}>
-                <X className="text-(--foreground)" />
+          {/* Sidebar Panel */}
+          <aside className="card relative w-full h-full bg-white animate-slideIn z-50">
+            {/* Header */}
+            <div className="h-16 flex items-center justify-between px-4 border-b border-border">
+              <span className="font-bold text-blue-600 text-lg">
+                Mlele Portal
+              </span>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="p-2 rounded-lg hover:bg-muted transition"
+              >
+                <X />
               </button>
             </div>
 
-            <Menu isCollapsed={false} onItemClick={() => setMobileOpen(false)} />
+            {/* Menu */}
+            <div className="py-4">
+              <Menu isCollapsed={false} onItemClick={() => setMobileOpen(false)} />
+            </div>
           </aside>
         </div>
       )}
@@ -81,7 +96,9 @@ export default function AdminShell({ user, children }: Props) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Navbar user={user} onMenuClick={() => setMobileOpen(true)} />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+          {children}
+        </main>
       </div>
     </div>
   );

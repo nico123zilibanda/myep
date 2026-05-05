@@ -1,28 +1,31 @@
-import { Resend } from "resend";
+import { resend } from "./resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export async function sendResetEmail({
+  to,
+  name,
+  token,
+}: {
+  to: string;
+  name: string;
+  token: string;
+}) {
+  const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${token}`;
 
-export async function sendPasswordResetEmail(
-  to: string,
-  resetUrl: string
-) {
-  return resend.emails.send({
-    from: "Mlele DC <no-reply@yourdomain.com>",
+  await resend.emails.send({
+    from: "Mlele DC <onboarding@resend.dev>",
     to,
-    subject: "Weka upya nenosiri lako",
+    subject: "Reset your password",
     html: `
-      <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
-        <h2>Omba la kubadilisha nenosiri</h2>
-        <p>Bonyeza kitufe hapa chini kubadilisha nenosiri lako.</p>
-        <a href="${resetUrl}"
-           style="display:inline-block;padding:12px 20px;
-           background:#4f46e5;color:#fff;
-           text-decoration:none;border-radius:8px;">
-           Badilisha Nenosiri
-        </a>
-        <p style="margin-top:20px;font-size:12px;color:#666">
-          Link hii itaisha baada ya dakika 30.
+      <div style="font-family:sans-serif">
+        <h2>Hello ${name},</h2>
+        <p>You requested to reset your password.</p>
+        <p>
+          <a href="${resetLink}" 
+             style="background:#4f46e5;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;">
+             Reset Password
+          </a>
         </p>
+        <p>This link expires in 1 hour.</p>
       </div>
     `,
   });

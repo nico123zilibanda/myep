@@ -12,6 +12,8 @@
   "LOGS": "Logs",
   "SETTINGS": "Settings",
 
+  "OPPORTUNITY_RESOURCE_URL_LABEL": "resource type",
+  "OPPORTUNITY_RESOURCE_TYPE_LABEL": "resource type",
   "AUTH_REGISTER_SUCCESS": "Registration successful 🎉 Welcome to the system.",
   "AUTH_REGISTER_FAILED": "Registration failed. Please try again.",
   "AUTH_REGISTER_EMAIL_EXISTS": "This email is already registered.",
@@ -83,8 +85,283 @@
   "CONFIRM_ACTION_YES": "Yes, Delete",
   "CONFIRM_ACTION_CANCEL": "Cancel",
 
+  "EMAIL_LABEL": "Email",
+  "EMAIL_PLACEHOLDER": "Enter your email",
+  "PASSWORD_LABEL": "Password",
+  "PASSWORD_PLACEHOLDER": "Enter your password",
+
   "ACTION_SUCCESS": "Action completed successfully.",
   "ACTION_FAILED": "Action failed. Please try again.",
   "UNAUTHORIZED": "You are not authorized to perform this action.",
-  "SERVER_ERROR": "System error. Please try again later."
+  "SERVER_ERROR": "System error. Please try again later.",
+
+  "CATEGORY_FORM_TITLE": "Category Details",
+  "CATEGORY_FORM_SUBTITLE": "Create or edit opportunity or training category",
+
+  "CATEGORY_NAME_LABEL": "Category Name",
+  "CATEGORY_NAME_PLACEHOLDER": "Example: Jobs, Loans, Trainings",
+
+  "CATEGORY_DESCRIPTION_LABEL": "Description",
+  "CATEGORY_DESCRIPTION_PLACEHOLDER": "Short description about this category",
+
+  "CATEGORY_SAVE_BUTTON": "Save Category",
+  "CATEGORY_SAVING_BUTTON": "Saving...",
+
+  "OPPORTUNITY_FORM_TITLE": "Opportunity Details",
+  "OPPORTUNITY_FORM_SUBTITLE": "Fill in important opportunity information",
+
+  "OPPORTUNITY_TITLE_LABEL": "Opportunity Title",
+  "OPPORTUNITY_TITLE_PLACEHOLDER": "Example: ICT Internship",
+
+  "OPPORTUNITY_LOCATION_LABEL": "Location",
+  "OPPORTUNITY_LOCATION_PLACEHOLDER": "Example: Dodoma",
+
+  "OPPORTUNITY_DEADLINE_LABEL": "Deadline",
+
+  "OPPORTUNITY_STATUS_LABEL": "Status",
+  "SELECT_PLACEHOLDER": "Select option",
+  "STATUS_PUBLISHED": "Published",
+  "STATUS_DRAFT": "Draft",
+  "STATUS_CLOSED": "Closed",
+
+  "OPPORTUNITY_DESCRIPTION_LABEL": "Description",
+  "OPPORTUNITY_DESCRIPTION_PLACEHOLDER": "Briefly describe the opportunity",
+
+  "OPPORTUNITY_REQUIREMENTS_LABEL": "Requirements",
+  "OPPORTUNITY_REQUIREMENTS_PLACEHOLDER": "Required qualifications or criteria",
+
+  "OPPORTUNITY_HOW_TO_APPLY_LABEL": "How to Apply",
+  "OPPORTUNITY_HOW_TO_APPLY_PLACEHOLDER": "Explain how to apply",
+
+  "OPPORTUNITY_CATEGORY_LABEL": "Category",
+
+  "OPPORTUNITY_ATTACHMENT_LABEL": "Attachment URL",
+  "OPPORTUNITY_ATTACHMENT_PLACEHOLDER": "Document link (optional)",
+
+  "OPPORTUNITY_SAVE_BUTTON": "Save Opportunity",
+  "OPPORTUNITY_SAVING_BUTTON": "Saving...",
+
+  "TRAINING_TITLE_LABEL": "Training Title",
+  "TRAINING_TITLE_PLACEHOLDER": "Enter training title",
+
+  "TRAINING_DESCRIPTION_LABEL": "Description",
+  "TRAINING_DESCRIPTION_PLACEHOLDER": "Enter short training description",
+
+  "TRAINING_TYPE_LABEL": "Training Type",
+
+  "TRAINING_TYPE_ARTICLE": "Article",
+  "TRAINING_TYPE_VIDEO": "Video",
+  "TRAINING_TYPE_PDF": "PDF",
+
+  "TRAINING_UPLOAD_LABEL": "Upload File",
+  "TRAINING_UPLOAD_VIDEO_LABEL": "Upload Video",
+  "TRAINING_UPLOAD_PDF_LABEL": "Upload PDF",
+
+  "TRAINING_RESOURCE_URL_LABEL": "Resource URL",
+  "TRAINING_RESOURCE_URL_PLACEHOLDER": "Enter article link",
+
+  "TRAINING_SAVE_BUTTON": "Save Training",
+  "TRAINING_SAVING_BUTTON": "Saving...",
+
+  "TRAINING_TITLE_REQUIRED": "Title is required",
+  "TRAINING_URL_REQUIRED": "Resource URL is required",
+  "TRAINING_FILE_REQUIRED": "Please select a file",
+
+  "TRAINING_VIDEO_SIZE_ERROR": "Video must not exceed 10MB",
+  "TRAINING_PDF_SIZE_ERROR": "PDF must not exceed 2MB",
+
+  "ANSWER_PLACEHOLDER": "Write your answer here...",
+  "ANSWER_SUBMIT_BUTTON": "Submit Answer",
+  "ANSWER_SUBMITTING_BUTTON": "Submitting...",
+  "ANSWER_REQUIRED": "Answer is required",
+
+  "STAT_TOTAL_USERS": "Total Users",
+  "STAT_TOTAL_OPPORTUNITIES": "Total Opportunities",
+  "STAT_TOTAL_TRAININGS": "Total Trainings",
+  "STAT_TOTAL_APPLICATIONS": "Total Questions",
+
+  "QA_CREATE_OPPORTUNITY_TITLE": "Create Opportunity",
+  "QA_CREATE_OPPORTUNITY_DESC": "Add a new opportunity for users",
+
+  "QA_CREATE_TRAINING_TITLE": "Create Training",
+  "QA_CREATE_TRAINING_DESC": "Upload new training content",
+
+  "QA_MANAGE_USERS_TITLE": "Manage Users",
+  "QA_MANAGE_USERS_DESC": "View and manage registered users",
+
+  "QA_VIEW_APPLICATIONS_TITLE": "View Questions",
+  "QA_VIEW_APPLICATIONS_DESC": "Review submitted questions",
+
+  "CATEGORY_TITLE": "Categories",
+  "CATEGORY_PAGE_DESC": "Manage all system Categories",
+  "ADD_CATEGORY": "Add Category",
+  "EDIT_CATEGORY": "Edit Category",
+  "NO_DATA": "No Category Found",
+  "TABLE_NAME": "Name",
+  "TABLE_DESCRIPTION": "Description",
+  "TABLE_ACTIONS": "Actions",
+
+  "DELETE_CONFIRM_TITLE": "Confirm Delete",
+  "DELETE_CONFIRM_TEXT": "Are you sure you want to delete",
+  "DELETE_WARNING": "This action cannot be undone.",
+  "CANCEL": "Cancel",
+  "CONFIRM_DELETE": "Yes, Delete",
+  "DELETING": "deleting...",
+
+  "OPPORTUNITY_TITLE": "Opportunities",
+  "OPPORTUNITY_PAGE_DESC": "Manage all system opportunities",
+  "ADD_OPPORTUNITY": "Add Opportunity",
+  "EDIT_OPPORTUNITY": "Edit Opportunity",
+  "OPPORTUNITY_DELETE_CONFIRM": "Are you sure you want to delete this opportunity?",
+
+  "NO_OPPORTUNITY_FOUND": "No opportunities found",
+  "TABLE_OPP_TITLE": "Name",
+  "TABLE_OPP_DEADLINE": "Deadline",
+  "TABLE_OPP_CATEGORY": "Category",
+  "TABLE_OPP_ACTIONS": "Actions",
+
+  "TRAININGS_TITLE": "Trainings",
+  "TRAININGS_DESCRIPTION": "Manage all system training",
+  "ADD_TRAINING": "Add Training",
+  "EDIT_TRAINING": "Edit Training",
+  "TRAINING_DELETE_CONFIRM": "Are you sure you want to delete this training?",
+
+  "NO_TRAININGS_FOUND": "No trainings found",
+
+  "TABLE_T_TITLE": "Name",
+  "TABLE_T_DESCRIPTION": "Decription",
+  "TABLE_T_TYPE": "Type",
+  "TABLE_T_RESOURCES": "Resources",
+  "TABLE_T_ACTIONS": "Actions",
+  "OPEN_PDF": "Open PDF",
+  "VIEW": "View",
+
+  "YOUTH_QUESTIONS": "Youth Questions",
+  "YOUTH_QUESTIONS_DESCRIPTION": "Questions asked by youth and their answers",
+
+  "TABLE_QUESTION": "Question",
+  "TABLE_ASKED_BY": "Asked By",
+  "TABLE_ANSWER": "Answer",
+  "TABLE_STATUS": "Status",
+  "TABLE_Q_ACTIONS": "Actions",
+
+  "NO_QUESTIONS_FOUND": "No questions found",
+
+  "CONFIRM_DELETE_QUESTION": "Are you sure you want to delete question",
+
+  "ANSWER_QUESTION": "Answer Question",
+  "WRITE_ANSWER": "Write your answer here...",
+  "SUBMIT_ANSWER": "Submit Answer",
+
+  "QUESTION_DETAILS": "Question Details",
+  "QUESTION": "Question",
+  "ANSWER": "Answer",
+  "NOT_ANSWERED_YET": "Not answered yet",
+
+  "QUESTION_STATUS_PENDING": "Pending",
+  "QUESTION_STATUS_ANSWERED": "Answered",
+
+
+  "YOUTH_TITLE": "Youth",
+  "YOUTH_PAGE_DESC": "List of registered youth in the system",
+  "NO_YOUTH_FOUND": "No youth found",
+
+  "YOUTH_NAME": "Name",
+  "YOUTH_EMAIL": "Email",
+  "YOUTH_PHONE": "Phone",
+  "YOUTH_EDUCATION": "Education",
+  "YOUTH_GENDER": "Gender",
+  "YOUTH_DATE": "Date",
+  "YOUTH_STATUS": "Status",
+  "YOUTH_ACTIONS": "Actions",
+
+  "ACTIVE": "Active",
+  "INACTIVE": "Inactive",
+
+  "CONFIRM_DELETE_YOUTH": "Are you sure you want to delete youth: ",
+
+  "YOUTH_PROFILE": "Youth Profile",
+
+  
+  "PROFILE_PAGE_TITLE": "Profile",
+  "PROFILE_DESCRIPTION": "Manage your personal information and security settings",
+
+  "PROFILE_INFO_TITLE": "Profile Information",
+"PROFILE_INFO_SUBTITLE": "Update your personal information",
+
+"PROFILE_FULLNAME_LABEL": "Full Name",
+"PROFILE_PHONE_LABEL": "Phone Number",
+"PROFILE_GENDER_LABEL": "Gender",
+"PROFILE_DOB_LABEL": "Date of Birth",
+"PROFILE_EDUCATION_LABEL": "Education Level",
+"PROFILE_ROLE_LABEL": "Role",
+
+"PROFILE_EMAIL_LOCKED_NOTE": "Email and role cannot be changed",
+
+"PROFILE_SAVE_BUTTON": "Save Changes",
+"PROFILE_SAVING_BUTTON": "Saving...",
+
+"GENDER_MALE": "Male",
+"GENDER_FEMALE": "Female",
+
+"EDU_PRIMARY": "Primary Education",
+"EDU_O_LEVEL": "O-Level",
+"EDU_CERTIFICATE": "Certificate",
+"EDU_DIPLOMA": "Diploma",
+"EDU_DEGREE": "Degree",
+
+"PROFILE_LOAD_FAILED": "Failed to load profile information.",
+
+"SECURITY_TITLE": "Account Security",
+"SECURITY_SUBTITLE": "Change your account password",
+
+"NEW_PASSWORD_LABEL": "New Password",
+"CONFIRM_PASSWORD_LABEL": "Confirm New Password",
+
+"PASSWORD_HINT": "Use at least 8 characters (mix numbers or symbols if possible)",
+
+"PASSWORD_TOO_SHORT_LOCAL": "Password must be at least 8 characters.",
+"PASSWORD_MISMATCH_LOCAL": "Passwords do not match.",
+
+"CHANGE_PASSWORD_BUTTON": "Change Password",
+"CHANGING_PASSWORD_BUTTON": "Changing...",
+
+"AUDIT_LOGS_TITLE": "Audit Logs",
+"AUDIT_LOGS_EMPTY": "No audit logs found",
+
+"AUDIT_TABLE_ACTION": "Action",
+"AUDIT_TABLE_ENTITY": "Entity",
+"AUDIT_TABLE_DESCRIPTION": "Description",
+"AUDIT_TABLE_USER": "User",
+"AUDIT_TABLE_IP": "IP Address",
+"AUDIT_TABLE_DEVICE": "Device",
+"AUDIT_TABLE_DATE": "Date",
+"AUDIT_TABLE_REMOVE": "Remove",
+
+"AUDIT_DELETE_CONFIRM_TEXT": "Are you sure you want to delete this audit log?",
+"AUDIT_DELETE_WARNING": "This action cannot be undone.",
+
+"DEVICE_WINDOWS": "Windows",
+"DEVICE_MAC": "Mac OS",
+"DEVICE_ANDROID": "Android",
+"DEVICE_IPHONE": "iPhone",
+"DEVICE_IPAD": "iPad",
+"DEVICE_LINUX": "Linux",
+"DEVICE_UNKNOWN": "Unknown Device",
+
+"DELETE_LOADING": "Deleting...",
+
+"APPEARANCE_TITLE": "Appearance",
+"APPEARANCE_DESCRIPTION": "Choose how the interface looks",
+
+"THEME_LIGHT": "Light",
+"THEME_DARK": "Dark",
+"THEME_SYSTEM": "System",
+
+"LANGUAGE_TITLE": "Language",
+"LANGUAGE_DESCRIPTION": "Select your preferred system language",
+"LANGUAGE_LABEL": "Language",
+"LANGUAGE_SW": "Swahili",
+"LANGUAGE_EN": "English"
+
 }

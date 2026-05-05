@@ -18,42 +18,36 @@ export default function YouthShell({ user, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div
-      style={{ backgroundColor: "var(--app-bg)", color: "var(--text-primary)" }}
-      className="h-screen flex bg-(--background) transition-colors overflow-hidden"
-    >
+    <div className="h-screen flex bg-background transition-colors overflow-hidden">
+
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside
         className={clsx(
-          "hidden lg:flex flex-col transition-all duration-300",
-          sidebarCollapsed ? "w-20" : "w-64"
+          "hidden lg:flex flex-col border-r border-border transition-all duration-300 ease-out",
+          sidebarCollapsed ? "w-20" : "w-64",
+          "bg-card"
         )}
-        style={{ backgroundColor: "var(--card)", borderRight: "1px solid var(--border)" }}
       >
         {/* SIDEBAR HEADER */}
-        <div
-          className="h-16 flex items-center justify-between px-4 border-b"
-          style={{ borderColor: "var(--border)" }}
-        >
+        <div className="h-16 flex items-center justify-between px-4 border-b border-border">
           <div className="flex items-center gap-2 overflow-hidden">
             <Image src="/logo.png" alt="logo" width={32} height={32} />
             {!sidebarCollapsed && (
               <span className="font-bold text-lg text-blue-600 truncate">
-                Youth Portal
+                Mlele Portal
               </span>
             )}
           </div>
 
           <button
             onClick={() => setSidebarCollapsed((prev) => !prev)}
-            style={{ color: "var(--foreground)" }}
-            className="p-1.5 rounded-lg hover:opacity-80 transition"
+            className="p-2 rounded-lg hover:bg-muted transition"
             title={sidebarCollapsed ? "Expand" : "Collapse"}
           >
             <ChevronLeft
               size={16}
               className={clsx(
-                "transition-transform",
+                "transition-transform duration-300",
                 sidebarCollapsed && "rotate-180"
               )}
             />
@@ -62,46 +56,43 @@ export default function YouthShell({ user, children }: Props) {
 
         {/* MENU */}
         <div className="flex-1 overflow-y-auto py-4">
-          <YouthMenu
-            isCollapsed={sidebarCollapsed}
-            onItemClick={() => setMobileOpen(false)}
-          />
+          <YouthMenu isCollapsed={sidebarCollapsed} onItemClick={() => setMobileOpen(false)} />
         </div>
       </aside>
 
       {/* ================= MOBILE SIDEBAR ================= */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden mt-6">
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Overlay */}
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn"
             onClick={() => setMobileOpen(false)}
           />
 
-          <aside
-            className="relative z-50 w-64 h-full"
-            style={{ backgroundColor: "var(--card)", borderRight: "1px solid var(--border)" }}
-          >
-            <div
-              className="h-16 flex items-center justify-between px-4 border-b"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <span className="font-bold text-blue-600">Youth Portal</span>
-              <button onClick={() => setMobileOpen(false)}>
-                <X style={{ color: "var(--foreground)" }} />
+          {/* Sidebar Panel */}
+          <aside className=" card relative w-full h-full bg-white animate-slideIn z-50">
+            {/* Header */}
+            <div className="h-16 flex items-center justify-between px-4 border-b border-border">
+              <span className="font-bold text-blue-600 text-lg">Mlele Portal</span>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="p-2 rounded-lg hover:bg-muted transition"
+              >
+                <X />
               </button>
             </div>
 
-            <YouthMenu
-              isCollapsed={false}
-              onItemClick={() => setMobileOpen(false)}
-            />
+            {/* Menu */}
+            <div className="py-4">
+              <YouthMenu isCollapsed={false} onItemClick={() => setMobileOpen(false)} />
+            </div>
           </aside>
         </div>
       )}
 
       {/* ================= MAIN ================= */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <YouthTopbar onMenuClick={() => setMobileOpen(true)} user={user} />
+        <YouthTopbar user={user} onMenuClick={() => setMobileOpen(true)} />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 lg:p-10">
           {children}

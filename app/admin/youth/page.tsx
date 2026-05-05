@@ -11,6 +11,7 @@ import Modal from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 /* ================= TYPES ================= */
 interface Youth {
@@ -34,6 +35,7 @@ interface ApiResponse<T = any> {
 /* ================= PAGE ================= */
 export default function YouthPage() {
   const { showSuccess, showError } = useAppToast();
+  const t = useDictionary();
 
   const [youth, setYouth] = useState<Youth[]>([]);
   const [loading, setLoading] = useState(false);
@@ -132,8 +134,12 @@ export default function YouthPage() {
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div>
-        <h1 className="text-xl font-semibold text-(--text-primary)">Vijana</h1>
-        <p className="text-sm opacity-70">Orodha ya vijana waliojisajili kwenye mfumo</p>
+        <h1 className="text-xl font-semibold text-(--text-primary)">
+          {t("YOUTH_TITLE")}
+        </h1>
+        <p className="text-sm opacity-70">
+          {t("YOUTH_PAGE_DESC")}
+        </p>
       </div>
 
       {/* SEARCH */}
@@ -145,8 +151,15 @@ export default function YouthPage() {
       <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={["Jina", "Email", "Simu", "Elimu", "Status", "Tarehe", "Actions"]}
-          />
+            columns={[
+              t("YOUTH_NAME"),
+              t("YOUTH_EMAIL"),
+              t("YOUTH_PHONE"),
+              t("YOUTH_EDUCATION"),
+              t("YOUTH_STATUS"),
+              t("YOUTH_DATE"),
+              t("YOUTH_ACTIONS")
+            ]} />
           <tbody>
             {loading ? (
               Array.from({ length: perPage }).map((_, i) => (
@@ -157,7 +170,7 @@ export default function YouthPage() {
             ) : paginatedData.length === 0 ? (
               <TableRow>
                 <td colSpan={7} className="px-4 py-10 text-center opacity-70">
-                  Hakuna vijana waliopatikana
+                  {t("NO_YOUTH_FOUND")}
                 </td>
               </TableRow>
             ) : (
@@ -169,7 +182,7 @@ export default function YouthPage() {
                   <td className="px-4 py-4 opacity-70">{v.educationLevel ?? "-"}</td>
                   <td className="px-4 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${v.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                      {v.isActive ? "Active" : "Inactive"}
+                      {v.isActive ? t("ACTIVE") : t("INACTIVE")}
                     </span>
                   </td>
                   <td className="px-4 py-4 opacity-70">{v.createdAt ? new Date(v.createdAt).toLocaleDateString() : "-"}</td>
@@ -194,20 +207,21 @@ export default function YouthPage() {
       <Modal
         open={!!deleteTarget}
         onClose={() => { if (!deleting) setDeleteTarget(null); }}
-        title="Thibitisha Kufuta"
+        title={t("DELETE_CONFIRM_TITLE")}
         size="sm"
       >
         <div className="space-y-4">
           <p className="text-sm opacity-70">
-            Je, una uhakika unataka kufuta kijana: "
+            {t("CONFIRM_DELETE_YOUTH")}
             <span className="font-semibold text-(--text-primary)">
               {" "}{deleteTarget?.fullName}
-            </span> "
+            </span>
             ?
           </p>
 
           <p className="text-xs opacity-70">
-            Kitendo hiki hakiwezi kurejeshwa.
+            {t("CONFIRM_DELETE_DESCRIPTION")}
+
           </p>
 
           <div className="flex justify-end gap-3 pt-4">
@@ -222,7 +236,8 @@ export default function YouthPage() {
           transition
         "
             >
-              Ghairi
+              {t("CANCEL")}
+
             </button>
 
             <button
@@ -236,7 +251,7 @@ export default function YouthPage() {
           transition
         "
             >
-              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+              {deleting ? t("DELETING") : t("CONFIRM_DELETE")}
             </button>
           </div>
         </div>
@@ -244,15 +259,17 @@ export default function YouthPage() {
 
 
       {/* VIEW MODAL */}
-      <Modal title="Wasifu wa Kijana" open={!!viewing} onClose={() => setViewing(null)}>
+      <Modal title={t("YOUTH_PROFILE")}
+        open={!!viewing}
+        onClose={() => setViewing(null)}>
         {viewing && (
           <div className="space-y-3 text-sm">
-            <p><strong>Jina:</strong> {viewing.fullName ?? "-"}</p>
-            <p><strong>Email:</strong> {viewing.email ?? "-"}</p>
-            <p><strong>Simu:</strong> {viewing.phone ?? "-"}</p>
-            <p><strong>Elimu:</strong> {viewing.educationLevel ?? "-"}</p>
-            <p><strong>Jinsia:</strong> {viewing.gender ?? "-"}</p>
-            <p><strong>Status:</strong> {viewing.isActive ? "Active" : "Inactive"}</p>
+            <p><strong>{t("YOUTH_NAME")}:</strong> {viewing.fullName ?? "-"}</p>
+            <p><strong>{t("YOUTH_EMAIL")}:</strong> {viewing.email ?? "-"}</p>
+            <p><strong>{t("YOUTH_PHONE")}:</strong> {viewing.phone ?? "-"}</p>
+            <p><strong>{t("YOUTH_EDUCATION")}:</strong> {viewing.educationLevel ?? "-"}</p>
+            <p><strong>{t("YOUTH_GENDER")}:</strong> {viewing.gender ?? "-"}</p>
+            <p><strong>{t("YOUTH_STATUS")}:</strong> {viewing.isActive ? t("ACTIVE") : t("INACTIVE")}</p>
           </div>
         )}
       </Modal>

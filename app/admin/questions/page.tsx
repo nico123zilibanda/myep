@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
+
 import DataTable from "@/components/table/DataTable";
 import TableHeader from "@/components/table/TableHeader";
 import TableRow from "@/components/table/TableRow";
@@ -12,6 +14,8 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
+import { useDictionary } from "@/lib/i18n/useDictionary";
+
 
 /* ================= TYPES ================= */
 interface Question {
@@ -31,6 +35,7 @@ interface ApiResponse<T = any> {
 /* ================= PAGE ================= */
 export default function AdminQuestionsPage() {
   const { showSuccess, showError } = useAppToast();
+  const t = useDictionary();
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
@@ -161,10 +166,10 @@ export default function AdminQuestionsPage() {
       {/* HEADER */}
       <div>
         <h1 className="text-xl font-semibold text-(--text-primary)">
-          Maswali ya Vijana
+          {t("YOUTH_QUESTIONS")}
         </h1>
         <p className="text-sm opacity-70">
-          Maswali yaliyoulizwa na vijana na majibu yake
+          {t("YOUTH_QUESTIONS_DESCRIPTION")}
         </p>
       </div>
 
@@ -177,8 +182,13 @@ export default function AdminQuestionsPage() {
       <div className="card border-default overflow-x-auto">
         <DataTable>
           <TableHeader
-            columns={["Swali", "Aliyeuliza", "Jibu", "Hali", "Actions"]}
-          />
+            columns={[
+              t("TABLE_QUESTION"),
+              t("TABLE_ASKED_BY"),
+              t("TABLE_ANSWER"),
+              t("TABLE_STATUS"),
+              t("TABLE_Q_ACTIONS"),
+            ]} />
 
           <tbody>
             {loading ? (
@@ -195,7 +205,7 @@ export default function AdminQuestionsPage() {
                   colSpan={5}
                   className="px-4 py-10 text-center opacity-70"
                 >
-                  Hakuna maswali yaliyopatikana
+                  {t("NO_QUESTIONS_FOUND")}
                 </td>
               </TableRow>
             ) : (
@@ -241,12 +251,12 @@ export default function AdminQuestionsPage() {
       <Modal
         open={!!deleteTarget}
         onClose={() => { if (!deleting) setDeleteTarget(null); }}
-        title="Thibitisha Kufuta"
+        title={t("CONFIRM_DELETE_TITLE")}
         size="sm"
       >
         <div className="space-y-4">
           <p className="text-sm opacity-70">
-            Je, una uhakika unataka kufuta swali: "
+            {t("CONFIRM_DELETE_QUESTION")}  "
             <span className="font-semibold text-(--text-primary)">
               {" "}{deleteTarget?.questionText}
             </span> "
@@ -254,7 +264,7 @@ export default function AdminQuestionsPage() {
           </p>
 
           <p className="text-xs opacity-70">
-            Kitendo hiki hakiwezi kurejeshwa.
+            {t("DELETE_WARNING")}
           </p>
 
           <div className="flex justify-end gap-3 pt-4">
@@ -269,7 +279,7 @@ export default function AdminQuestionsPage() {
           transition
         "
             >
-              Ghairi
+              {t("CANCEL")}
             </button>
 
             <button
@@ -283,7 +293,7 @@ export default function AdminQuestionsPage() {
           transition
         "
             >
-              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+              {deleting ? t("DELETING") : t("CONFIRM_DELETE")}
             </button>
           </div>
         </div>
@@ -292,7 +302,7 @@ export default function AdminQuestionsPage() {
 
       {/* ANSWER MODAL */}
       <Modal
-        title="Jibu Swali"
+        title={t("ANSWER_QUESTION")}
         open={!!selected}
         onClose={() => setSelected(null)}
         size="sm"
@@ -311,7 +321,7 @@ export default function AdminQuestionsPage() {
         focus:ring-2 focus:ring-(--btn-focus)
         transition
       "
-            placeholder="Andika jibu hapa..."
+            placeholder={t("WRITE_ANSWER")}
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
           />
@@ -326,7 +336,7 @@ export default function AdminQuestionsPage() {
         transition
       "
           >
-            Tuma Jibu
+            {t("SUBMIT_ANSWER")}
           </button>
         </div>
       </Modal>
@@ -334,23 +344,23 @@ export default function AdminQuestionsPage() {
 
       {/* VIEW MODAL */}
       <Modal
-        title="Maelezo ya Swali"
+        title={t("QUESTION_DETAILS")}
         open={!!viewing}
         onClose={() => setViewing(null)}
         size="md"
       >
         <div className="space-y-4 text-sm">
           <div>
-            <p className="opacity-70 mb-1">Swali</p>
+            <p className="opacity-70 mb-1">{t("QUESTION")}</p>
             <p className="card border-default p-3 rounded">
               {viewing?.questionText}
             </p>
           </div>
 
           <div>
-            <p className="opacity-70 mb-1">Jibu</p>
+            <p className="opacity-70 mb-1">{t("ANSWER")}</p>
             <p className="card border-default p-3 rounded">
-              {viewing?.answerText || "Bado halijajibiwa"}
+              {viewing?.answerText || t("NOT_ANSWERED_YET")}
             </p>
           </div>
 

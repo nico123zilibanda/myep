@@ -1,9 +1,12 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
+import { useDictionary } from "@/lib/i18n/useDictionary";
+
+import { MessageKey } from "@/lib/messages";
 
 interface StatCardProps {
-  title: string;
+  titleKey: MessageKey;
   value: number;
   icon: ReactNode;
   color: "blue" | "green" | "purple" | "red";
@@ -30,14 +33,16 @@ const colorMap = {
 };
 
 export default function StatCard({
-  title,
+  titleKey,
   value,
   icon,
   color,
   loading = false,
 }: StatCardProps) {
   const styles = colorMap[color];
+
   const [displayValue, setDisplayValue] = useState(0);
+  const t = useDictionary();
 
   useEffect(() => {
     if (loading) return;
@@ -78,10 +83,9 @@ export default function StatCard({
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm opacity-70">
-              {title}
+              {t(titleKey)}
             </p>
 
-            {/* COUNT */}
             <h2 className="text-3xl font-bold tabular-nums text-(--text-primary)">
               {displayValue.toLocaleString()}
             </h2>

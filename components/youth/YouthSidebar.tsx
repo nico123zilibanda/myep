@@ -24,12 +24,14 @@ export default function YouthMenu({ isCollapsed, onItemClick }: YouthMenuProps) 
       <nav className="flex-1 text-sm space-y-6">
         {youthMenuItems.map((section) => (
           <div key={section.title}>
+            {/* SECTION TITLE */}
             {!isCollapsed && (
               <p className="px-3 mb-2 text-[11px] uppercase tracking-widest opacity-60">
                 {section.title}
               </p>
             )}
 
+            {/* LINKS */}
             <div className="flex flex-col gap-1">
               {section.items.map((item) => {
                 const Icon = item.icon;
@@ -42,28 +44,34 @@ export default function YouthMenu({ isCollapsed, onItemClick }: YouthMenuProps) 
                     onClick={onItemClick}
                     title={isCollapsed ? item.label : undefined}
                     className={clsx(
-                      "group relative flex items-center rounded-xl px-3 py-2.5 transition-all duration-200",
+                      "group relative flex items-center rounded-xl px-3 py-2.5 transition-all duration-200 ease-out",
                       isCollapsed ? "justify-center" : "gap-3",
                       isActive
-                        ? "bg-blue-500/10 text-blue-600 font-medium"
+                        ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 font-medium"
                         : "opacity-80 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5"
                     )}
                   >
+                    {/* ACTIVE INDICATOR */}
                     <span
                       className={clsx(
-                        "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r bg-blue-500 transition-all",
+                        "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r bg-blue-600 transition-all duration-300",
                         isActive && !isCollapsed ? "opacity-100" : "opacity-0"
                       )}
                     />
 
+                    {/* ICON */}
                     <Icon
                       size={18}
                       className={clsx(
-                        "shrink-0 transition-colors",
-                        isActive ? "text-blue-600" : "opacity-60 group-hover:opacity-100"
+                        "shrink-0 transition-transform duration-200 ease-out",
+                        isActive
+                          ? "text-blue-600"
+                          : "opacity-60 group-hover:opacity-100",
+                        "group-hover:scale-110 group-hover:rotate-3"
                       )}
                     />
 
+                    {/* LABEL */}
                     {!isCollapsed && <span className="truncate">{item.label}</span>}
                   </Link>
                 );
@@ -73,8 +81,9 @@ export default function YouthMenu({ isCollapsed, onItemClick }: YouthMenuProps) 
         ))}
       </nav>
 
+      {/* FOOTER */}
       {!isCollapsed && (
-        <div className="px-3 py-4 text-xs opacity-50">
+        <div className="px-3 py-4 text-xs opacity-50 mt-auto">
           © {new Date().getFullYear()} Youth Portal
         </div>
       )}

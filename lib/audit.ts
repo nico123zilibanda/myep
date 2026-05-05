@@ -15,6 +15,8 @@ export type AuditAction =
   | "PUBLISH"
   | "ANSWER"
   | "SAVE"
+  | "STATUS_CHANGE"
+  | "PASSWORD_RESET"
   | "PASSWORD_RESET_REQUEST";
 
 

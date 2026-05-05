@@ -1,7 +1,13 @@
+"use client";
+
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { MessageKey } from "@/lib/messages";
+import translate from "@/lib/i18n/translate";
+
 interface InputProps {
-  label: string;
+  labelKey: MessageKey;
   name: string;
-  placeholder?: string;
+  placeholderKey?: MessageKey;
   value: string | undefined;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
@@ -11,16 +17,18 @@ interface InputProps {
 }
 
 export default function FormInput({
-  label,
+  labelKey,
   name,
   value,
   onChange,
-  placeholder = "",
+  placeholderKey,
   type = "text",
   disabled = false,
   required = false,
   error,
 }: InputProps) {
+  const { lang } = useLanguage();
+
   return (
     <div className="flex flex-col gap-1.5">
       {/* LABEL */}
@@ -28,7 +36,7 @@ export default function FormInput({
         htmlFor={name}
         className="text-sm font-medium text-(--text-primary)"
       >
-        {label}
+        {translate(labelKey, lang)}
         {required && <span className="text-red-600 ml-0.5">*</span>}
       </label>
 
@@ -39,7 +47,11 @@ export default function FormInput({
         name={name}
         value={value ?? ""}
         onChange={onChange}
-        placeholder={placeholder}
+        placeholder={
+          placeholderKey
+            ? translate(placeholderKey, lang)
+            : ""
+        }
         disabled={disabled}
         aria-invalid={!!error}
         className={`

@@ -2,6 +2,7 @@
 
 import { CategoryInput } from "@/lib/validators/category";
 import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 
 import DataTable from "@/components/table/DataTable";
 import TableHeader from "@/components/table/TableHeader";
@@ -12,6 +13,7 @@ import ActionButtons from "@/components/table/ActionButtons";
 import Modal from "@/components/ui/Modal";
 import CategoryForm from "@/components/forms/CategoryForm";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 import { useAppToast} from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
@@ -28,7 +30,8 @@ interface Category {
 
 export default function CategoriesPage() {
   const { showSuccess, showError } = useAppToast();
-  
+  const t = useDictionary();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
@@ -177,7 +180,14 @@ export default function CategoriesPage() {
       {/* HEADER */}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-(--text-primary)">Kategoria</h1>
+         <div>
+          <h1 className="text-xl font-semibold text-(--text-primary)">
+            {t("CATEGORY_TITLE")}
+          </h1>
+          <p className="text-sm opacity-70">
+            {t("CATEGORY_PAGE_DESC")}
+          </p>
+        </div>
 
         <button
           onClick={() => {
@@ -186,14 +196,18 @@ export default function CategoriesPage() {
           }}
           className="inline-flex items-center gap-2 rounded-lg bg-blue-300 px-5 py-2 text-sm font-medium"
         >
-          + Ongeza Kategori
+          <Plus size={16} />
+          {t("ADD_CATEGORY")}
         </button>
       </div>
 
       {/* FORM MODAL */}
 
       <Modal
-        title={editing ? "Hariri Kategori" : "Ongeza Kategori"}
+        title={editing 
+          ? t("EDIT_CATEGORY") 
+          : t("ADD_CATEGORY") 
+        }
         open={open}
         onClose={() => {
           setOpen(false);
@@ -212,19 +226,22 @@ export default function CategoriesPage() {
       <Modal
         open={!!deleteTarget}
         onClose={() => !deleting && setDeleteTarget(null)}
-        title="Thibitisha Kufuta"
+        title={t("DELETE_CONFIRM_TITLE")}
         size="sm"
       >
         <div className="space-y-4">
           <p>
-            Je, unataka kufuta <b>{deleteTarget?.name}</b> ?
+            {t("DELETE_CONFIRM_TEXT")} <b>{deleteTarget?.name}</b> ?
           </p>
 
           <div className="flex justify-end gap-3">
-            <button onClick={() => setDeleteTarget(null)}>Ghairi</button>
+          <button onClick={() => setDeleteTarget(null)}>{t("CANCEL")}</button>
 
             <button onClick={confirmDelete}>
-              {deleting ? "Inafuta..." : "Ndiyo, Futa"}
+              {deleting 
+              ? t("DELETING") 
+              : t("CONFIRM_DELETE")
+              }
             </button>
           </div>
         </div>
@@ -240,7 +257,9 @@ export default function CategoriesPage() {
 
       <div className="card border-default overflow-x-auto">
         <DataTable>
-          <TableHeader columns={["Jina", "Maelezo", "Actions"]} />
+          <TableHeader columns={
+            [t("TABLE_NAME"), t("TABLE_DESCRIPTION"), t("TABLE_ACTIONS")]
+            } />
 
           <tbody>
             {loading ? (

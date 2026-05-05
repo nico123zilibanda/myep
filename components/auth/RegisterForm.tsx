@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { showSuccess, showError } from "@/lib/toast";
+import { useAppToast } from "@/lib/toast";
 import type { MessageKey } from "@/lib/messages";
 
 interface RegisterFormProps {
@@ -25,6 +25,8 @@ interface ApiResponse {
 }
 
 export default function RegisterForm({ onSubmit }: RegisterFormProps) {
+  const { showSuccess, showError } = useAppToast();
+
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 

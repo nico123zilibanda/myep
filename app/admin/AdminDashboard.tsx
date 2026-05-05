@@ -163,10 +163,10 @@ const handleTrainingSubmit = async (formData: FormData) => {
       {/* ========= STATS ========= */}
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <StatCard title="Vijana" value={vijanaCount} color="blue" icon={<Users />} />
-          <StatCard title="Fursa" value={opportunitiesCount} color="green" icon={<Briefcase />} />
-          <StatCard title="Mafunzo" value={trainingsCount} color="purple" icon={<BookOpen />} />
-          <StatCard title="Maswali" value={questionsCount} color="red" icon={<MessageCircle />} />
+          <StatCard titleKey="STAT_TOTAL_USERS" value={vijanaCount} color="blue" icon={<Users />} />
+          <StatCard titleKey="STAT_TOTAL_OPPORTUNITIES" value={opportunitiesCount} color="green" icon={<Briefcase />} />
+          <StatCard titleKey="STAT_TOTAL_TRAININGS" value={trainingsCount} color="purple" icon={<BookOpen />} />
+          <StatCard titleKey="STAT_TOTAL_APPLICATIONS" value={questionsCount} color="red" icon={<MessageCircle />} />
         </div>
       </section>
 
@@ -176,24 +176,24 @@ const handleTrainingSubmit = async (formData: FormData) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <QuickAction
-            title="Ongeza Fursa"
-            description="Ajira, zabuni au mikopo"
+            titleKey="QA_CREATE_OPPORTUNITY_TITLE"
+            descriptionKey="QA_CREATE_OPPORTUNITY_DESC"
             icon={Briefcase}
             color="green"
             onClick={() => setOpenModal("opportunity")}
           />
 
           <QuickAction
-            title="Ongeza Mafunzo"
-            description="Kozi, video au PDF"
+            titleKey="QA_CREATE_TRAINING_TITLE"
+            descriptionKey="QA_CREATE_TRAINING_DESC"
             icon={BookOpen}
             color="purple"
             onClick={() => setOpenModal("training")}
           />
 
           <QuickAction
-            title="Maswali"
-            description="Maswali yanayosubiri"
+            titleKey="QA_VIEW_APPLICATIONS_TITLE"
+            descriptionKey="QA_VIEW_APPLICATIONS_DESC"
             icon={MessageCircle}
             color="red"
             onClick={async () => {

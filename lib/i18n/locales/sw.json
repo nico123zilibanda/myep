@@ -12,6 +12,8 @@
   "LOGS": "Kumbukumbu",
   "SETTINGS": "Mipangilio",
 
+  "OPPORTUNITY_RESOURCE_URL_LABEL": "Url ya kiambatanisho",
+  "OPPORTUNITY_RESOURCE_TYPE_LABEL": "Aina ya kiambatanisho",
   "AUTH_REGISTER_SUCCESS": "Usajili umefanikiwa 🎉 Karibu kwenye mfumo.",
   "AUTH_REGISTER_FAILED": "Usajili haukufanikiwa. Tafadhali jaribu tena.",
   "AUTH_REGISTER_EMAIL_EXISTS": "Email hii tayari imesajiliwa.",
@@ -31,7 +33,7 @@
   "CATEGORY_FAILED_DELETED": "Category haijafutwa kwa mafanikio.",
   "CATEGORY_NOT_FOUND": "Category haijapatikana.",
   "CATEGORY_FETCH_FAILED": "Imeshindikana kupata categories.",
-  
+
   "OPPORTUNITY_CREATE_SUCCESS": "Fursa imeongezwa kwa mafanikio.",
   "OPPORTUNITY_UPDATE_SUCCESS": "Fursa imehaririwa kwa mafanikio.",
   "OPPORTUNITY_FAILED_DELETED": "Fursa haijafutwa kwa mafanikio.",
@@ -74,18 +76,291 @@
   "PASSWORD_RESET_SUCCESS": "Neno siri limebadilishwa kikamilifu",
   "RESET_EMAIL_SENT_FAILED": "Imeshindwa Kutuma reset kwenye Email",
   "RESET_EMAIL_SENT": "Imetumwa kwenye Email",
-  
+
   "TOKEN_INVALID": "Tokeni haipo",
 
   "CONFIRM_DELETE_TITLE": "Thibitisha Kufuta",
-  "CONFIRM_DELETE_DESCRIPTION":
-    "Je, una uhakika unataka kufuta taarifa hii? Kitendo hiki hakiwezi kurejeshwa.",
+  "CONFIRM_DELETE_DESCRIPTION": "Je, una uhakika unataka kufuta taarifa hii? Kitendo hiki hakiwezi kurejeshwa.",
 
   "CONFIRM_ACTION_YES": "Ndiyo, Futa",
   "CONFIRM_ACTION_CANCEL": "Ghairi",
 
+  "EMAIL_LABEL": "Barua pepe",
+  "EMAIL_PLACEHOLDER": "Weka barua pepe yako",
+  "PASSWORD_LABEL": "Nenosiri",
+  "PASSWORD_PLACEHOLDER": "Weka nenosiri lako",
+
   "ACTION_SUCCESS": "Kitendo kimefanikiwa.",
   "ACTION_FAILED": "Kitendo hakijafanikiwa. Tafadhali jaribu tena.",
   "UNAUTHORIZED": "Huna ruhusa ya kufanya kitendo hiki.",
-  "SERVER_ERROR": "Hitilafu ya mfumo. Tafadhali jaribu tena baadaye."
+  "SERVER_ERROR": "Hitilafu ya mfumo. Tafadhali jaribu tena baadaye.",
+
+  "CATEGORY_FORM_TITLE": "Maelezo Ya Kategoria",
+  "CATEGORY_FORM_SUBTITLE": "Ongeza au hariri kategoria ya fursa au mafunzo",
+
+  "CATEGORY_NAME_LABEL": "Jina la Category",
+  "CATEGORY_NAME_PLACEHOLDER": "Mfano: Ajira, Mikopo, Mafunzo",
+
+  "CATEGORY_DESCRIPTION_LABEL": "Maelezo",
+  "CATEGORY_DESCRIPTION_PLACEHOLDER": "Maelezo mafupi kuhusu category hii",
+
+  "CATEGORY_SAVE_BUTTON": "Hifadhi Category",
+  "CATEGORY_SAVING_BUTTON": "Inahifadhi...",
+
+  "OPPORTUNITY_FORM_TITLE": "Maelezo Ya Fursa",
+  "OPPORTUNITY_FORM_SUBTITLE": "Jaza taarifa muhimu za fursa",
+
+  "OPPORTUNITY_TITLE_LABEL": "Kichwa Cha Fursa",
+  "OPPORTUNITY_TITLE_PLACEHOLDER": "Mfano: Internship ya ICT",
+
+  "OPPORTUNITY_LOCATION_LABEL": "Eneo",
+  "OPPORTUNITY_LOCATION_PLACEHOLDER": "Mfano: Dodoma",
+
+  "OPPORTUNITY_DEADLINE_LABEL": "Tarehe Ya Mwisho",
+
+  "OPPORTUNITY_STATUS_LABEL": "Hali",
+  "SELECT_PLACEHOLDER": "Chagua",
+  "STATUS_PUBLISHED": "Imechapishwa",
+  "STATUS_DRAFT": "Rasimu",
+  "STATUS_CLOSED": "Imefungwa",
+
+  "OPPORTUNITY_DESCRIPTION_LABEL": "Maelezo",
+  "OPPORTUNITY_DESCRIPTION_PLACEHOLDER": "Elezea kwa ufupi kuhusu fursa",
+
+  "OPPORTUNITY_REQUIREMENTS_LABEL": "Mahitaji",
+  "OPPORTUNITY_REQUIREMENTS_PLACEHOLDER": "Sifa au vigezo vinavyohitajika",
+
+  "OPPORTUNITY_HOW_TO_APPLY_LABEL": "Jinsi Ya Kutuma Maombi",
+  "OPPORTUNITY_HOW_TO_APPLY_PLACEHOLDER": "Elekeza jinsi ya kuomba",
+
+  "OPPORTUNITY_CATEGORY_LABEL": "Kategoria",
+
+  "OPPORTUNITY_ATTACHMENT_LABEL": "URL Ya Kiambatisho",
+  "OPPORTUNITY_ATTACHMENT_PLACEHOLDER": "Link ya document (hiari)",
+
+  "OPPORTUNITY_SAVE_BUTTON": "Hifadhi Fursa",
+  "OPPORTUNITY_SAVING_BUTTON": "Inahifadhi...",
+
+  "TRAINING_TITLE_LABEL": "Kichwa Cha Funzo",
+  "TRAINING_TITLE_PLACEHOLDER": "Andika kichwa cha funzo",
+
+  "TRAINING_DESCRIPTION_LABEL": "Maelezo",
+  "TRAINING_DESCRIPTION_PLACEHOLDER": "Andika maelezo mafupi ya mafunzo",
+
+  "TRAINING_TYPE_LABEL": "Aina Ya Mafunzo",
+
+  "TRAINING_TYPE_ARTICLE": "Makala",
+  "TRAINING_TYPE_VIDEO": "Video",
+  "TRAINING_TYPE_PDF": "PDF",
+
+  "TRAINING_UPLOAD_LABEL": "Pakia Faili",
+  "TRAINING_UPLOAD_VIDEO_LABEL": "Pakia Video",
+  "TRAINING_UPLOAD_PDF_LABEL": "Pakia PDF",
+
+  "TRAINING_RESOURCE_URL_LABEL": "URL Ya Rasilimali",
+  "TRAINING_RESOURCE_URL_PLACEHOLDER": "Andika link ya makala",
+
+  "TRAINING_SAVE_BUTTON": "Hifadhi Funzo",
+  "TRAINING_SAVING_BUTTON": "Inahifadhi...",
+
+  "TRAINING_TITLE_REQUIRED": "Title inahitajika",
+  "TRAINING_URL_REQUIRED": "URL inahitajika",
+  "TRAINING_FILE_REQUIRED": "Tafadhali chagua faili",
+
+  "TRAINING_VIDEO_SIZE_ERROR": "Video isizidi 10MB",
+  "TRAINING_PDF_SIZE_ERROR": "PDF isizidi 2MB",
+
+  "ANSWER_PLACEHOLDER": "Andika jibu hapa...",
+  "ANSWER_SUBMIT_BUTTON": "Tuma Jibu",
+  "ANSWER_SUBMITTING_BUTTON": "Inatuma...",
+  "ANSWER_REQUIRED": "Jibu linahitajika",
+
+  "STAT_TOTAL_USERS": "Jumla ya Watumiaji",
+  "STAT_TOTAL_OPPORTUNITIES": "Jumla ya Fursa",
+  "STAT_TOTAL_TRAININGS": "Jumla ya Mafunzo",
+  "STAT_TOTAL_APPLICATIONS": "Jumla ya Maswali",
+
+  "QA_CREATE_OPPORTUNITY_TITLE": "Ongeza Fursa",
+  "QA_CREATE_OPPORTUNITY_DESC": "Ongeza fursa mpya kwa watumiaji",
+
+  "QA_CREATE_TRAINING_TITLE": "Ongeza Mafunzo",
+  "QA_CREATE_TRAINING_DESC": "Pakia mafunzo mapya",
+
+  "QA_MANAGE_USERS_TITLE": "Simamia Watumiaji",
+  "QA_MANAGE_USERS_DESC": "Tazama na simamia watumiaji",
+
+  "QA_VIEW_APPLICATIONS_TITLE": "Tazama Maswali",
+  "QA_VIEW_APPLICATIONS_DESC": "Kagua maswali yaliyowasilishwa",
+
+  "CATEGORY_TITLE": "Kategoria",
+  "CATEGORY_PAGE_DESC": "Simamia Kategoria zote za mfumo",
+  "ADD_CATEGORY": "Ongeza Kategoria",
+  "EDIT_CATEGORY": "Hariri Kategoria",
+  "DELETE_CONFIRM_TITLE": "Thibitisha Kufuta",
+  "DELETE_CONFIRM_TEXT": "Je, unataka kufuta",
+  "CANCEL": "Ghairi",
+  "CONFIRM_DELETE": "Ndiyo, Futa",
+  "DELETING": "Inafuta...",
+  "NO_DATA": "Hakuna kategoria",
+
+  "TABLE_NAME": "Jina",
+  "TABLE_DESCRIPTION": "Maelezo",
+  "TABLE_ACTIONS": "Vitendo",
+
+  "OPPORTUNITY_TITLE": "Fursa",
+  "OPPORTUNITY_PAGE_DESC": "Simamia fursa zote za mfumo",
+  "ADD_OPPORTUNITY": "Ongeza Fursa",
+  "EDIT_OPPORTUNITY": "Hariri Fursa",
+  "OPPORTUNITY_DELETE_CONFIRM": "Je, una uhakika unataka kufuta fursa hii?",
+  "TABLE_OPP_TITLE": "Jina",
+  "TABLE_OPP_DEADLINE": "Tarehe Ya Mwisho",
+  "TABLE_OPP_CATEGORY": "Kategoria",
+  "TABLE_OPP_ACTIONS": "Vitendo",
+
+  "NO_OPPORTUNITY_FOUND": "Hakuna fursa zilizopatikana",
+
+  "TRAININGS_TITLE": "Mafunzo",
+  "TRAININGS_DESCRIPTION": "Simamia mafunzo yote ya mfumo",
+  "ADD_TRAINING": "Ongeza Mafunzo",
+  "EDIT_TRAINING": "Hariri Mafunzo",
+  "CONFIRM_DELETE_TRAINING": "Je, una uhakika unataka kufuta mafunzo",
+  "DELETE_WARNING": "Kitendo hiki hakiwezi kurejeshwa.",
+  "NO_TRAININGS_FOUND": "Hakuna mafunzo yaliyopatikana",
+  "TABLE_T_TITLE": "Jina",
+  "TABLE_T_DESCRIPTION": "Maelezo",
+  "TABLE_T_TYPE": "Type",
+  "TABLE_T_RESOURCES": "Chanzo",
+  "TABLE_T_ACTIONS": "Vitendo",
+  "OPEN_PDF": "Fungua PDF",
+  "VIEW": "Tazama",
+
+  "YOUTH_QUESTIONS": "Maswali ya Vijana",
+  "YOUTH_QUESTIONS_DESCRIPTION": "Maswali yaliyoulizwa na vijana na majibu yake",
+
+  "TABLE_QUESTION": "Swali",
+  "TABLE_ASKED_BY": "Aliyeuliza",
+  "TABLE_ANSWER": "Jibu",
+  "TABLE_STATUS": "Hali",
+  "TABLE_Q_ACTIONS": "Vitendo",
+
+  "NO_QUESTIONS_FOUND": "Hakuna maswali yaliyopatikana",
+
+  "CONFIRM_DELETE_QUESTION": "Je, una uhakika unataka kufuta swali",
+
+  "ANSWER_QUESTION": "Jibu Swali",
+  "WRITE_ANSWER": "Andika jibu hapa...",
+  "SUBMIT_ANSWER": "Tuma Jibu",
+
+  "QUESTION_DETAILS": "Maelezo ya Swali",
+  "QUESTION": "Swali",
+  "ANSWER": "Jibu",
+  "NOT_ANSWERED_YET": "Bado halijajibiwa",
+
+  "QUESTION_STATUS_PENDING": "Inasubiri",
+  "QUESTION_STATUS_ANSWERED": "Imejibiwa",
+
+  "YOUTH_TITLE": "Vijana",
+  "YOUTH_PAGE_DESC": "Orodha ya vijana waliojisajili kwenye mfumo",
+  "NO_YOUTH_FOUND": "Hakuna vijana waliopatikana",
+
+  "YOUTH_NAME": "Jina",
+  "YOUTH_EMAIL": "Email",
+  "YOUTH_PHONE": "Simu",
+  "YOUTH_EDUCATION": "Elimu",
+  "YOUTH_GENDER": "Jinsia",
+  "YOUTH_STATUS": "Hali",
+  "YOUTH_ACTIONS": "Vitendo",
+
+  "YOUTH_DATE": "Tarehe",
+
+  "ACTIVE": "Hai",
+  "INACTIVE": "Si Hai",
+
+  "CONFIRM_DELETE_YOUTH": "Je, una uhakika unataka kufuta kijana",
+
+  "YOUTH_PROFILE": "Wasifu wa Kijana",
+
+  "PROFILE_PAGE_TITLE": "Wasifu",
+  "PROFILE_DESCRIPTION": "Simamia taarifa zako binafsi na mipangilio ya usalama",
+
+
+  "PROFILE_INFO_TITLE": "Taarifa za Wasifu",
+"PROFILE_INFO_SUBTITLE": "Sasisha taarifa zako binafsi",
+
+"PROFILE_FULLNAME_LABEL": "Jina Kamili",
+"PROFILE_PHONE_LABEL": "Namba ya Simu",
+"PROFILE_GENDER_LABEL": "Jinsia",
+"PROFILE_DOB_LABEL": "Tarehe ya Kuzaliwa",
+"PROFILE_EDUCATION_LABEL": "Kiwango cha Elimu",
+"PROFILE_ROLE_LABEL": "Role",
+
+"PROFILE_EMAIL_LOCKED_NOTE": "Barua pepe na role haziwezi kubadilishwa",
+
+"PROFILE_SAVE_BUTTON": "Hifadhi Mabadiliko",
+"PROFILE_SAVING_BUTTON": "Inahifadhi...",
+
+"GENDER_MALE": "Mwanaume",
+"GENDER_FEMALE": "Mwanamke",
+
+"EDU_PRIMARY": "Elimu ya Msingi",
+"EDU_O_LEVEL": "Kidato cha Nne",
+"EDU_CERTIFICATE": "Astashahada (Certificate)",
+"EDU_DIPLOMA": "Stashahada (Diploma)",
+"EDU_DEGREE": "Shahada (Degree)",
+
+"PROFILE_LOAD_FAILED": "Imeshindikana kupakia taarifa za wasifu.",
+
+"SECURITY_TITLE": "Usalama wa Akaunti",
+"SECURITY_SUBTITLE": "Badilisha nenosiri la akaunti yako",
+
+"NEW_PASSWORD_LABEL": "Password Mpya",
+"CONFIRM_PASSWORD_LABEL": "Thibitisha Password Mpya",
+
+"PASSWORD_HINT": "Tumia angalau herufi 8 (ikiwezekana changanya namba au alama)",
+
+"PASSWORD_TOO_SHORT_LOCAL": "Password lazima iwe angalau herufi 8.",
+"PASSWORD_MISMATCH_LOCAL": "Password hazifanani.",
+
+"CHANGE_PASSWORD_BUTTON": "Badilisha Password",
+"CHANGING_PASSWORD_BUTTON": "Inabadilisha...",
+
+
+"AUDIT_LOGS_TITLE": "Kumbukumbu za Mfumo",
+"AUDIT_LOGS_EMPTY": "Hakuna audit logs",
+
+"AUDIT_TABLE_ACTION": "Kitendo",
+"AUDIT_TABLE_ENTITY": "Kitu",
+"AUDIT_TABLE_DESCRIPTION": "Maelezo",
+"AUDIT_TABLE_USER": "Mtumiaji",
+"AUDIT_TABLE_IP": "IP Address",
+"AUDIT_TABLE_DEVICE": "Kifaa",
+"AUDIT_TABLE_DATE": "Tarehe",
+"AUDIT_TABLE_REMOVE": "Futa",
+
+"AUDIT_DELETE_CONFIRM_TEXT": "Una uhakika unataka kufuta audit hii?",
+"AUDIT_DELETE_WARNING": "Kitendo hiki hakiwezi kurejeshwa.",
+
+"DEVICE_WINDOWS": "Windows",
+"DEVICE_MAC": "Mac OS",
+"DEVICE_ANDROID": "Android",
+"DEVICE_IPHONE": "iPhone",
+"DEVICE_IPAD": "iPad",
+"DEVICE_LINUX": "Linux",
+"DEVICE_UNKNOWN": "Kifaa Kisichojulikana",
+
+"DELETE_LOADING": "Inafuta...",
+
+"APPEARANCE_TITLE": "Muonekano",
+"APPEARANCE_DESCRIPTION": "Chagua jinsi mfumo unavyoonekana",
+
+"THEME_LIGHT": "Mwanga",
+"THEME_DARK": "Giza",
+"THEME_SYSTEM": "Mfumo",
+
+"LANGUAGE_TITLE": "Lugha",
+"LANGUAGE_DESCRIPTION": "Chagua lugha ya mfumo",
+
+"LANGUAGE_LABEL": "Lugha",
+"LANGUAGE_SW": "Kiswahili",
+"LANGUAGE_EN": "Kiingereza"
 }

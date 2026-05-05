@@ -4,9 +4,11 @@ import { useState } from "react";
 import FormInput from "@/components/forms/FormInput";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAppToast } from "@/lib/toast";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 export default function ChangePasswordForm() {
-const { showSuccess, showError } = useAppToast();
+  const { showSuccess, showError } = useAppToast();
+  const t = useDictionary();
 
   const [form, setForm] = useState({
     password: "",
@@ -14,7 +16,7 @@ const { showSuccess, showError } = useAppToast();
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,15 +26,15 @@ const { showSuccess, showError } = useAppToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setErrorKey(null);
 
     if (form.password.length < 8) {
-      setError("Password lazima iwe angalau herufi 8");
+      setErrorKey("PASSWORD_TOO_SHORT_LOCAL");
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      setError("Password hazifanani");
+      setErrorKey("PASSWORD_MISMATCH_LOCAL");
       return;
     }
 
@@ -85,23 +87,23 @@ const { showSuccess, showError } = useAppToast();
       {/* HEADER */}
       <div className="space-y-1">
         <h3 className="text-lg font-semibold text-[--text-primary]">
-          Usalama wa Akaunti
+          {t("SECURITY_TITLE")}
         </h3>
         <p className="text-sm opacity-70">
-          Badilisha nenosiri la akaunti yako
+          {t("SECURITY_SUBTITLE")}
         </p>
       </div>
 
       {/* PASSWORD */}
       <div className="relative">
         <FormInput
-          label="Password Mpya"
+          labelKey="NEW_PASSWORD_LABEL"
           name="password"
           type={showPassword ? "text" : "password"}
           value={form.password}
           onChange={handleChange}
           required
-          error={error || undefined}
+          error={errorKey ? t(errorKey) : undefined}
         />
 
         <button
@@ -119,19 +121,19 @@ const { showSuccess, showError } = useAppToast();
         </button>
 
         <p className="text-xs opacity-70 mt-1">
-          Tumia angalau herufi 8 (ikiwezekana changanya namba au alama)
+          {t("PASSWORD_HINT")}
         </p>
       </div>
 
       {/* CONFIRM */}
       <FormInput
-        label="Thibitisha Password Mpya"
+        labelKey="CONFIRM_PASSWORD_LABEL"
         name="confirmPassword"
         type={showPassword ? "text" : "password"}
         value={form.confirmPassword}
         onChange={handleChange}
         required
-        error={error || undefined}
+        error={errorKey ? t(errorKey) : undefined}
       />
 
       {/* SUBMIT */}
@@ -148,7 +150,9 @@ const { showSuccess, showError } = useAppToast();
         "
       >
         {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-        {isSubmitting ? "Inabadilisha..." : "Badilisha Password"}
+        {isSubmitting
+          ? t("CHANGING_PASSWORD_BUTTON")
+          : t("CHANGE_PASSWORD_BUTTON")}
       </button>
     </form>
   );

@@ -1,31 +1,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { showError, showSuccess } from "@/lib/toast";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useAppToast } from "@/lib/toast";
 
 export default function ResetPasswordForm() {
+  const { showSuccess, showError } = useAppToast();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const params = useSearchParams();
 
-  const token = params.get("token");
+  const token = searchParams.get("token");
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // 🔒 Token validation on load
   useEffect(() => {
     if (!token) {
       showError("TOKEN_INVALID");
       router.replace("/login");
     }
-  }, [token]);
+  }, [token, router, showError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // ✅ Validation
     if (password.length < 8) {
       showError("PASSWORD_TOO_SHORT");
       return;
@@ -36,15 +39,22 @@ export default function ResetPasswordForm() {
       return;
     }
 
+    if (!token) {
+      showError("TOKEN_INVALID");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const res = await fetch("api/auth/reset-password", {
+      const res = await fetch("/api/auth/reset-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           token,
-          password,
+          newPassword: password,
         }),
       });
 
@@ -52,11 +62,11 @@ export default function ResetPasswordForm() {
       setLoading(false);
 
       if (!res.ok) {
-        showError(data.messageKey);
+        showError(data.message || "SERVER_ERROR");
         return;
       }
 
-      showSuccess(data.messageKey);
+      showSuccess(data.message);
 
       setTimeout(() => {
         router.replace("/login");
@@ -69,21 +79,18 @@ export default function ResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-
       {/* PASSWORD */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Nenosiri Jipya
-        </label>
+        <label className="text-sm font-medium">Nenosiri Jipya</label>
 
         <div className="relative mt-1">
           <input
             type={show ? "text" : "password"}
-            required
             value={password}
+            required
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Angalau herufi 8"
-            className="w-full px-4 py-3 border rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 border rounded-xl"
           />
 
           <button
@@ -96,31 +103,28 @@ export default function ResetPasswordForm() {
         </div>
       </div>
 
-      {/* CONFIRM */}
+      {/* CONFIRM PASSWORD */}
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Thibitisha Nenosiri
-        </label>
-
+        <label className="text-sm font-medium">Thibitisha Nenosiri</label>
         <input
           type={show ? "text" : "password"}
-          required
           value={confirm}
+          required
           onChange={(e) => setConfirm(e.target.value)}
           placeholder="Rudia nenosiri"
-          className="mt-1 w-full px-4 py-3 border rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
+          className="mt-1 w-full px-4 py-3 border rounded-xl"
         />
       </div>
 
       {/* SUBMIT */}
       <button
+        type="submit"
         disabled={loading}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold flex justify-center gap-2"
+        className="w-full bg-indigo-600 text-white py-3 rounded-xl flex justify-center items-center gap-2"
       >
-        {loading && <Loader2 size={18} className="animate-spin" />}
+        {loading && <Loader2 className="animate-spin" size={18} />}
         Badilisha Nenosiri
       </button>
-
     </form>
   );
 }

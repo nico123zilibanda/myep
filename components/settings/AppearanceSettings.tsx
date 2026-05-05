@@ -3,9 +3,11 @@
 import { Moon, Sun, Laptop } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 export default function AppearanceSettings() {
   const { resolvedTheme, setTheme } = useTheme();
+  const t = useDictionary();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -15,13 +17,17 @@ export default function AppearanceSettings() {
   return (
     <div className="card p-6 shadow-sm space-y-4">
 
+      {/* HEADER */}
       <div>
-        <h3 className="font-semibold">Appearance</h3>
+        <h3 className="font-semibold">
+          {t("APPEARANCE_TITLE")}
+        </h3>
         <p className="text-sm opacity-70">
-          Choose how the interface looks
+          {t("APPEARANCE_DESCRIPTION")}
         </p>
       </div>
 
+      {/* OPTIONS */}
       <div className="grid grid-cols-3 gap-3">
 
         {/* LIGHT */}
@@ -35,7 +41,7 @@ export default function AppearanceSettings() {
             }`}
         >
           <Sun size={20} />
-          Light
+          {t("THEME_LIGHT")}
         </button>
 
         {/* DARK */}
@@ -49,7 +55,7 @@ export default function AppearanceSettings() {
             }`}
         >
           <Moon size={20} />
-          Dark
+          {t("THEME_DARK")}
         </button>
 
         {/* SYSTEM */}
@@ -63,7 +69,7 @@ export default function AppearanceSettings() {
             }`}
         >
           <Laptop size={20} />
-          System
+          {t("THEME_SYSTEM")}
         </button>
 
       </div>

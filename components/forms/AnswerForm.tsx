@@ -2,18 +2,27 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useDictionary } from "@/lib/i18n/useDictionary";
+
 
 export default function AnswerForm({
   onSubmit,
 }: {
   onSubmit: (a: string) => Promise<void>;
 }) {
+  const t = useDictionary();
+
   const [answer, setAnswer] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!answer.trim()) return;
+
+    if (!answer.trim()) {
+      alert(t("ANSWER_REQUIRED",));
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       await onSubmit(answer);
@@ -29,13 +38,13 @@ export default function AnswerForm({
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
         rows={4}
-        placeholder="Andika jibu hapa..."
+        placeholder={t("ANSWER_PLACEHOLDER",)}
         className="
           w-full rounded-lg border
-          border-[var(--border)]
-          bg-[var(--card)]
+          border-(--border)
+          bg-(--card)
           p-3 text-sm
-          text-[var(--foreground)]
+          text-(--foreground)
           placeholder-gray-400 dark:placeholder-gray-500
           focus:outline-none focus:ring-2 focus:ring-green-500
           transition
@@ -55,7 +64,9 @@ export default function AnswerForm({
         "
       >
         {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-        {isSubmitting ? "Inatuma..." : "Tuma Jibu"}
+        {isSubmitting
+          ? t("ANSWER_SUBMITTING_BUTTON",)
+          : t("ANSWER_SUBMIT_BUTTON",)}
       </button>
     </form>
   );

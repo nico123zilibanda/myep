@@ -1,12 +1,14 @@
 "use client";
 
-import { Eye, Pencil, Trash2, CheckCircle } from "lucide-react";
+import { Eye, Pencil, Trash2, CheckCircle, XCircle, RotateCcw } from "lucide-react";
 
 interface ActionButtonsProps {
   status?: string;
   onView?: () => void;
   onEdit?: () => void;
   onPublish?: () => void;
+  onUnpublish?: () => void;
+  onClose?: () => void;
   onDelete?: () => void;
 }
 
@@ -15,6 +17,8 @@ export default function ActionButtons({
   onView,
   onEdit,
   onPublish,
+  onUnpublish,
+  onClose,
   onDelete,
 }: ActionButtonsProps) {
   const base =
@@ -22,36 +26,48 @@ export default function ActionButtons({
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {/* VIEW */}
-      {onView && (
-        <button
-          onClick={onView}
-          title="Angalia"
-          className={`${base} text-(--foreground) hover:opacity-80 focus:ring-(--border)`}
-        >
-          <Eye size={16} />
-        </button>
-      )}
 
       {/* EDIT */}
       {onEdit && (
         <button
           onClick={onEdit}
           title="Hariri"
-          className={`${base} text-blue-600 hover:opacity-80 focus:ring-blue-400`}
+          className={`${base} text-blue-600 hover:opacity-80`}
         >
           <Pencil size={16} />
         </button>
       )}
 
       {/* PUBLISH */}
-      {onPublish && status !== "PUBLISHED" && (
+      {onPublish && (status === "DRAFT" || status === "CLOSED") && (
         <button
           onClick={onPublish}
-          title="Chapisha"
-          className={`${base} text-green-600 hover:opacity-80 focus:ring-green-400`}
+          title="Publish"
+          className={`${base} text-green-600 hover:opacity-80`}
         >
           <CheckCircle size={16} />
+        </button>
+      )}
+
+      {/* UNPUBLISH */}
+      {onUnpublish && status === "PUBLISHED" && (
+        <button
+          onClick={onUnpublish}
+          title="Unpublish"
+          className={`${base} text-yellow-600 hover:opacity-80`}
+        >
+          <RotateCcw size={16} />
+        </button>
+      )}
+
+      {/* CLOSE */}
+      {onClose && status === "PUBLISHED" && (
+        <button
+          onClick={onClose}
+          title="Close"
+          className={`${base} text-orange-600 hover:opacity-80`}
+        >
+          <XCircle size={16} />
         </button>
       )}
 
@@ -59,8 +75,8 @@ export default function ActionButtons({
       {onDelete && (
         <button
           onClick={onDelete}
-          title="Futa"
-          className={`${base} text-red-600 hover:opacity-80 focus:ring-red-400`}
+          title="Delete"
+          className={`${base} text-red-600 hover:opacity-80`}
         >
           <Trash2 size={16} />
         </button>

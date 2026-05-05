@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import FormInput from "./FormInput";
 import { Loader2 } from "lucide-react";
+import { useDictionary } from "@/lib/i18n/useDictionary";
 
 export default function CategoryForm({
+
   onSubmit,
   initialData,
 }: {
@@ -17,7 +19,7 @@ export default function CategoryForm({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const t = useDictionary();
   // sync wakati wa edit
   useEffect(() => {
     setForm({
@@ -58,30 +60,30 @@ export default function CategoryForm({
       {/* FORM HEADER */}
       <div className="space-y-1">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          Maelezo Ya Kategoria
+          {t("CATEGORY_FORM_TITLE")}
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Ongeza au hariri kategoria ya fursa au mafunzo
+          {t("CATEGORY_FORM_SUBTITLE")}
         </p>
       </div>
 
       {/* CATEGORY NAME */}
       <FormInput
-        label="Jina la Category"
+        labelKey="CATEGORY_NAME_LABEL"
+        placeholderKey="CATEGORY_NAME_PLACEHOLDER"
         name="name"
         value={form.name}
         onChange={handleChange}
-        placeholder="Mfano: Ajira, Mikopo, Mafunzo"
         required
       />
 
       {/* DESCRIPTION */}
       <FormInput
-        label="Maelezo"
+        labelKey="CATEGORY_DESCRIPTION_LABEL"
         name="description"
         value={form.description}
         onChange={handleChange}
-        placeholder="Maelezo mafupi kuhusu category hii"
+        placeholderKey="CATEGORY_DESCRIPTION_PLACEHOLDER"
       />
 
       {/* SUBMIT BUTTON */}
@@ -101,7 +103,10 @@ export default function CategoryForm({
         {isSubmitting && (
           <Loader2 className="h-5 w-5 animate-spin" />
         )}
-        {isSubmitting ? "Inahifadhi..." : "Hifadhi Category"}
+        {isSubmitting
+          ? t("CATEGORY_SAVING_BUTTON")
+          : t("CATEGORY_SAVE_BUTTON")}
+
       </button>
     </form>
   );

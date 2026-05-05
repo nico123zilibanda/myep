@@ -1,10 +1,13 @@
 "use client";
 
 import { LucideIcon } from "lucide-react";
+import { useDictionary } from "@/lib/i18n/useDictionary";
+
+import { MessageKey } from "@/lib/messages";
 
 interface QuickActionProps {
-  title: string;
-  description: string;
+  titleKey: MessageKey;
+  descriptionKey: MessageKey;
   icon: LucideIcon;
   color: "blue" | "green" | "purple" | "red";
   onClick: () => void;
@@ -18,12 +21,14 @@ const colorMap = {
 };
 
 export default function QuickAction({
-  title,
-  description,
+  titleKey,
+  descriptionKey,
   icon: Icon,
   color,
   onClick,
 }: QuickActionProps) {
+  const t = useDictionary();
+
   return (
     <button
       onClick={onClick}
@@ -43,11 +48,11 @@ export default function QuickAction({
       </div>
 
       <h3 className="mt-4 font-semibold text-(--text-primary)">
-        {title}
+        {t(titleKey)}
       </h3>
 
       <p className="text-sm opacity-70">
-        {description}
+        {t(descriptionKey)}
       </p>
     </button>
   );

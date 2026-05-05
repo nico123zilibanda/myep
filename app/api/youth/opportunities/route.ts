@@ -14,7 +14,8 @@ export async function GET() {
     /* ================= QUERY ================= */
     const { data: opportunities, error } = await supabaseAdmin
       .from("Opportunity")
-      .select(`
+      .select(
+        `
         id,
         title,
         description,
@@ -22,13 +23,16 @@ export async function GET() {
         howToApply,
         deadline,
         location,
+        resourceType,
+        resourceUrl,
         Category:categoryId (
           name
         ),
         SavedOpportunity (
           userId
         )
-      `)
+      `,
+      )
       .eq("status", "PUBLISHED")
       // 🔑 MUHIMU SANA
       .eq("SavedOpportunity.userId", user.id)
@@ -38,7 +42,7 @@ export async function GET() {
       console.error("SUPABASE GET OPPORTUNITIES ERROR:", error);
       return NextResponse.json(
         { message: "Failed to load opportunities" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -51,18 +55,19 @@ export async function GET() {
       howToApply: op.howToApply,
       deadline: op.deadline,
       location: op.location,
+
       Category: op.Category ?? null,
 
-      // 🔑 sasa ni accurate 100%
       isSaved: (op.SavedOpportunity?.length ?? 0) > 0,
+
+      // 🔥 ADD THIS
+      resourceType: op.resourceType ?? null,
+      resourceUrl: op.resourceUrl ?? null,
     }));
 
     return NextResponse.json(formatted);
   } catch (err) {
     console.error("YOUTH GET OPPORTUNITIES ERROR:", err);
-    return NextResponse.json(
-      { message: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

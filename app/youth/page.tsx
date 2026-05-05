@@ -56,9 +56,9 @@ export default function YouthDashboard() {
     <div className="space-y-8 animate-fadeIn p-4 sm:p-6 lg:p-8">
       {/* HEADER */}
       <div className="space-y-1">
-        <h1 className="text-3xl sm:text-4xl font-bold text-(--text-primary)">
+        <h5 className="text-3xl sm:text font-bold text-(--text-primary)">
           {getGreeting()} {user?.name ?? ""} 👋
-        </h1>
+        </h5>
 
         <p className="text-sm sm:text-base opacity-70">
           Hapa utaona fursa na mafunzo yaliyoandaliwa kwa ajili yako
