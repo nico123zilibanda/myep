@@ -169,7 +169,8 @@
 
   "TRAINING_VIDEO_SIZE_ERROR": "Video isizidi 10MB",
   "TRAINING_PDF_SIZE_ERROR": "PDF isizidi 2MB",
-
+  "TRAINING_DELETE_CONFIRM": "Je, una uhakika unataka kufuta mafunzo haya?",
+  
   "ANSWER_PLACEHOLDER": "Andika jibu hapa...",
   "ANSWER_SUBMIT_BUTTON": "Tuma Jibu",
   "ANSWER_SUBMITTING_BUTTON": "Inatuma...",

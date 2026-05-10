@@ -1,7 +1,9 @@
 import en from "./locales/en.json";
 import sw from "./locales/sw.json";
 
-export const dictionaries = {
+type Dictionary = typeof en;
+
+export const dictionaries: Record<"en" | "sw", Dictionary> = {
   en,
   sw,
 };
