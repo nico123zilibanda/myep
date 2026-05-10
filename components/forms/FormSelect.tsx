@@ -6,28 +6,36 @@ import translate from "@/lib/i18n/translate";
 
 interface Option {
   value: string | number;
-  label?: string;          // normal label
-  labelKey?: MessageKey;   // translated label
+  label?: string;
+  labelKey?: MessageKey;
 }
 
 interface FormSelectProps {
-  labelKey: MessageKey;
+  label?: string; // normal text
+  labelKey?: MessageKey; // translated text
+
   name: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+
   options: Option[];
+
+  placeholder?: string;
   placeholderKey?: MessageKey;
+
   required?: boolean;
   error?: string;
   disabled?: boolean;
 }
 
 export default function FormSelect({
+  label,
   labelKey,
   name,
   value,
   onChange,
   options,
+  placeholder,
   placeholderKey,
   required = false,
   error,
@@ -35,16 +43,28 @@ export default function FormSelect({
 }: FormSelectProps) {
   const { lang } = useLanguage();
 
+  const finalLabel = labelKey
+    ? translate(labelKey, lang)
+    : label;
+
+  const finalPlaceholder = placeholderKey
+    ? translate(placeholderKey, lang)
+    : placeholder;
+
   return (
     <div className="flex flex-col gap-1.5">
       {/* LABEL */}
-      <label
-        htmlFor={name}
-        className="text-sm font-medium text-(--text-primary)"
-      >
-        {translate(labelKey, lang)}
-        {required && <span className="text-red-600 ml-0.5">*</span>}
-      </label>
+      {finalLabel && (
+        <label
+          htmlFor={name}
+          className="text-sm font-medium text-(--text-primary)"
+        >
+          {finalLabel}
+          {required && (
+            <span className="text-red-600 ml-0.5">*</span>
+          )}
+        </label>
+      )}
 
       {/* SELECT */}
       <select
@@ -67,9 +87,9 @@ export default function FormSelect({
         `}
       >
         {/* PLACEHOLDER */}
-        {placeholderKey && (
+        {finalPlaceholder && (
           <option value="">
-            {translate(placeholderKey, lang)}
+            {finalPlaceholder}
           </option>
         )}
 
