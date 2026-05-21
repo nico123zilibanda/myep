@@ -1,18 +1,33 @@
+
 "use client";
+
+import * as React from "react";
+
+import { AlertCircle } from "lucide-react";
+
+import { Input } from "@/components/ui/input";
+
+import { cn } from "@/lib/utils";
 
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import translate from "@/lib/i18n/translate";
+
 import type { MessageKey } from "@/lib/messages";
 
 interface InputProps {
   label?: string;
   labelKey?: MessageKey;
 
+  description?: string;
+
   name: string;
+
   type?: string;
+
   value: string | number;
+
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => void;
 
   placeholder?: string;
@@ -20,88 +35,164 @@ interface InputProps {
 
   required?: boolean;
   disabled?: boolean;
+
   error?: string;
+
   className?: string;
+
+  inputClassName?: string;
 }
 
 export default function FormInput({
   label,
   labelKey,
+
+  description,
+
   name,
+
   type = "text",
+
   value,
   onChange,
+
   placeholder,
   placeholderKey,
+
   required = false,
   disabled = false,
+
   error,
-  className = "",
+
+  className,
+  inputClassName,
 }: InputProps) {
   const { lang } = useLanguage();
+
+  /* ================= LABEL ================= */
 
   const finalLabel = labelKey
     ? translate(labelKey, lang)
     : label;
 
-  const finalPlaceholder = placeholderKey
-    ? translate(placeholderKey, lang)
-    : placeholder;
+  /* ================= PLACEHOLDER ================= */
+
+  const finalPlaceholder =
+    placeholderKey
+      ? translate(
+          placeholderKey,
+          lang,
+        )
+      : placeholder;
+
+  /* ================= UI ================= */
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div
+      data-slot="form-input"
+      className={cn(
+        "space-y-2",
+        className,
+      )}
+    >
       {/* LABEL */}
       {finalLabel && (
-        <label
-          htmlFor={name}
-          className="
-            text-sm font-medium
-            text-[--text-primary]
-          "
-        >
-          {finalLabel}
+        <div className="space-y-1">
+          <label
+            htmlFor={name}
+            className="
+              inline-flex items-center gap-1
 
-          {required && (
-            <span className="text-red-500 ml-0.5">
-              *
-            </span>
+              text-sm
+              font-medium
+            "
+          >
+            {finalLabel}
+
+            {required && (
+              <span className="text-destructive">
+                *
+              </span>
+            )}
+          </label>
+
+          {description && (
+            <p
+              className="
+                text-xs
+                text-muted-foreground
+              "
+            >
+              {description}
+            </p>
           )}
-        </label>
+        </div>
       )}
 
       {/* INPUT */}
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={finalPlaceholder}
-        required={required}
-        disabled={disabled}
-        aria-invalid={!!error}
-        className={`
-          w-full rounded-xl
-          border border-[--border]
-          bg-[--card]
-          px-4 py-2.5 text-sm
-          text-[--foreground]
-          transition-all duration-200
-          focus:outline-none
-          focus:ring-2 focus:ring-[--btn-focus]
-          disabled:opacity-50
-          disabled:cursor-not-allowed
-          ${error ? "border-red-500 focus:ring-red-500" : ""}
-          ${className}
-        `}
-      />
+      <div className="relative">
+        <Input
+          id={name}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={
+            finalPlaceholder
+          }
+          required={required}
+          disabled={disabled}
+          aria-invalid={!!error}
+          className={cn(
+            `
+            h-11
+
+            pr-10
+          `,
+            error &&
+              `
+              border-destructive
+
+              focus-visible:ring-destructive/20
+            `,
+            inputClassName,
+          )}
+        />
+
+        {/* ERROR ICON */}
+        {error && (
+          <AlertCircle
+            className="
+              pointer-events-none
+
+              absolute right-3 top-1/2
+
+              size-4
+
+              -translate-y-1/2
+
+              text-destructive
+            "
+          />
+        )}
+      </div>
 
       {/* ERROR */}
       {error && (
-        <span className="text-xs text-red-600">
-          {error}
-        </span>
+        <div
+          className="
+            flex items-center gap-1.5
+
+            text-xs
+            text-destructive
+          "
+        >
+          <AlertCircle className="size-3.5" />
+
+          <span>{error}</span>
+        </div>
       )}
     </div>
   );
 }
+

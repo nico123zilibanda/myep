@@ -1,113 +1,303 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import {
+  Loader2,
+  Sparkles,
+  Tags,
+} from "lucide-react";
+
 import FormInput from "./FormInput";
-import { Loader2 } from "lucide-react";
+
 import { useDictionary } from "@/lib/i18n/useDictionary";
 
-export default function CategoryForm({
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/Card";
+import { Textarea } from "@/components/ui/textarea";
 
+export default function CategoryForm({
   onSubmit,
   initialData,
 }: {
   onSubmit: (data: any) => Promise<void>;
   initialData?: any;
 }) {
+  const t = useDictionary();
+
+  /* ================= STATE ================= */
+
   const [form, setForm] = useState({
-    name: initialData?.name || "",
-    description: initialData?.description || "",
+    name:
+      initialData?.name || "",
+
+    description:
+      initialData?.description || "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const t = useDictionary();
-  // sync wakati wa edit
+  const [isSubmitting,
+    setIsSubmitting] =
+    useState(false);
+
+  /* ================= SYNC ================= */
+
   useEffect(() => {
     setForm({
-      name: initialData?.name || "",
-      description: initialData?.description || "",
+      name:
+        initialData?.name || "",
+
+      description:
+        initialData?.description ||
+        "",
     });
   }, [initialData]);
 
+  /* ================= CHANGE ================= */
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      | HTMLInputElement
+      | HTMLTextAreaElement
+    >,
   ) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const { name, value } =
+      e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /* ================= SUBMIT ================= */
+
+  const handleSubmit = async (
+    e: React.FormEvent,
+  ) => {
     e.preventDefault();
 
     try {
-      setIsSubmitting(true);        // 🔥 spinner ON
-      await onSubmit(form);         // 🔥 subiri api / action
+      setIsSubmitting(true);
+
+      await onSubmit(form);
     } finally {
-      setIsSubmitting(false);       // 🔥 spinner OFF
+      setIsSubmitting(false);
     }
   };
+
+  /* ================= UI ================= */
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="
-        space-y-6
-        bg-white dark:bg-gray-900
-        p-6 rounded-xl
-        border border-gray-200 dark:border-gray-800
-        shadow-sm
-      "
+      className="space-y-6"
     >
-      {/* FORM HEADER */}
-      <div className="space-y-1">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          {t("CATEGORY_FORM_TITLE")}
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("CATEGORY_FORM_SUBTITLE")}
-        </p>
-      </div>
-
-      {/* CATEGORY NAME */}
-      <FormInput
-        labelKey="CATEGORY_NAME_LABEL"
-        placeholderKey="CATEGORY_NAME_PLACEHOLDER"
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-        required
-      />
-
-      {/* DESCRIPTION */}
-      <FormInput
-        labelKey="CATEGORY_DESCRIPTION_LABEL"
-        name="description"
-        value={form.description}
-        onChange={handleChange}
-        placeholderKey="CATEGORY_DESCRIPTION_PLACEHOLDER"
-      />
-
-      {/* SUBMIT BUTTON */}
-      <button
-        type="submit"
-        disabled={isSubmitting}
+      {/* ================= HERO ================= */}
+      <Card
         className="
-          w-full
-          flex items-center justify-center gap-2
-          bg-blue-600 hover:bg-blue-700
-          disabled:bg-blue-400
-          text-white py-3 rounded-lg
-          font-medium shadow-sm
-          transition
+          relative overflow-hidden
+
+          border-border/60
+
+          bg-linear-to-br
+          from-emerald-500/5
+          via-background
+          to-background
         "
       >
-        {isSubmitting && (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        )}
-        {isSubmitting
-          ? t("CATEGORY_SAVING_BUTTON")
-          : t("CATEGORY_SAVE_BUTTON")}
+        {/* GLOW */}
+        <div
+          className="
+            pointer-events-none
 
-      </button>
+            absolute right-0 top-0
+
+            h-56 w-56
+
+            translate-x-1/3
+            -translate-y-1/3
+
+            rounded-full
+
+            bg-emerald-500/10
+
+            blur-3xl
+          "
+        />
+
+        <CardContent
+          className="
+            relative z-10
+
+            flex items-start gap-4
+
+            p-6
+          "
+        >
+          {/* ICON */}
+          <div
+            className="
+              flex size-14
+              items-center justify-center
+
+              rounded-2xl
+
+              bg-emerald-500/10
+
+              text-emerald-600
+              dark:text-emerald-400
+            "
+          >
+            <Tags className="size-7" />
+          </div>
+
+          {/* TEXT */}
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h2
+                className="
+                  text-xl
+                  font-semibold
+                  tracking-tight
+                "
+              >
+                Category Management
+              </h2>
+
+              <Sparkles
+                className="
+                  size-4
+                  text-emerald-500
+                "
+              />
+            </div>
+
+            <p
+              className="
+                max-w-xl
+
+                text-sm leading-relaxed
+
+                text-muted-foreground
+              "
+            >
+              Create and organize
+              categories for
+              opportunities,
+              trainings, and learning
+              resources.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ================= FORM ================= */}
+      <Card>
+        <CardContent className="p-6 space-y-6">
+          {/* HEADER */}
+          <div className="space-y-1">
+            <h3
+              className="
+                text-lg
+                font-semibold
+                tracking-tight
+              "
+            >
+              Category Details
+            </h3>
+
+            <p
+              className="
+                text-sm
+                text-muted-foreground
+              "
+            >
+              Define the category name
+              and optional description.
+            </p>
+          </div>
+
+          {/* FIELDS */}
+          <div className="space-y-5">
+            {/* NAME */}
+            <FormInput
+              labelKey="CATEGORY_NAME_LABEL"
+              placeholderKey="CATEGORY_NAME_PLACEHOLDER"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+
+            {/* DESCRIPTION */}
+            <div className="space-y-2">
+              <label
+                htmlFor="description"
+                className="
+                  text-sm
+                  font-medium
+                "
+              >
+                {t(
+                  "CATEGORY_DESCRIPTION_LABEL",
+                )}
+              </label>
+
+              <Textarea
+                id="description"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder={t(
+                  "CATEGORY_DESCRIPTION_PLACEHOLDER",
+                )}
+                className="
+                  min-h-28
+                "
+              />
+            </div>
+          </div>
+
+          {/* ACTIONS */}
+          <div
+            className="
+              flex items-center
+              justify-end
+            "
+          >
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isSubmitting}
+              className="
+                min-w-45
+              "
+            >
+              {isSubmitting && (
+                <Loader2
+                  className="
+                    size-4
+                    animate-spin
+                  "
+                />
+              )}
+
+              {isSubmitting
+                ? t(
+                    "CATEGORY_SAVING_BUTTON",
+                  )
+                : t(
+                    "CATEGORY_SAVE_BUTTON",
+                  )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </form>
   );
 }
+

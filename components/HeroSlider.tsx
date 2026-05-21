@@ -1,118 +1,300 @@
+
 "use client";
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface HeroSliderProps {
   images: string[];
 }
 
-export default function HeroSlider({ images }: HeroSliderProps) {
+export default function HeroSlider({
+  images,
+}: HeroSliderProps) {
   const [current, setCurrent] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const touchStartX = useRef<number | null>(null);
+
+  const intervalRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  const touchStartX =
+    useRef<number | null>(null);
+
+  /* ================= AUTO SLIDE ================= */
+
+  const nextSlide = () => {
+    setCurrent(
+      (prev) => (prev + 1) % images.length,
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrent((prev) =>
+      prev === 0
+        ? images.length - 1
+        : prev - 1,
+    );
+  };
+
+  const stopAutoSlide = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
 
   const startAutoSlide = () => {
     stopAutoSlide();
+
     intervalRef.current = setInterval(() => {
       nextSlide();
     }, 5000);
   };
 
-  const stopAutoSlide = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
   useEffect(() => {
     startAutoSlide();
+
     return stopAutoSlide;
   }, []);
 
-  const nextSlide = () => setCurrent((prev) => (prev + 1) % images.length);
-  const prevSlide = () =>
-    setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  /* ================= TOUCH ================= */
 
-  const onTouchStart = (e: React.TouchEvent) =>
-    (touchStartX.current = e.touches[0].clientX);
+  const onTouchStart = (
+    e: React.TouchEvent,
+  ) => {
+    touchStartX.current =
+      e.touches[0].clientX;
+  };
 
-  const onTouchEnd = (e: React.TouchEvent) => {
+  const onTouchEnd = (
+    e: React.TouchEvent,
+  ) => {
     if (!touchStartX.current) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
+
+    const diff =
+      touchStartX.current -
+      e.changedTouches[0].clientX;
+
     if (diff > 50) nextSlide();
+
     if (diff < -50) prevSlide();
+
     touchStartX.current = null;
   };
 
+  /* ================= UI ================= */
+
   return (
     <section
-      className="relative w-full h-full overflow-hidden"
       onMouseEnter={stopAutoSlide}
       onMouseLeave={startAutoSlide}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
+      className="
+        group
+
+        relative h-full w-full
+
+        overflow-hidden
+
+        rounded-[inherit]
+      "
     >
       {/* ================= SLIDES ================= */}
-      {images.map((src, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            current === index ? "opacity-100 z-20" : "opacity-0 z-10"
-          }`}
-        >
-          {/* BLURRED BACKGROUND */}
-          <Image
-            src={src}
-            alt=""
-            fill
-            className="object-cover blur-2xl scale-110 opacity-40"
-            aria-hidden
-          />
+      {images.map((src, index) => {
+        const isActive =
+          current === index;
 
-          {/* MAIN IMAGE */}
-          <Image
-            src={src}
-            alt={`Hero ${index}`}
-            fill
-            className="object-contain relative z-10"
-            priority={index === 0}
-          />
+        return (
+          <div
+            key={index}
+            className={cn(
+              `
+                absolute inset-0
 
-          {/* DARK OVERLAY */}
-          <div className="absolute inset-0 bg-black/40 z-20" />
-        </div>
-      ))}
+                transition-all
+                duration-1000
+                ease-out
+              `,
+              isActive
+                ? `
+                  z-20
+                  opacity-100
+                `
+                : `
+                  z-10
+                  opacity-0
+                `,
+            )}
+          >
+            {/* BACKGROUND */}
+            <Image
+              src={src}
+              alt={`Hero Slide ${
+                index + 1
+              }`}
+              fill
+              priority={index === 0}
+              className={cn(
+                `
+                  object-cover
 
-      {/* ================= ARROWS ================= */}
-      <button
+                  transition-transform
+                  duration-7000
+                  ease-out
+                `,
+                isActive
+                  ? "scale-110"
+                  : "scale-100",
+              )}
+            />
+
+            {/* OVERLAY */}
+            <div
+              className="
+                absolute inset-0 z-10
+
+                bg-linear-to-t
+                from-black/70
+                via-black/30
+                to-black/10
+              "
+            />
+
+            {/* EXTRA GLOW */}
+            <div
+              className="
+                absolute inset-0 z-10
+
+                bg-primary/10
+                mix-blend-overlay
+              "
+            />
+          </div>
+        );
+      })}
+
+      {/* ================= NAVIGATION ================= */}
+
+      {/* PREV */}
+      <Button
+        size="icon-lg"
+        variant="secondary"
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/40 text-white p-3 rounded-full hover:bg-black/60 transition"
-      >
-        <ChevronLeft size={24} />
-      </button>
+        className="
+          absolute left-4 top-1/2 z-30
 
-      <button
+          hidden md:flex
+
+          -translate-y-1/2
+
+          rounded-2xl
+
+          border border-white/10
+
+          bg-black/30
+          text-white
+
+          shadow-xl
+
+          backdrop-blur-xl
+
+          hover:bg-black/50
+          hover:text-white
+        "
+      >
+        <ChevronLeft className="size-5" />
+      </Button>
+
+      {/* NEXT */}
+      <Button
+        size="icon-lg"
+        variant="secondary"
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/40 text-white p-3 rounded-full hover:bg-black/60 transition"
-      >
-        <ChevronRight size={24} />
-      </button>
+        className="
+          absolute right-4 top-1/2 z-30
 
-      {/* ================= DOT INDICATORS ================= */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+          hidden md:flex
+
+          -translate-y-1/2
+
+          rounded-2xl
+
+          border border-white/10
+
+          bg-black/30
+          text-white
+
+          shadow-xl
+
+          backdrop-blur-xl
+
+          hover:bg-black/50
+          hover:text-white
+        "
+      >
+        <ChevronRight className="size-5" />
+      </Button>
+
+      {/* ================= INDICATORS ================= */}
+      <div
+        className="
+          absolute bottom-5 left-1/2 z-30
+
+          flex -translate-x-1/2 items-center gap-2
+
+          rounded-full
+
+          border border-white/10
+
+          bg-black/30
+
+          px-3 py-2
+
+          shadow-lg
+
+          backdrop-blur-xl
+        "
+      >
         {images.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrent(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              current === index
-                ? "bg-white scale-125"
-                : "bg-white/50 hover:bg-white"
+            onClick={() =>
+              setCurrent(index)
+            }
+            aria-label={`Slide ${
+              index + 1
             }`}
-            aria-label={`Go to slide ${index + 1}`}
+            className={cn(
+              `
+                h-2.5
+
+                rounded-full
+
+                transition-all
+                duration-300
+              `,
+              current === index
+                ? `
+                  w-8
+                  bg-white
+                `
+                : `
+                  w-2.5
+                  bg-white/40
+
+                  hover:bg-white/70
+                `,
+            )}
           />
         ))}
       </div>
     </section>
   );
 }
+

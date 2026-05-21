@@ -5,73 +5,84 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useDictionary } from "@/lib/i18n/useDictionary";
 
+type ThemeOption = "light" | "dark" | "system";
+
 export default function AppearanceSettings() {
   const { resolvedTheme, setTheme } = useTheme();
   const t = useDictionary();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-
   if (!mounted) return null;
 
-  return (
-    <div className="card p-6 shadow-sm space-y-4">
+  const options: {
+    key: ThemeOption;
+    icon: React.ReactNode;
+    label: string;
+  }[] = [
+    { key: "light", icon: <Sun size={20} />, label: t("THEME_LIGHT") },
+    { key: "dark", icon: <Moon size={20} />, label: t("THEME_DARK") },
+    { key: "system", icon: <Laptop size={20} />, label: t("THEME_SYSTEM") },
+  ];
 
+  return (
+    <div className="rounded-3xl border bg-background p-6 shadow-sm space-y-6">
       {/* HEADER */}
-      <div>
-        <h3 className="font-semibold">
+      <div className="space-y-1">
+        <h3 className="text-lg font-semibold text-foreground">
           {t("APPEARANCE_TITLE")}
         </h3>
-        <p className="text-sm opacity-70">
+        <p className="text-sm text-muted-foreground">
           {t("APPEARANCE_DESCRIPTION")}
         </p>
       </div>
 
       {/* OPTIONS */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-4">
+        {options.map((opt) => {
+          const isActive = resolvedTheme === opt.key;
 
-        {/* LIGHT */}
-        <button
-          onClick={() => setTheme("light")}
-          className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition
-            ${
-              resolvedTheme === "light"
-                ? "border-blue-500 bg-blue-50"
-                : "border-default"
-            }`}
-        >
-          <Sun size={20} />
-          {t("THEME_LIGHT")}
-        </button>
+          return (
+            <button
+              key={opt.key}
+              onClick={() => setTheme(opt.key)}
+              className={`
+                relative flex flex-col items-center justify-center gap-2
+                rounded-2xl border p-5
+                transition-all duration-200
 
-        {/* DARK */}
-        <button
-          onClick={() => setTheme("dark")}
-          className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition
-            ${
-              resolvedTheme === "dark"
-                ? "border-blue-500 bg-blue-950/40"
-                : "border-default"
-            }`}
-        >
-          <Moon size={20} />
-          {t("THEME_DARK")}
-        </button>
+                ${
+                  isActive
+                    ? "border-primary bg-primary/10 text-primary shadow-sm"
+                    : "border-border bg-background hover:bg-muted/40"
+                }
+              `}
+            >
+              {/* ICON WRAPPER */}
+              <div
+                className={`
+                  flex h-12 w-12 items-center justify-center rounded-xl
+                  ${
+                    isActive
+                      ? "bg-primary/15 text-primary"
+                      : "bg-muted text-muted-foreground"
+                  }
+                `}
+              >
+                {opt.icon}
+              </div>
 
-        {/* SYSTEM */}
-        <button
-          onClick={() => setTheme("system")}
-          className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition
-            ${
-              resolvedTheme === "system"
-                ? "border-blue-500 bg-blue-50"
-                : "border-default"
-            }`}
-        >
-          <Laptop size={20} />
-          {t("THEME_SYSTEM")}
-        </button>
+              <span className="text-sm font-medium">
+                {opt.label}
+              </span>
 
+              {/* ACTIVE INDICATOR */}
+              {isActive && (
+                <div className="absolute bottom-2 h-1 w-10 rounded-full bg-primary" />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -4,11 +4,12 @@ import RegisterForm from "@/components/auth/RegisterForm";
 export default function RegisterPage() {
   return (
     <AuthLayout
-  
-      title="Jisajili – MLELE DC FURSA PORTAL"
-      subtitle="Unda akaunti mpya ya kijana"
+      title="Create Account"
+      subtitle="Jiunge na Mlele DC Fursa Portal kupata fursa za maendeleo"
     >
-      <RegisterForm />
+      <div className="space-y-4">
+        <RegisterForm />
+      </div>
     </AuthLayout>
   );
 }

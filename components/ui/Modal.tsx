@@ -1,30 +1,59 @@
+
 "use client";
 
-import { X } from "lucide-react";
 import { ReactNode, useEffect } from "react";
+
+import { X } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ModalProps {
   title: string;
   open: boolean;
   onClose: () => void;
+
   children: ReactNode;
-  size?: "sm" | "md" | "lg";
+
+  size?: "sm" | "md" | "lg" | "xl";
+
   closeOnOutsideClick?: boolean;
   showCloseButton?: boolean;
+
+  description?: string;
+
   footer?: ReactNode;
+
+  className?: string;
 }
+
+const sizeClasses = {
+  sm: "max-w-md",
+  md: "max-w-2xl",
+  lg: "max-w-4xl",
+  xl: "max-w-6xl",
+};
 
 export default function Modal({
   title,
   open,
   onClose,
+
   children,
+
   size = "md",
+
   closeOnOutsideClick = true,
   showCloseButton = true,
+
+  description = "Fill the required information below",
+
   footer,
+
+  className,
 }: ModalProps) {
-  // ✅ Close on ESC key
+  /* ================= ESC CLOSE ================= */
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -37,11 +66,15 @@ export default function Modal({
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEsc);
+      document.removeEventListener(
+        "keydown",
+        handleEsc,
+      );
     };
   }, [open, onClose]);
 
-  // ✅ Prevent background scroll
+  /* ================= BODY SCROLL ================= */
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -54,81 +87,171 @@ export default function Modal({
     };
   }, [open]);
 
+  /* ================= EARLY RETURN ================= */
+
   if (!open) return null;
 
-  const sizeClasses = {
-    sm: "max-w-md",
-    md: "max-w-2xl",
-    lg: "max-w-4xl",
-  };
+  /* ================= UI ================= */
 
   return (
     <div
-      onClick={closeOnOutsideClick ? onClose : undefined}
+      onClick={
+        closeOnOutsideClick
+          ? onClose
+          : undefined
+      }
       className="
-        fixed inset-0 z-50
+        fixed inset-0 z-100
+
         flex items-center justify-center
-        bg-black/50 backdrop-blur-sm
-        transition-opacity duration-300
-        px-4
+
+        overflow-y-auto
+
+        bg-black/60
+        backdrop-blur-sm
+
+        px-4 py-6
+        sm:p-6
+
+        animate-in fade-in duration-200
       "
     >
+      {/* MODAL */}
       <div
+        role="dialog"
+        aria-modal="true"
         onClick={(e) => e.stopPropagation()}
-        className={`
-          relative w-full ${sizeClasses[size]}
-          max-h-[90vh] overflow-y-auto
-          rounded-2xl shadow-2xl
-          bg-white dark:bg-zinc-900
-          border border-zinc-200 dark:border-zinc-800
-          transform transition-all duration-300
-          scale-100 opacity-100
-        `}
+        className={cn(
+          `
+            relative w-full
+
+            overflow-hidden
+
+            rounded-3xl
+
+            border border-border/60
+
+            bg-background
+
+            shadow-2xl
+
+            animate-in
+            zoom-in-95
+            slide-in-from-bottom-4
+            duration-200
+          `,
+          sizeClasses[size],
+          className,
+        )}
       >
+        {/* DECORATION */}
+        <div
+          className="
+            pointer-events-none
+
+            absolute right-0 top-0
+
+            h-72 w-72
+
+            translate-x-1/3 -translate-y-1/3
+
+            rounded-full
+
+            bg-primary/10
+
+            blur-3xl
+          "
+        />
+
         {/* HEADER */}
         <div
           className="
-            sticky top-0 z-10
-            flex items-center justify-between
-            px-6 py-4
-            border-b border-zinc-200 dark:border-zinc-800
-            bg-inherit
+            relative z-10
+
+            flex items-start justify-between gap-4
+
+            border-b border-border/60
+
+            bg-background/95
+            backdrop-blur
+
+            px-5 py-4
+            sm:px-6
           "
         >
-          <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-            {title}
-          </h2>
-
-          {showCloseButton && (
-            <button
-              onClick={onClose}
+          {/* TITLE */}
+          <div className="space-y-1">
+            <h2
               className="
-                rounded-md p-1
-                opacity-70 hover:opacity-100
-                hover:bg-zinc-100 dark:hover:bg-zinc-800
-                focus:outline-none
-                focus:ring-2 focus:ring-blue-500
-                transition
+                text-lg
+                font-semibold
+                tracking-tight
               "
             >
-              <X size={18} />
-            </button>
+              {title}
+            </h2>
+
+            {description && (
+              <p
+                className="
+                  text-sm
+                  text-muted-foreground
+                "
+              >
+                {description}
+              </p>
+            )}
+          </div>
+
+          {/* CLOSE */}
+          {showCloseButton && (
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={onClose}
+              className="
+                shrink-0
+
+                rounded-xl
+
+                text-muted-foreground
+                hover:text-foreground
+              "
+            >
+              <X className="size-4" />
+            </Button>
           )}
         </div>
 
-        {/* CONTENT */}
-        <div className="p-6 text-zinc-700 dark:text-zinc-300">
+        {/* BODY */}
+        <div
+          className="
+            relative z-10
+
+            max-h-[75vh]
+            overflow-y-auto
+
+            px-5 py-5
+            sm:px-6 sm:py-6
+          "
+        >
           {children}
         </div>
 
-        {/* FOOTER (Optional) */}
+        {/* FOOTER */}
         {footer && (
           <div
             className="
-              px-6 py-4
-              border-t border-zinc-200 dark:border-zinc-800
-              bg-zinc-50 dark:bg-zinc-900
-              flex justify-end gap-3
+              relative z-10
+
+              flex items-center justify-end gap-3
+
+              border-t border-border/60
+
+              bg-muted/30
+
+              px-5 py-4
+              sm:px-6
             "
           >
             {footer}
@@ -138,3 +261,4 @@ export default function Modal({
     </div>
   );
 }
+

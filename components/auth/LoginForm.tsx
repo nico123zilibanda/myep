@@ -1,11 +1,32 @@
+
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import Link from "next/link";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+
+import { useRouter } from "next/navigation";
+
+import {
+  Loader2,
+  Eye,
+  EyeOff,
+  Mail,
+  LockKeyhole,
+  ArrowRight,
+} from "lucide-react";
+
 import { useAppToast } from "@/lib/toast";
+
 import type { MessageKey } from "@/lib/messages";
+
+import { Button } from "@/components/ui/button";
+
+import { Input } from "@/components/ui/input";
+
+import { Label } from "@/components/ui/label";
+
+/* ================= TYPES ================= */
 
 interface LoginFormData {
   email: string;
@@ -18,33 +39,64 @@ interface ApiResponse {
   redirectTo?: string;
 }
 
+/* ================= COMPONENT ================= */
+
 export default function LoginForm() {
-  const { showSuccess, showError } = useAppToast();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
-  const [form, setForm] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
+  const { showSuccess, showError } =
+    useAppToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [loading, setLoading] =
+    useState(false);
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [form, setForm] =
+    useState<LoginFormData>({
+      email: "",
+      password: "",
+    });
+
+  /* ================= HANDLE CHANGE ================= */
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /* ================= SUBMIT ================= */
+
+  const handleSubmit = async (
+    e: React.FormEvent,
+  ) => {
     e.preventDefault();
+
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        "/api/auth/login",
+        {
+          method: "POST",
 
-      const data: ApiResponse = await res.json();
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(form),
+        },
+      );
+
+      const data: ApiResponse =
+        await res.json();
+
       setLoading(false);
 
       if (!res.ok) {
@@ -55,87 +107,267 @@ export default function LoginForm() {
       showSuccess(data.messageKey);
 
       setTimeout(() => {
-        router.replace(data.redirectTo || "/dashboard");
-      }, 600);
+        router.replace(
+          data.redirectTo ||
+            "/dashboard",
+        );
+      }, 700);
     } catch {
       setLoading(false);
+
       showError("SERVER_ERROR");
     }
   };
 
+  /* ================= UI ================= */
+
   return (
-    <form className="space-y-5" onSubmit={handleSubmit}>
-      {/* EMAIL */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Barua pepe
-        </label>
-        <input
-          type="email"
-          name="email"
-          required
-          value={form.email}
-          onChange={handleChange}
-          placeholder="example@email.com"
-          className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-        />
+    <form
+      onSubmit={handleSubmit}
+      className="
+        space-y-6
+      "
+    >
+      {/* ================= EMAIL ================= */}
+
+      <div className="space-y-2">
+        <Label
+          htmlFor="email"
+          className="
+            text-sm font-medium
+          "
+        >
+          Barua Pepe
+        </Label>
+
+        <div className="relative">
+          <Mail
+            className="
+              absolute left-4 top-1/2
+              size-4
+              -translate-y-1/2
+              text-muted-foreground
+            "
+          />
+
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="example@email.com"
+            value={form.email}
+            onChange={handleChange}
+            className="
+              h-12
+              rounded-2xl
+              border-border/60
+              bg-background/70
+              pl-11
+              shadow-sm
+              transition-all
+              focus-visible:ring-2
+              focus-visible:ring-primary/30
+            "
+          />
+        </div>
       </div>
 
-      {/* PASSWORD */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Nenosiri
-        </label>
+      {/* ================= PASSWORD ================= */}
 
-        <div className="relative mt-1">
-          <input
-            type={showPassword ? "text" : "password"}
+      <div className="space-y-2">
+        <div
+          className="
+            flex items-center
+            justify-between
+          "
+        >
+          <Label
+            htmlFor="password"
+            className="
+              text-sm font-medium
+            "
+          >
+            Nenosiri
+          </Label>
+
+          <Link
+            href="/forgot-password"
+            className="
+              text-xs font-medium
+              text-primary
+              transition-colors
+              hover:text-primary/80
+            "
+          >
+            Umesahau nenosiri?
+          </Link>
+        </div>
+
+        <div className="relative">
+          <LockKeyhole
+            className="
+              absolute left-4 top-1/2
+              size-4
+              -translate-y-1/2
+              text-muted-foreground
+            "
+          />
+
+          <Input
+            id="password"
             name="password"
             required
+            autoComplete="current-password"
+            placeholder="Andika nenosiri lako"
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
             value={form.password}
             onChange={handleChange}
-            placeholder="Andika nenosiri lako"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            className="
+              h-12
+              rounded-2xl
+              border-border/60
+              bg-background/70
+              pl-11
+              pr-12
+              shadow-sm
+              transition-all
+              focus-visible:ring-2
+              focus-visible:ring-primary/30
+            "
           />
 
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition"
+            onClick={() =>
+              setShowPassword(
+                !showPassword,
+              )
+            }
+            className="
+              absolute right-4 top-1/2
+              -translate-y-1/2
+              text-muted-foreground
+              transition-colors
+              hover:text-foreground
+            "
           >
-            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            {showPassword ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
           </button>
         </div>
       </div>
 
-      {/* FORGOT PASSWORD */}
-      <Link
-        href="/forgot-password"
-        className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
-      >
-        Umesahau nenosiri?
-      </Link>
+      {/* ================= LOGIN BUTTON ================= */}
 
-      {/* SUBMIT */}
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-2 transition"
+        className="
+          h-12 w-full
+          rounded-2xl
+          text-sm font-semibold
+          shadow-lg shadow-primary/20
+        "
       >
-        {loading && <Loader2 className="animate-spin" size={18} />}
-        Ingia
-      </button>
+        {loading ? (
+          <>
+            <Loader2
+              className="
+                mr-2 size-4
+                animate-spin
+              "
+            />
 
-      {/* REGISTER */}
-      <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-4">
+            Inaingia...
+          </>
+        ) : (
+          <>
+            Ingia Kwenye Mfumo
+
+            <ArrowRight
+              className="
+                ml-2 size-4
+              "
+            />
+          </>
+        )}
+      </Button>
+
+      {/* ================= DIVIDER ================= */}
+
+      <div
+        className="
+          relative
+          py-1
+        "
+      >
+        <div
+          className="
+            absolute inset-0
+            flex items-center
+          "
+        >
+          <span
+            className="
+              w-full
+              border-t
+              border-border/60
+            "
+          />
+        </div>
+
+        <div
+          className="
+            relative
+            flex justify-center
+            text-xs uppercase
+          "
+        >
+          <span
+            className="
+              bg-background
+              px-3
+              text-muted-foreground
+            "
+          >
+            AU
+          </span>
+        </div>
+      </div>
+
+      {/* ================= REGISTER ================= */}
+
+      <div
+        className="
+          text-center
+          text-sm
+          text-muted-foreground
+        "
+      >
         Bado huna akaunti?{" "}
+
         <Link
           href="/register"
-          className="text-indigo-600 dark:text-indigo-400 underline"
+          className="
+            font-semibold
+            text-primary
+            transition-colors
+            hover:text-primary/80
+          "
         >
-          Jisajili
+          Jisajili hapa
         </Link>
-      </p>
+      </div>
     </form>
   );
 }
+

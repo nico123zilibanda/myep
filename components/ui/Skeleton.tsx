@@ -1,19 +1,43 @@
+
 "use client";
 
-import React from "react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 interface SkeletonProps {
   className?: string;
 }
 
-export function Skeleton({ className }: SkeletonProps) {
+export function Skeleton({
+  className,
+}: SkeletonProps) {
   return (
     <div
-      className={clsx(
-        "animate-pulse rounded-md bg-gray-200 dark:bg-gray-800",
-        className
+      data-slot="skeleton"
+      className={cn(
+        `
+        relative
+
+        overflow-hidden
+
+        rounded-xl
+
+        bg-muted
+
+        before:absolute
+        before:inset-0
+
+        before:animate-pulse
+
+        before:bg-linear-to-r
+        before:from-transparent
+        before:via-white/40
+        before:to-transparent
+
+        dark:before:via-white/5
+      `,
+        className,
       )}
     />
   );
 }
+

@@ -1,12 +1,48 @@
+
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+
+import Link from "next/link";
+
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  Mail,
+  LockKeyhole,
+  User,
+  Phone,
+  GraduationCap,
+  CalendarDays,
+  VenusAndMars,
+  ArrowRight,
+} from "lucide-react";
+
 import { useAppToast } from "@/lib/toast";
+
 import type { MessageKey } from "@/lib/messages";
 
+import { Button } from "@/components/ui/button";
+
+import { Input } from "@/components/ui/input";
+
+import { Label } from "@/components/ui/label";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+/* ================= TYPES ================= */
+
 interface RegisterFormProps {
-  onSubmit?: (data: RegisterFormData) => void;
+  onSubmit?: (
+    data: RegisterFormData,
+  ) => void;
 }
 
 interface RegisterFormData {
@@ -24,41 +60,68 @@ interface ApiResponse {
   messageKey: MessageKey;
 }
 
-export default function RegisterForm({ onSubmit }: RegisterFormProps) {
-  const { showSuccess, showError } = useAppToast();
+/* ================= COMPONENT ================= */
 
-  const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
+export default function RegisterForm({
+  onSubmit,
+}: RegisterFormProps) {
+  const { showSuccess, showError } =
+    useAppToast();
 
-  const [form, setForm] = useState<RegisterFormData>({
-    fullName: "",
-    email: "",
-    passwordHash: "",
-    phone: "",
-    gender: "",
-    dateOfBirth: "",
-    educationLevel: "",
-  });
+  const [loading, setLoading] =
+    useState(false);
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [form, setForm] =
+    useState<RegisterFormData>({
+      fullName: "",
+      email: "",
+      passwordHash: "",
+      phone: "",
+      gender: "",
+      dateOfBirth: "",
+      educationLevel: "",
+    });
+
+  /* ================= CHANGE ================= */
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /* ================= SUBMIT ================= */
+
+  const handleSubmit = async (
+    e: React.FormEvent,
+  ) => {
     e.preventDefault();
+
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        "/api/auth/register",
+        {
+          method: "POST",
 
-      const data: ApiResponse = await res.json();
-      setLoading(false);
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(form),
+        },
+      );
+
+      const data: ApiResponse =
+        await res.json();
 
       if (!res.ok) {
         showError(data.messageKey);
@@ -66,6 +129,7 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
       }
 
       showSuccess(data.messageKey);
+
       onSubmit?.(form);
 
       setForm({
@@ -78,117 +142,415 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
         educationLevel: "",
       });
 
-      // redirect baada ya success
       setTimeout(() => {
-        window.location.href = "/login";
+        window.location.href =
+          "/login";
       }, 800);
-    } catch (error) {
-      setLoading(false);
+    } catch {
       showError("SERVER_ERROR");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ================= UI ================= */
+
   return (
-    <form className="space-y-5" onSubmit={handleSubmit}>
-      {[
-        { label: "Jina Kamili", name: "fullName", type: "text", placeholder: "Jina lako kamili" },
-        { label: "Barua pepe", name: "email", type: "email", placeholder: "example@email.com" },
-        { label: "Namba ya Simu", name: "phone", type: "tel", placeholder: "07XXXXXXXX" },
-        { label: "Siku ya Kuzaliwa", name: "dateOfBirth", type: "date", placeholder: "" },
-      ].map((field, i) => (
-        <div key={i}>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {field.label}
-          </label>
-          <input
-            type={field.type}
-            name={field.name}
-            value={form[field.name as keyof RegisterFormData]}
+    <form
+      onSubmit={handleSubmit}
+      className="
+        space-y-5
+      "
+    >
+      {/* ================= FULL NAME ================= */}
+
+      <div className="space-y-2">
+        <Label htmlFor="fullName">
+          Jina Kamili
+        </Label>
+
+        <div className="relative">
+          <User
+            className="
+              absolute left-4 top-1/2
+              size-4
+              -translate-y-1/2
+              text-muted-foreground
+            "
+          />
+
+          <Input
+            id="fullName"
+            type="text"
+            name="fullName"
+            required
+            placeholder="Andika jina lako"
+            value={form.fullName}
             onChange={handleChange}
-            placeholder={field.placeholder}
-            className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            className="
+              h-12
+              rounded-2xl
+              pl-11
+            "
           />
         </div>
-      ))}
-
-      {/* GENDER */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Jinsia
-        </label>
-        <select
-          name="gender"
-          value={form.gender}
-          onChange={handleChange}
-          className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-        >
-          <option value="">Chagua</option>
-          <option value="Male">Mwanaume</option>
-          <option value="Female">Mwanamke</option>
-        </select>
       </div>
 
-      {/* EDUCATION */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      {/* ================= EMAIL ================= */}
+
+      <div className="space-y-2">
+        <Label htmlFor="email">
+          Barua Pepe
+        </Label>
+
+        <div className="relative">
+          <Mail
+            className="
+              absolute left-4 top-1/2
+              size-4
+              -translate-y-1/2
+              text-muted-foreground
+            "
+          />
+
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="example@email.com"
+            value={form.email}
+            onChange={handleChange}
+            className="
+              h-12
+              rounded-2xl
+              pl-11
+            "
+          />
+        </div>
+      </div>
+
+      {/* ================= PHONE ================= */}
+
+      <div className="space-y-2">
+        <Label htmlFor="phone">
+          Namba ya Simu
+        </Label>
+
+        <div className="relative">
+          <Phone
+            className="
+              absolute left-4 top-1/2
+              size-4
+              -translate-y-1/2
+              text-muted-foreground
+            "
+          />
+
+          <Input
+            id="phone"
+            type="tel"
+            name="phone"
+            required
+            placeholder="07XXXXXXXX"
+            value={form.phone}
+            onChange={handleChange}
+            className="
+              h-12
+              rounded-2xl
+              pl-11
+            "
+          />
+        </div>
+      </div>
+
+      {/* ================= DATE + GENDER ================= */}
+
+      <div
+        className="
+          grid gap-4
+          sm:grid-cols-2
+        "
+      >
+        {/* DATE */}
+        <div className="space-y-2">
+          <Label htmlFor="dateOfBirth">
+            Tarehe ya Kuzaliwa
+          </Label>
+
+          <div className="relative">
+            <CalendarDays
+              className="
+                absolute left-4 top-1/2
+                size-4
+                -translate-y-1/2
+                text-muted-foreground
+              "
+            />
+
+            <Input
+              id="dateOfBirth"
+              type="date"
+              name="dateOfBirth"
+              required
+              value={form.dateOfBirth}
+              onChange={handleChange}
+              className="
+                h-12
+                rounded-2xl
+                pl-11
+              "
+            />
+          </div>
+        </div>
+
+        {/* GENDER */}
+        <div className="space-y-2">
+          <Label>
+            Jinsia
+          </Label>
+
+          <Select
+            value={form.gender}
+            onValueChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                gender: value,
+              }))
+            }
+          >
+            <SelectTrigger
+              className="
+                h-12
+                rounded-2xl
+              "
+            >
+              <div
+                className="
+                  flex items-center gap-2
+                "
+              >
+                <VenusAndMars
+                  className="
+                    size-4
+                    text-muted-foreground
+                  "
+                />
+
+                <SelectValue placeholder="Chagua jinsia" />
+              </div>
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="Male">
+                Mwanaume
+              </SelectItem>
+
+              <SelectItem value="Female">
+                Mwanamke
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* ================= EDUCATION ================= */}
+
+      <div className="space-y-2">
+        <Label>
           Kiwango cha Elimu
-        </label>
-        <select
-          name="educationLevel"
+        </Label>
+
+        <Select
           value={form.educationLevel}
-          onChange={handleChange}
-          className="mt-1 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+          onValueChange={(value) =>
+            setForm((prev) => ({
+              ...prev,
+              educationLevel:
+                value,
+            }))
+          }
         >
-          <option value="">Chagua</option>
-          <option>Elimu ya Msingi</option>
-          <option>Kidato cha Nne</option>
-          <option>Kidato cha Sita</option>
-          <option>Astashahada (certificate)</option>
-          <option>Stashahada (Diploma)</option>
-          <option>Shahada (Degree)</option>
-        </select>
+          <SelectTrigger
+            className="
+              h-12
+              rounded-2xl
+            "
+          >
+            <div
+              className="
+                flex items-center gap-2
+              "
+            >
+              <GraduationCap
+                className="
+                  size-4
+                  text-muted-foreground
+                "
+              />
+
+              <SelectValue placeholder="Chagua elimu" />
+            </div>
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectItem value="Primary">
+              Elimu ya Msingi
+            </SelectItem>
+
+            <SelectItem value="Form Four">
+              Kidato cha Nne
+            </SelectItem>
+
+            <SelectItem value="Form Six">
+              Kidato cha Sita
+            </SelectItem>
+
+            <SelectItem value="Diploma">
+              Diploma
+            </SelectItem>
+
+            <SelectItem value="Degree">
+              Degree
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* PASSWORD */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      {/* ================= PASSWORD ================= */}
+
+      <div className="space-y-2">
+        <Label htmlFor="passwordHash">
           Nenosiri
-        </label>
-        <div className="relative mt-1">
-          <input
-            type={show ? "text" : "password"}
+        </Label>
+
+        <div className="relative">
+          <LockKeyhole
+            className="
+              absolute left-4 top-1/2
+              size-4
+              -translate-y-1/2
+              text-muted-foreground
+            "
+          />
+
+          <Input
+            id="passwordHash"
             name="passwordHash"
+            required
+            minLength={6}
+            autoComplete="new-password"
+            placeholder="Weka nenosiri salama"
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
             value={form.passwordHash}
             onChange={handleChange}
-            placeholder="Chagua nenosiri"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            className="
+              h-12
+              rounded-2xl
+              pl-11
+              pr-12
+            "
           />
+
           <button
             type="button"
-            onClick={() => setShow(!show)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition"
+            onClick={() =>
+              setShowPassword(
+                !showPassword,
+              )
+            }
+            className="
+              absolute right-4 top-1/2
+              -translate-y-1/2
+              text-muted-foreground
+              transition-colors
+              hover:text-foreground
+            "
           >
-            {show ? <EyeOff size={20} /> : <Eye size={20} />}
+            {showPassword ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
           </button>
         </div>
+
+        <p
+          className="
+            text-xs
+            text-muted-foreground
+          "
+        >
+          Tumia angalau herufi 6
+          kwa usalama zaidi.
+        </p>
       </div>
 
-      {/* SUBMIT */}
-      <button
+      {/* ================= SUBMIT ================= */}
+
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-2 transition"
+        className="
+          h-12 w-full
+          rounded-2xl
+          text-sm font-semibold
+          shadow-lg shadow-primary/20
+        "
       >
-        {loading && <Loader2 className="animate-spin" size={18} />}
-        Jisajili
-      </button>
+        {loading ? (
+          <>
+            <Loader2
+              className="
+                mr-2 size-4
+                animate-spin
+              "
+            />
 
-      <p className="text-sm text-center text-gray-600 dark:text-gray-300 mt-4">
+            Inasajili...
+          </>
+        ) : (
+          <>
+            Jisajili Sasa
+
+            <ArrowRight
+              className="
+                ml-2 size-4
+              "
+            />
+          </>
+        )}
+      </Button>
+
+      {/* ================= LOGIN ================= */}
+
+      <div
+        className="
+          text-center
+          text-sm
+          text-muted-foreground
+        "
+      >
         Tayari una akaunti?{" "}
-        <a href="/login" className="text-indigo-600 dark:text-indigo-400 underline">
-          Ingia
-        </a>
-      </p>
+
+        <Link
+          href="/login"
+          className="
+            font-semibold
+            text-primary
+            transition-colors
+            hover:text-primary/80
+          "
+        >
+          Ingia hapa
+        </Link>
+      </div>
     </form>
   );
 }
+

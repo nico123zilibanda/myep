@@ -1,34 +1,61 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import Link from "next/link";
+
+import { useRouter, useSearchParams } from "next/navigation";
+
+import {
+  Loader2,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  ShieldCheck,
+  ArrowLeft,
+} from "lucide-react";
+
 import { useAppToast } from "@/lib/toast";
+
+import { Button } from "@/components/ui/button";
+
+import { Input } from "@/components/ui/input";
+
+import { Label } from "@/components/ui/label";
 
 export default function ResetPasswordForm() {
   const { showSuccess, showError } = useAppToast();
+
   const searchParams = useSearchParams();
+
   const router = useRouter();
 
   const token = searchParams.get("token");
 
   const [password, setPassword] = useState("");
+
   const [confirm, setConfirm] = useState("");
+
   const [show, setShow] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
-  // 🔒 Token validation on load
+  /* ================= TOKEN VALIDATION ================= */
+
   useEffect(() => {
     if (!token) {
       showError("TOKEN_INVALID");
+
       router.replace("/login");
     }
   }, [token, router, showError]);
 
+  /* ================= SUBMIT ================= */
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ Validation
     if (password.length < 8) {
       showError("PASSWORD_TOO_SHORT");
       return;
@@ -49,9 +76,11 @@ export default function ResetPasswordForm() {
     try {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           token,
           newPassword: password,
@@ -59,7 +88,6 @@ export default function ResetPasswordForm() {
       });
 
       const data = await res.json();
-      setLoading(false);
 
       if (!res.ok) {
         showError(data.message || "SERVER_ERROR");
@@ -70,61 +98,252 @@ export default function ResetPasswordForm() {
 
       setTimeout(() => {
         router.replace("/login");
-      }, 800);
+      }, 900);
     } catch {
-      setLoading(false);
       showError("SERVER_ERROR");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {/* PASSWORD */}
-      <div>
-        <label className="text-sm font-medium">Nenosiri Jipya</label>
+    <div className="space-y-6">
+      {/* INFO CARD */}
+      <div
+        className="
+          rounded-2xl
 
-        <div className="relative mt-1">
-          <input
-            type={show ? "text" : "password"}
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Angalau herufi 8"
-            className="w-full px-4 py-3 border rounded-xl"
-          />
+          border border-primary/10
 
-          <button
-            type="button"
-            onClick={() => setShow(!show)}
-            className="absolute right-3 top-3 text-gray-400"
+          bg-primary/5
+
+          p-4
+        "
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className="
+              flex size-10 items-center justify-center
+
+              rounded-xl
+
+              bg-primary/10
+
+              text-primary
+            "
           >
-            {show ? <EyeOff size={20} /> : <Eye size={20} />}
-          </button>
+            <ShieldCheck className="size-5" />
+          </div>
+
+          <div className="space-y-1">
+            <h3
+              className="
+                text-sm
+                font-semibold
+
+                text-foreground
+              "
+            >
+              Weka Nenosiri Jipya
+            </h3>
+
+            <p
+              className="
+                text-sm
+                leading-relaxed
+
+                text-muted-foreground
+              "
+            >
+              Tumia nenosiri lenye usalama zaidi ili kulinda akaunti yako.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* CONFIRM PASSWORD */}
-      <div>
-        <label className="text-sm font-medium">Thibitisha Nenosiri</label>
-        <input
-          type={show ? "text" : "password"}
-          value={confirm}
-          required
-          onChange={(e) => setConfirm(e.target.value)}
-          placeholder="Rudia nenosiri"
-          className="mt-1 w-full px-4 py-3 border rounded-xl"
-        />
-      </div>
-
-      {/* SUBMIT */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-indigo-600 text-white py-3 rounded-xl flex justify-center items-center gap-2"
+      {/* FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5"
       >
-        {loading && <Loader2 className="animate-spin" size={18} />}
-        Badilisha Nenosiri
-      </button>
-    </form>
+        {/* PASSWORD */}
+        <div className="space-y-2">
+          <Label htmlFor="password">
+            Nenosiri Jipya
+          </Label>
+
+          <div className="relative">
+            <LockKeyhole
+              className="
+                absolute left-3 top-1/2
+
+                size-4
+
+                -translate-y-1/2
+
+                text-muted-foreground
+              "
+            />
+
+            <Input
+              id="password"
+              type={show ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Angalau herufi 8"
+              className="
+                h-12
+
+                rounded-2xl
+
+                border-border/60
+
+                bg-background/60
+
+                pl-10 pr-12
+
+                backdrop-blur-sm
+
+                focus-visible:ring-primary/30
+              "
+            />
+
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              className="
+                absolute right-3 top-1/2
+
+                -translate-y-1/2
+
+                text-muted-foreground
+
+                transition-colors
+
+                hover:text-foreground
+              "
+            >
+              {show ? (
+                <EyeOff className="size-5" />
+              ) : (
+                <Eye className="size-5" />
+              )}
+            </button>
+          </div>
+
+          <p
+            className="
+              text-xs
+              text-muted-foreground
+            "
+          >
+            Nenosiri linapaswa kuwa na angalau herufi 8.
+          </p>
+        </div>
+
+        {/* CONFIRM PASSWORD */}
+        <div className="space-y-2">
+          <Label htmlFor="confirm">
+            Thibitisha Nenosiri
+          </Label>
+
+          <div className="relative">
+            <LockKeyhole
+              className="
+                absolute left-3 top-1/2
+
+                size-4
+
+                -translate-y-1/2
+
+                text-muted-foreground
+              "
+            />
+
+            <Input
+              id="confirm"
+              type={show ? "text" : "password"}
+              required
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Rudia nenosiri"
+              className="
+                h-12
+
+                rounded-2xl
+
+                border-border/60
+
+                bg-background/60
+
+                pl-10
+
+                backdrop-blur-sm
+
+                focus-visible:ring-primary/30
+              "
+            />
+          </div>
+        </div>
+
+        {/* SUBMIT */}
+        <Button
+          type="submit"
+          disabled={loading}
+          className="
+            h-12
+            w-full
+
+            rounded-2xl
+
+            font-semibold
+
+            shadow-lg
+            shadow-primary/20
+          "
+        >
+          {loading ? (
+            <>
+              <Loader2
+                className="
+                  size-4
+
+                  animate-spin
+                "
+              />
+
+              Inabadilisha...
+            </>
+          ) : (
+            "Badilisha Nenosiri"
+          )}
+        </Button>
+      </form>
+
+      {/* BACK */}
+      <div className="text-center">
+        <Link
+          href="/login"
+          className="
+            inline-flex items-center gap-2
+
+            text-sm
+            font-medium
+
+            text-primary
+
+            transition-colors
+
+            hover:text-primary/80
+          "
+        >
+          <ArrowLeft className="size-4" />
+
+          Rudi kwenye Login
+        </Link>
+      </div>
+    </div>
   );
 }
+

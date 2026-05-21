@@ -1,34 +1,115 @@
+import { cn } from "@/lib/utils";
+
 interface StatusBadgeProps {
-  status: "PENDING" | "ANSWERED" | "REJECTED";
+  status:
+    | "PENDING"
+    | "ANSWERED"
+    | "REJECTED";
+
+  className?: string;
+
+  withDot?: boolean;
 }
 
-export default function StatusBadge({ status }: StatusBadgeProps) {
-  let styles = "";
-  let label = "";
+const statusMap = {
+  ANSWERED: {
+    label: "Answered",
 
-  switch (status) {
-    case "ANSWERED":
-      styles = "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-100";
-      label = "Answered";
-      break;
-    case "PENDING":
-      styles = "bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-100";
-      label = "Pending";
-      break;
-    case "REJECTED":
-      styles = "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-100";
-      label = "Rejected";
-      break;
-    default:
-      styles = "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-100";
-      label = status;
-  }
+    className: `
+      border-green-500/20
+      bg-green-500/10
+      text-green-700
+
+      dark:text-green-400
+    `,
+
+    dot: "bg-green-500",
+  },
+
+  PENDING: {
+    label: "Pending",
+
+    className: `
+      border-yellow-500/20
+      bg-yellow-500/10
+      text-yellow-700
+
+      dark:text-yellow-400
+    `,
+
+    dot: "bg-yellow-500",
+  },
+
+  REJECTED: {
+    label: "Rejected",
+
+    className: `
+      border-red-500/20
+      bg-red-500/10
+      text-red-700
+
+      dark:text-red-400
+    `,
+
+    dot: "bg-red-500",
+  },
+};
+
+export default function StatusBadge({
+  status,
+  className,
+  withDot = true,
+}: StatusBadgeProps) {
+  const data =
+    statusMap[status] ?? {
+      label: status,
+
+      className: `
+        border-border
+        bg-muted
+        text-muted-foreground
+      `,
+
+      dot: "bg-muted-foreground",
+    };
 
   return (
     <span
-      className={`text-xs font-medium px-2 py-1 rounded-full ${styles}`}
+      data-slot="status-badge"
+      className={cn(
+        `
+        inline-flex items-center gap-1.5
+
+        rounded-full
+
+        border
+
+        px-2.5 py-1
+
+        text-xs
+        font-medium
+
+        transition-colors
+      `,
+        data.className,
+        className,
+      )}
     >
-      {label}
+      {/* DOT */}
+      {withDot && (
+        <span
+          className={cn(
+            `
+            size-1.5
+            rounded-full
+          `,
+            data.dot,
+          )}
+        />
+      )}
+
+      {data.label}
     </span>
   );
 }
+

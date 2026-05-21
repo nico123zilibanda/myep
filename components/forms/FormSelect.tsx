@@ -1,8 +1,24 @@
+
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Label } from "@/components/ui/label";
+
+import { AlertCircle } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { MessageKey } from "@/lib/messages";
 import translate from "@/lib/i18n/translate";
+
+import type { MessageKey } from "@/lib/messages";
 
 interface Option {
   value: string | number;
@@ -11,12 +27,14 @@ interface Option {
 }
 
 interface FormSelectProps {
-  label?: string; // normal text
-  labelKey?: MessageKey; // translated text
+  label?: string;
+  labelKey?: MessageKey;
 
   name: string;
+
   value: string | number;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+
+  onChange: (value: string) => void;
 
   options: Option[];
 
@@ -26,20 +44,27 @@ interface FormSelectProps {
   required?: boolean;
   error?: string;
   disabled?: boolean;
+
+  className?: string;
 }
 
 export default function FormSelect({
   label,
   labelKey,
-  name,
+
   value,
   onChange,
+
   options,
+
   placeholder,
   placeholderKey,
+
   required = false,
   error,
   disabled = false,
+
+  className,
 }: FormSelectProps) {
   const { lang } = useLanguage();
 
@@ -47,68 +72,94 @@ export default function FormSelect({
     ? translate(labelKey, lang)
     : label;
 
-  const finalPlaceholder = placeholderKey
-    ? translate(placeholderKey, lang)
-    : placeholder;
+  const finalPlaceholder =
+    placeholderKey
+      ? translate(
+          placeholderKey,
+          lang,
+        )
+      : placeholder;
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="space-y-2">
       {/* LABEL */}
       {finalLabel && (
-        <label
-          htmlFor={name}
-          className="text-sm font-medium text-(--text-primary)"
+        <Label
+          className="
+            inline-flex items-center gap-1
+          "
         >
           {finalLabel}
+
           {required && (
-            <span className="text-red-600 ml-0.5">*</span>
+            <span className="text-destructive">
+              *
+            </span>
           )}
-        </label>
+        </Label>
       )}
 
       {/* SELECT */}
-      <select
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        aria-invalid={!!error}
-        className={`
-          w-full rounded-xl
-          border border-(--border)
-          bg-(--card)
-          px-4 py-2.5 text-sm
-          text-(--foreground)
-          transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-(--btn-focus)
-          disabled:opacity-50 disabled:cursor-not-allowed
-          ${error ? "border-red-500 focus:ring-red-500" : ""}
-        `}
-      >
-        {/* PLACEHOLDER */}
-        {finalPlaceholder && (
-          <option value="">
-            {finalPlaceholder}
-          </option>
+      <div className="space-y-1">
+        <Select
+          value={String(value)}
+          onValueChange={onChange}
+          disabled={disabled}
+        >
+          <SelectTrigger
+            className={cn(
+              error &&
+                `
+                border-destructive
+                focus-visible:ring-destructive/20
+              `,
+              className,
+            )}
+          >
+            <SelectValue
+              placeholder={
+                finalPlaceholder ||
+                "Select option"
+              }
+            />
+          </SelectTrigger>
+
+          <SelectContent>
+            {options.map((opt) => (
+              <SelectItem
+                key={String(opt.value)}
+                value={String(
+                  opt.value,
+                )}
+              >
+                {opt.labelKey
+                  ? translate(
+                      opt.labelKey,
+                      lang,
+                    )
+                  : opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* ERROR */}
+        {error && (
+          <div
+            className="
+              flex items-center gap-1.5
+
+              text-xs
+              text-destructive
+            "
+          >
+            <AlertCircle className="size-3.5" />
+
+            <span>{error}</span>
+          </div>
         )}
-
-        {/* OPTIONS */}
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.labelKey
-              ? translate(opt.labelKey, lang)
-              : opt.label}
-          </option>
-        ))}
-      </select>
-
-      {/* ERROR */}
-      {error && (
-        <span className="text-xs text-red-600">
-          {error}
-        </span>
-      )}
+      </div>
     </div>
   );
 }
+

@@ -1,17 +1,47 @@
+
+// ================================
+// components/table/TableHeader.tsx
+// ================================
+
 "use client";
 
 interface TableHeaderProps {
   columns: string[];
 }
 
-export default function TableHeader({ columns }: TableHeaderProps) {
+export default function TableHeader({
+  columns,
+}: TableHeaderProps) {
   return (
-    <thead className="bg-(--card) border-b sticky top-0 z-10 transition-colors">
+    <thead
+      className="
+        sticky top-0 z-10
+
+        border-b border-border/60
+
+        bg-muted/40
+        backdrop-blur
+        supports-backdrop-filter:bg-background/80
+      "
+    >
       <tr>
         {columns.map((col) => (
           <th
             key={col}
-            className="px-4 py-3 text-left font-semibold text-(--foreground) text-sm"
+            className="
+              h-12
+              px-4
+
+              text-left
+              align-middle
+
+              text-[11px]
+              font-semibold
+              uppercase
+              tracking-[0.08em]
+
+              text-muted-foreground
+            "
           >
             {col}
           </th>
@@ -20,3 +50,10 @@ export default function TableHeader({ columns }: TableHeaderProps) {
     </thead>
   );
 }
+
+
+
+
+
+
+

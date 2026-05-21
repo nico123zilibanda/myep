@@ -1,11 +1,51 @@
+
 "use client";
 
-export default function DataTable({ children }: { children: React.ReactNode }) {
+import { cn } from "@/lib/utils";
+
+interface DataTableProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export default function DataTable({
+  children,
+  className,
+}: DataTableProps) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-(--border) shadow-sm bg-(--card) transition-colors">
-      <table className="w-full min-w-37.5 text-sm divide-y divide-(--border) transition-colors">
-        {children}
-      </table>
+    <div
+      className={cn(
+        `
+        relative w-full overflow-hidden
+        rounded-3xl
+        border border-border/60
+        bg-background
+
+        shadow-sm
+        backdrop-blur supports-backdrop-filter:bg-background/95
+
+        transition-colors
+      `,
+        className,
+      )}
+    >
+      {/* Scroll Area */}
+      <div className="overflow-x-auto">
+        <table
+          className="
+            w-full
+            min-w-180
+
+            border-collapse
+            text-sm
+
+            caption-bottom
+          "
+        >
+          {children}
+        </table>
+      </div>
     </div>
   );
 }
+
