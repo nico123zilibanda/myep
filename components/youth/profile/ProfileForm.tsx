@@ -1,20 +1,59 @@
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import FormInput from "@/components/forms/FormInput";
 import FormSelect from "@/components/forms/FormSelect";
-import { Loader2 } from "lucide-react";
+
+import {
+  Loader2,
+  User,
+  Mail,
+  Phone,
+  CalendarDays,
+  ShieldCheck,
+  Save,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+} from "lucide-react";
+
 import { useAppToast } from "@/lib/toast";
+import { useDictionary } from "@/lib/i18n/useDictionary";
+
+interface ProfileData {
+  fullName: string;
+  email: string;
+  phone?: string;
+  gender?: string;
+  dateOfBirth?: string;
+}
 
 export default function ProfileForm() {
-  const { showSuccess, showError } = useAppToast();
-  const [form, setForm] = useState<any>(null);
-  const [initialForm, setInitialForm] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showSuccess, showError } =
+    useAppToast();
+
+  const t = useDictionary();
+
+  /* ================= STATE ================= */
+
+  const [form, setForm] =
+    useState<ProfileData | null>(null);
+
+  const [initialForm, setInitialForm] =
+    useState<ProfileData | null>(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+
+  /* ================= FETCH ================= */
 
   useEffect(() => {
-    fetch("/api/youth/profile", {
+    fetch("/api/admin/profile", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -22,9 +61,15 @@ export default function ProfileForm() {
         if (res.success) {
           const prepared = {
             ...res.data,
-            dateOfBirth: res.data.dateOfBirth
-              ? new Date(res.data.dateOfBirth).toISOString().slice(0, 10)
-              : "",
+
+            dateOfBirth:
+              res.data.dateOfBirth
+                ? new Date(
+                    res.data.dateOfBirth
+                  )
+                    .toISOString()
+                    .slice(0, 10)
+                : "",
           };
 
           setForm(prepared);
@@ -33,37 +78,81 @@ export default function ProfileForm() {
           showError("SERVER_ERROR");
         }
       })
-      .catch(() => showError("SERVER_ERROR"))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        showError("SERVER_ERROR");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  /* ================= INPUT CHANGE ================= */
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    setForm((prev: any) => ({ ...prev, [name]: value }));
+
+    setForm((prev) => ({
+      ...(prev as ProfileData),
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /* ================= SELECT CHANGE ================= */
+
+  const handleSelectChange = (
+    name: keyof ProfileData,
+    value: string
+  ) => {
+    setForm((prev) => ({
+      ...(prev as ProfileData),
+      [name]: value,
+    }));
+  };
+
+  /* ================= SUBMIT ================= */
+
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
+
+    if (!form) return;
 
     try {
       setIsSubmitting(true);
 
-      const res = await fetch("/api/youth/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        "/api/admin/profile",
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await res.json();
 
       if (!res.ok) {
-        showError(data.messageKey || "ACTION_FAILED");
+        showError(
+          data.messageKey ||
+            "ACTION_FAILED"
+        );
+
         return;
       }
 
-      showSuccess(data.messageKey || "ACTION_SUCCESS");
+      showSuccess(
+        data.messageKey ||
+          "ACTION_SUCCESS"
+      );
+
       setInitialForm(form);
     } catch {
       showError("SERVER_ERROR");
@@ -72,128 +161,479 @@ export default function ProfileForm() {
     }
   };
 
+  /* ================= HELPERS ================= */
+
+  const isDirty =
+    JSON.stringify(form) !==
+    JSON.stringify(initialForm);
+
+  const initials = useMemo(() => {
+    if (!form?.fullName) return "U";
+
+    const names =
+      form.fullName.trim().split(" ");
+
+    if (names.length === 1) {
+      return (
+        names[0][0]?.toUpperCase() ||
+        "U"
+      );
+    }
+
+    return (
+      (
+        names[0][0] +
+        names[names.length - 1][0]
+      ).toUpperCase()
+    );
+  }, [form]);
+
+  /* ================= LOADING ================= */
+
   if (loading) {
     return (
-      <div className="flex justify-center py-10">
-        <Loader2 className="h-6 w-6 animate-spin" />
+      <div
+        className="
+          rounded-[28px]
+
+          border border-zinc-200/70
+          dark:border-zinc-800/70
+
+          bg-white/70
+          dark:bg-zinc-950/40
+
+          p-8
+
+          shadow-sm
+          backdrop-blur-xl
+        "
+      >
+        <div className="flex flex-col items-center gap-5 py-14">
+          <div
+            className="
+              flex h-16 w-16 items-center justify-center
+
+              rounded-2xl
+
+              bg-blue-500/10
+            "
+          >
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          </div>
+
+          <div className="space-y-2 text-center">
+            <h3 className="text-lg font-semibold">
+              Loading Profile
+            </h3>
+
+            <p className="text-sm text-zinc-500">
+              Please wait while we fetch
+              your information...
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
+
+  /* ================= ERROR ================= */
 
   if (!form) {
     return (
-      <div className="text-sm text-red-500">
-        Imeshindikana kupakia taarifa za profile
+      <div
+        className="
+          rounded-3xl
+
+          border border-red-500/20
+
+          bg-red-500/5
+
+          p-6
+        "
+      >
+        <div className="flex items-start gap-3">
+          <AlertCircle className="mt-0.5 h-5 w-5 text-red-500" />
+
+          <div>
+            <h3 className="font-semibold text-red-600 dark:text-red-400">
+              Failed to Load Profile
+            </h3>
+
+            <p className="mt-1 text-sm text-zinc-500">
+              {t("PROFILE_LOAD_FAILED")}
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const isDirty = JSON.stringify(form) !== JSON.stringify(initialForm);
+  /* ================= UI ================= */
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="card border-default space-y-6 p-6 rounded-xl shadow-sm"
+      className="
+        relative overflow-hidden
+
+        rounded-[30px]
+
+        border border-zinc-200/70
+        dark:border-zinc-800/70
+
+        bg-white/80
+        dark:bg-zinc-950/50
+
+        p-6 sm:p-8
+
+        shadow-sm
+        backdrop-blur-xl
+
+        space-y-8
+      "
     >
-      {/* HEADER */}
-      <div className="space-y-1">
-        <h3 className="text-lg font-semibold text-(--text-primary)">
-          Taarifa za Wasifu
-        </h3>
+      {/* BACKGROUND EFFECTS */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
 
-        <p className="text-sm opacity-70">
-          Sasisha taarifa zako binafsi
-        </p>
+        <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-violet-500/10 blur-3xl" />
       </div>
 
-      {/* FORM GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormInput
-          label="Jina Kamili"
-          name="fullName"
-          value={form.fullName}
-          onChange={handleChange}
-          required
-        />
+      {/* ================= HEADER ================= */}
 
-        <FormInput
-          label="Barua Pepe"
-          name="email"
-          value={form.email}
-          disabled
-          onChange={() => {}}
-        />
+      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        {/* LEFT */}
+        <div className="flex items-start gap-5">
+          {/* AVATAR */}
+          <div
+            className="
+              relative
 
-        <FormInput
-          label="Namba ya Simu"
-          name="phone"
-          value={form.phone || ""}
-          onChange={handleChange}
-        />
+              flex h-20 w-20 shrink-0 items-center justify-center
 
-        <FormSelect
-          label="Jinsia"
-          name="gender"
-          value={form.gender || ""}
-          onChange={handleChange}
-          options={[
-            { value: "Male", label: "Mwanaume" },
-            { value: "Female", label: "Mwanamke" },
-          ]}
-        />
+              rounded-3xl
 
-        <FormInput
-          label="Tarehe ya Kuzaliwa"
-          name="dateOfBirth"
-          type="date"
-          value={form.dateOfBirth}
-          onChange={handleChange}
-        />
+              bg-linear-to-br
+              from-blue-600
+              to-indigo-600
 
-        <FormSelect
-          label="Kiwango cha Elimu"
-          name="educationLevel"
-          value={form.educationLevel || ""}
-          onChange={handleChange}
-          options={[
-            { value: "PRIMARY", label: "Elimu ya Msingi" },
-            { value: "O_LEVEL", label: "Kidato cha Nne" },
-            { value: "CERTIFICATE", label: "Astashahada (Certificate)" },
-            { value: "DIPLOMA", label: "Stashahada (Diploma)" },
-            { value: "DEGREE", label: "Shahada (Degree)" },
-          ]}
-        />
+              text-2xl font-bold text-white
 
-        <FormInput
-          label="Role"
-          name="role"
-          value={form.roles?.name}
-          disabled
-          onChange={() => {}}
-        />
+              shadow-xl shadow-blue-500/25
+            "
+          >
+            {initials}
+
+            <div
+              className="
+                absolute -bottom-1 -right-1
+
+                flex h-7 w-7 items-center justify-center
+
+                rounded-full
+
+                border-4 border-white
+                dark:border-zinc-950
+
+                bg-emerald-500
+              "
+            >
+              <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+            </div>
+          </div>
+
+          {/* INFO */}
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
+              <Sparkles className="h-3.5 w-3.5" />
+              Personal Information
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+                {form.fullName}
+              </h2>
+
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                {t("PROFILE_INFO_SUBTITLE")}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <div
+                className="
+                  inline-flex items-center gap-2
+
+                  rounded-full
+
+                  border border-zinc-200
+                  dark:border-zinc-800
+
+                  bg-white/70
+                  dark:bg-zinc-900/60
+
+                  px-3 py-1.5
+
+                  text-xs text-zinc-600
+                  dark:text-zinc-300
+                "
+              >
+                <Mail className="h-3.5 w-3.5" />
+                {form.email}
+              </div>
+
+              <div
+                className="
+                  inline-flex items-center gap-2
+
+                  rounded-full
+
+                  border border-zinc-200
+                  dark:border-zinc-800
+
+                  bg-white/70
+                  dark:bg-zinc-900/60
+
+                  px-3 py-1.5
+
+                  text-xs text-zinc-600
+                  dark:text-zinc-300
+                "
+              >
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                Verified Account
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* STATUS */}
+        <div
+          className={`
+            inline-flex items-center gap-2
+
+            rounded-2xl
+
+            border px-4 py-3
+
+            text-sm font-medium
+
+            ${
+              isDirty
+                ? `
+                  border-amber-500/20
+                  bg-amber-500/10
+                  text-amber-600
+                `
+                : `
+                  border-emerald-500/20
+                  bg-emerald-500/10
+                  text-emerald-600
+                `
+            }
+          `}
+        >
+          {isDirty ? (
+            <>
+              <AlertCircle className="h-4 w-4" />
+              Unsaved Changes
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="h-4 w-4" />
+              Profile Synced
+            </>
+          )}
+        </div>
       </div>
 
-      <p className="text-xs opacity-70">
-        Barua pepe na role haziwezi kubadilishwa
-      </p>
+      {/* ================= FORM GRID ================= */}
 
-      {/* SUBMIT */}
-      <button
-        type="submit"
-        disabled={isSubmitting || !isDirty}
+      <div className="relative grid gap-6 md:grid-cols-2">
+        {/* FULL NAME */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <User className="h-4 w-4 text-blue-600" />
+            {t("PROFILE_FULLNAME_LABEL")}
+          </div>
+
+          <FormInput
+            name="fullName"
+            value={form.fullName}
+            onChange={
+              handleInputChange
+            }
+            required
+          />
+        </div>
+
+        {/* EMAIL */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Mail className="h-4 w-4 text-blue-600" />
+            {t("EMAIL_LABEL")}
+          </div>
+
+          <FormInput
+            name="email"
+            value={form.email}
+            disabled
+            onChange={() => {}}
+          />
+        </div>
+
+        {/* PHONE */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Phone className="h-4 w-4 text-blue-600" />
+            {t("PROFILE_PHONE_LABEL")}
+          </div>
+
+          <FormInput
+            name="phone"
+            value={form.phone || ""}
+            onChange={
+              handleInputChange
+            }
+          />
+        </div>
+
+        {/* GENDER */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <User className="h-4 w-4 text-pink-600" />
+            {t("PROFILE_GENDER_LABEL")}
+          </div>
+
+          <FormSelect
+            name="gender"
+            value={form.gender || ""}
+            onChange={(value) =>
+              handleSelectChange(
+                "gender",
+                value
+              )
+            }
+            options={[
+              {
+                value: "Male",
+                label:
+                  t("GENDER_MALE"),
+              },
+              {
+                value: "Female",
+                label:
+                  t(
+                    "GENDER_FEMALE"
+                  ),
+              },
+            ]}
+          />
+        </div>
+
+        {/* DATE OF BIRTH */}
+        <div className="space-y-2 md:col-span-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <CalendarDays className="h-4 w-4 text-violet-600" />
+            {t("PROFILE_DOB_LABEL")}
+          </div>
+
+          <FormInput
+            name="dateOfBirth"
+            type="date"
+            value={
+              form.dateOfBirth || ""
+            }
+            onChange={
+              handleInputChange
+            }
+          />
+        </div>
+      </div>
+
+      {/* ================= INFO BOX ================= */}
+
+      <div
         className="
-          w-full flex items-center justify-center gap-2
-          rounded-lg py-3 font-medium
-          bg-(--btn-primary) text-(--btn-text)
-          hover:shadow-md
-          disabled:opacity-60
-          focus:outline-none focus:ring-2 focus:ring-(--btn-focus)
-          transition
+          relative overflow-hidden
+
+          rounded-2xl
+
+          border border-blue-500/20
+
+          bg-blue-500/5
+
+          p-5
         "
       >
-        {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-        {isSubmitting ? "Inahifadhi..." : "Hifadhi Mabadiliko"}
-      </button>
+        <div className="flex items-start gap-3">
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
+
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-white">
+              Account Security
+            </h3>
+
+            <p className="mt-1 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+              {t(
+                "PROFILE_EMAIL_LOCKED_NOTE"
+              )}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= SUBMIT ================= */}
+
+      <div className="relative flex justify-end">
+        <button
+          disabled={
+            isSubmitting || !isDirty
+          }
+          type="submit"
+          className="
+            inline-flex items-center justify-center gap-2
+
+            rounded-2xl
+
+            bg-linear-to-r
+            from-blue-600
+            to-indigo-600
+
+            px-6 py-3.5
+
+            text-sm font-semibold
+            text-white
+
+            shadow-lg shadow-blue-500/20
+
+            transition-all duration-200
+
+            hover:-translate-y-0.5
+            hover:shadow-xl hover:shadow-blue-500/30
+
+            disabled:pointer-events-none
+            disabled:opacity-50
+          "
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              {t(
+                "PROFILE_SAVING_BUTTON"
+              )}
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4" />
+              {t(
+                "PROFILE_SAVE_BUTTON"
+              )}
+            </>
+          )}
+        </button>
+      </div>
     </form>
   );
 }
+
