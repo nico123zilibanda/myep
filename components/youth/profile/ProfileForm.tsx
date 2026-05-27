@@ -53,7 +53,7 @@ export default function ProfileForm() {
   /* ================= FETCH ================= */
 
   useEffect(() => {
-    fetch("/api/admin/profile", {
+    fetch("/api/youth/profile", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -124,7 +124,7 @@ export default function ProfileForm() {
       setIsSubmitting(true);
 
       const res = await fetch(
-        "/api/admin/profile",
+        "/api/youth/profile",
         {
           method: "PATCH",
 
@@ -585,54 +585,54 @@ export default function ProfileForm() {
 
       {/* ================= SUBMIT ================= */}
 
-      <div className="relative flex justify-end">
-        <button
-          disabled={
-            isSubmitting || !isDirty
-          }
-          type="submit"
-          className="
-            inline-flex items-center justify-center gap-2
+<div className="relative flex justify-end">
+  <button
+    disabled={
+      isSubmitting || !isDirty
+    }
+    type="submit"
+    className="
+      inline-flex items-center justify-center gap-2
 
-            rounded-2xl
+      rounded-2xl
 
-            bg-linear-to-r
-            from-blue-600
-            to-indigo-600
+      bg-linear-to-r
+      from-blue-600
+      to-indigo-600
 
-            px-6 py-3.5
+      px-6 py-3.5
 
-            text-sm font-semibold
-            text-white
+      text-sm font-semibold
+      text-white
 
-            shadow-lg shadow-blue-500/20
+      shadow-lg shadow-blue-500/20
 
-            transition-all duration-200
+      transition-all duration-200
 
-            hover:-translate-y-0.5
-            hover:shadow-xl hover:shadow-blue-500/30
+      hover:-translate-y-0.5
+      hover:shadow-xl hover:shadow-blue-500/30
 
-            disabled:pointer-events-none
-            disabled:opacity-50
-          "
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              {t(
-                "PROFILE_SAVING_BUTTON"
-              )}
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4" />
-              {t(
-                "PROFILE_SAVE_BUTTON"
-              )}
-            </>
-          )}
-        </button>
-      </div>
+      disabled:pointer-events-none
+      disabled:opacity-50
+    "
+  >
+    {isSubmitting ? (
+      <>
+        <Loader2 className="h-4 w-4 animate-spin" />
+        {t(
+          "PROFILE_SAVING_BUTTON"
+        )}
+      </>
+    ) : (
+      <>
+        <Save className="h-4 w-4" />
+        {t(
+          "PROFILE_SAVE_BUTTON"
+        )}
+      </>
+    )}
+  </button>
+</div>
     </form>
   );
 }

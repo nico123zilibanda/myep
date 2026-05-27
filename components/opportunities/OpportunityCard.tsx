@@ -1,24 +1,55 @@
+
+"use client";
+
 import Link from "next/link";
+
 import {
-  MapPin,
-  Calendar,
-  Folder,
-  Clock,
+  ArrowUpRight,
   Bookmark,
-  Video,
-  FileText,
+  Calendar,
+  Clock3,
   ExternalLink,
+  FileText,
+  Folder,
+  MapPin,
+  Sparkles,
+  Video,
 } from "lucide-react";
+
+import clsx from "clsx";
 
 import { Opportunity } from "@/types/opportunity";
 
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/Card";
+
+import { Badge } from "@/components/ui/badge";
+
+import { Button } from "@/components/ui/button";
+
+import { Skeleton } from "@/components/ui/Skeleton";
+
 /* ================= TYPES ================= */
+
 interface OpportunityCardProps {
   opportunity: Opportunity;
-  onToggleSave: (id: number, isSaved: boolean) => void;
-  onViewResource?: (op: Opportunity) => void;
+
+  onToggleSave: (
+    id: number,
+    isSaved: boolean
+  ) => void;
+
+  onViewResource?: (
+    op: Opportunity
+  ) => void;
+
   loading?: boolean;
 }
+
+/* ================= COMPONENT ================= */
 
 export default function OpportunityCard({
   opportunity,
@@ -26,21 +57,45 @@ export default function OpportunityCard({
   onViewResource,
   loading = false,
 }: OpportunityCardProps) {
+  const deadline = new Date(
+    opportunity.deadline
+  );
 
-  const deadline = new Date(opportunity.deadline);
-  const isExpired = deadline < new Date();
+  const isExpired =
+    deadline < new Date();
 
-  // 🔥 SAFE RESOURCE CHECK
+  /* ================= RESOURCE ================= */
+
   const hasResource =
     Boolean(opportunity.resourceType) &&
     Boolean(opportunity.resourceUrl);
 
-  const resourceType = opportunity.resourceType;
+  const resourceType =
+    opportunity.resourceType;
 
   const resourceMap = {
-    VIDEO: { icon: <Video size={14} />, label: "Video" },
-    PDF: { icon: <FileText size={14} />, label: "PDF" },
-    LINK: { icon: <ExternalLink size={14} />, label: "Link" },
+    VIDEO: {
+      icon: <Video className="size-4" />,
+      label: "Video",
+      color:
+        "bg-red-500/10 text-red-500 border-red-500/20",
+    },
+
+    PDF: {
+      icon: <FileText className="size-4" />,
+      label: "PDF",
+      color:
+        "bg-orange-500/10 text-orange-500 border-orange-500/20",
+    },
+
+    LINK: {
+      icon: (
+        <ExternalLink className="size-4" />
+      ),
+      label: "Link",
+      color:
+        "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    },
   } as const;
 
   const resource =
@@ -48,120 +103,446 @@ export default function OpportunityCard({
       ? resourceMap[resourceType]
       : null;
 
+  /* ================= DATE FORMAT ================= */
+
+  const formattedDeadline =
+    deadline.toLocaleDateString(
+      "sw-TZ",
+      {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }
+    );
+
   /* ================= LOADING ================= */
+
   if (loading) {
     return (
-      <div className="card border-default rounded-xl p-5 space-y-4 animate-pulse">
-        <div className="h-4 w-1/3 bg-black/10 rounded" />
-        <div className="h-6 w-2/3 bg-black/10 rounded" />
-        <div className="h-12 w-full bg-black/10 rounded" />
-      </div>
+      <Card
+        className="
+          overflow-hidden
+
+          rounded-[28px]
+
+          border-border/60
+        "
+      >
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            {/* TOP */}
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-7 w-28 rounded-full" />
+
+              <Skeleton className="h-7 w-24 rounded-full" />
+            </div>
+
+            {/* TITLE */}
+            <div className="space-y-3">
+              <Skeleton className="h-8 w-4/5 rounded-2xl" />
+
+              <Skeleton className="h-4 w-full rounded-xl" />
+
+              <Skeleton className="h-4 w-5/6 rounded-xl" />
+            </div>
+
+            {/* META */}
+            <div className="space-y-3">
+              <Skeleton className="h-5 w-1/2 rounded-xl" />
+
+              <Skeleton className="h-5 w-2/3 rounded-xl" />
+            </div>
+
+            {/* BUTTONS */}
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-10 flex-1 rounded-2xl" />
+
+              <Skeleton className="h-10 w-28 rounded-2xl" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   /* ================= UI ================= */
+
   return (
-    <div className="card border-default rounded-xl p-5 flex flex-col justify-between hover:shadow-lg transition-all duration-200 group">
+    <Card
+      className="
+        group
 
-      {/* ================= TOP ================= */}
-      <div className="space-y-3">
+        relative overflow-hidden
 
-        {/* BADGES */}
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <span className="text-xs px-2 py-1 rounded-full bg-black/5 flex items-center gap-1">
-            <Folder size={12} />
-            {opportunity.Category?.name || "Bila Kundi"}
-          </span>
+        rounded-[30px]
 
-          <span
-            className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 ${
-              isExpired
-                ? "bg-red-500/10 text-red-500"
-                : "bg-green-500/10 text-green-500"
-            }`}
-          >
-            <Clock size={12} />
-            {isExpired ? "Imefungwa" : "Bado Wazi"}
-          </span>
-        </div>
+        border-border/60
 
-        {/* RESOURCE BADGE */}
-        {resource && (
-          <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-blue-500/10 text-blue-600">
-            {resource.icon}
-            {resource.label}
-          </span>
-        )}
+        bg-background/90
 
-        {/* TITLE */}
-        <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-blue-600 transition">
-          {opportunity.title}
-        </h3>
+        backdrop-blur-xl
 
-        {/* DESCRIPTION */}
-        <p className="text-sm opacity-70 line-clamp-3">
-          {opportunity.description}
-        </p>
+        transition-all duration-500
 
-        {/* META */}
-        <div className="text-sm opacity-70 space-y-1">
-          <div className="flex gap-2 items-center">
-            <MapPin size={14} />
-            {opportunity.location || "Haijabainishwa"}
-          </div>
+        hover:-translate-y-2
+        hover:border-primary/20
+        hover:shadow-2xl
+        hover:shadow-primary/10
+      "
+    >
+      {/* BACKGROUND GLOW */}
+      <div
+        className="
+          absolute right-0 top-0
 
-          <div className="flex gap-2 items-center">
-            <Calendar size={14} />
-            <span className="bg-black/5 px-2 py-0.5 rounded-full text-xs">
-              {deadline.toLocaleDateString()}
-            </span>
-          </div>
-        </div>
-      </div>
+          h-40 w-40
 
-      {/* ================= ACTIONS ================= */}
-      <div className="border-t border-default pt-3 mt-4 flex justify-between items-center">
+          translate-x-1/3 -translate-y-1/3
 
-        {/* SAVE BUTTON */}
-        <button
-          onClick={() => onToggleSave(opportunity.id, opportunity.isSaved)}
-          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition ${
-            opportunity.isSaved
-              ? "bg-(--primary) text-white"
-              : "bg-black/5 hover:bg-black/10"
-          }`}
-        >
-          <Bookmark size={14} />
-          {opportunity.isSaved ? "Saved" : "Save"}
-        </button>
+          rounded-full
 
-        {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-3">
+          bg-primary/10
 
-          {/* VIEW RESOURCE */}
-          {hasResource && (
-            <button
-              onClick={() => onViewResource?.(opportunity)}
-              className="text-xs flex items-center gap-1 text-blue-600 hover:underline"
+          blur-3xl
+
+          opacity-0
+
+          transition-opacity duration-500
+
+          group-hover:opacity-100
+        "
+      />
+
+      {/* TOP STRIP */}
+      <div
+        className="
+          absolute inset-x-0 top-0
+
+          h-1
+
+          bg-linear-to-r
+          from-primary
+          via-indigo-500
+          to-primary/70
+
+          opacity-80
+        "
+      />
+
+      <div className="relative z-10 flex h-full flex-col">
+        {/* ================= CONTENT ================= */}
+
+        <CardContent className="flex-1 p-6">
+          {/* BADGES */}
+          <div className="flex items-start justify-between gap-3">
+            <Badge
+              variant="secondary"
+              className="
+                rounded-full
+
+                border-0
+
+                bg-primary/10
+                px-3 py-1
+
+                text-primary
+              "
             >
-              {resourceType === "VIDEO" && "Tazama Video"}
-              {resourceType === "PDF" && "Fungua PDF"}
-              {resourceType === "LINK" && "Tembelea Link"}
+              <Folder className="mr-1 size-3.5" />
 
-              <ExternalLink size={12} />
-            </button>
+              {opportunity.Category?.name ||
+                "Bila Kundi"}
+            </Badge>
+
+            <Badge
+              className={clsx(
+                `
+                  rounded-full
+
+                  border-0
+
+                  px-3 py-1
+                `,
+                isExpired
+                  ? `
+                    bg-red-500/10
+                    text-red-500
+                  `
+                  : `
+                    bg-emerald-500/10
+                    text-emerald-600
+                    dark:text-emerald-400
+                  `
+              )}
+            >
+              <Clock3 className="mr-1 size-3.5" />
+
+              {isExpired
+                ? "Imefungwa"
+                : "Inaendelea"}
+            </Badge>
+          </div>
+
+          {/* RESOURCE */}
+          {resource && (
+            <div className="mt-5">
+              <div
+                className={clsx(
+                  `
+                    inline-flex items-center gap-2
+
+                    rounded-full
+                    border
+
+                    px-3 py-1.5
+
+                    text-xs
+                    font-semibold
+                  `,
+                  resource.color
+                )}
+              >
+                {resource.icon}
+
+                {resource.label}
+              </div>
+            </div>
           )}
 
-          {/* DETAILS */}
-          <Link
-            href={`/youth/opportunities/${opportunity.id}`}
-            className="text-xs font-medium opacity-70 hover:opacity-100"
-          >
-            Maelezo →
-          </Link>
+          {/* TITLE */}
+          <div className="mt-5 space-y-3">
+            <h3
+              className="
+                line-clamp-2
 
-        </div>
+                text-xl
+                font-bold
+                tracking-tight
+
+                transition-colors duration-300
+
+                group-hover:text-primary
+              "
+            >
+              {opportunity.title}
+            </h3>
+
+            <p
+              className="
+                line-clamp-3
+
+                text-sm
+                leading-7
+                text-muted-foreground
+              "
+            >
+              {opportunity.description}
+            </p>
+          </div>
+
+          {/* META */}
+          <div className="mt-6 space-y-3">
+            {/* LOCATION */}
+            <div
+              className="
+                flex items-center gap-3
+
+                rounded-2xl
+
+                bg-muted/40
+
+                px-3 py-2.5
+              "
+            >
+              <div
+                className="
+                  flex size-9 items-center justify-center
+
+                  rounded-xl
+
+                  bg-background
+
+                  shadow-sm
+                "
+              >
+                <MapPin className="size-4 text-primary" />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p
+                  className="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-muted-foreground
+                  "
+                >
+                  Eneo
+                </p>
+
+                <p
+                  className="
+                    truncate
+
+                    text-sm
+                    font-medium
+                  "
+                >
+                  {opportunity.location ||
+                    "Haijabainishwa"}
+                </p>
+              </div>
+            </div>
+
+            {/* DEADLINE */}
+            <div
+              className="
+                flex items-center gap-3
+
+                rounded-2xl
+
+                bg-muted/40
+
+                px-3 py-2.5
+              "
+            >
+              <div
+                className="
+                  flex size-9 items-center justify-center
+
+                  rounded-xl
+
+                  bg-background
+
+                  shadow-sm
+                "
+              >
+                <Calendar className="size-4 text-primary" />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p
+                  className="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-muted-foreground
+                  "
+                >
+                  Mwisho wa Maombi
+                </p>
+
+                <p
+                  className="
+                    text-sm
+                    font-medium
+                  "
+                >
+                  {formattedDeadline}
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+
+        {/* ================= FOOTER ================= */}
+
+        <CardFooter
+          className="
+            border-t border-border/60
+
+            bg-muted/20
+
+            px-6 py-5
+          "
+        >
+          <div
+            className="
+              flex w-full flex-col gap-3
+
+              sm:flex-row
+              sm:items-center
+              sm:justify-between
+            "
+          >
+            {/* SAVE */}
+            <Button
+              size="sm"
+              variant={
+                opportunity.isSaved
+                  ? "default"
+                  : "secondary"
+              }
+              className="
+                rounded-2xl
+
+                px-4
+              "
+              onClick={() =>
+                onToggleSave(
+                  opportunity.id,
+                  opportunity.isSaved
+                )
+              }
+            >
+              <Bookmark
+                className={clsx(
+                  `
+                    size-4
+                  `,
+                  opportunity.isSaved &&
+                    "fill-current"
+                )}
+              />
+
+              {opportunity.isSaved
+                ? "Imehifadhiwa"
+                : "Hifadhi"}
+            </Button>
+
+            {/* ACTIONS */}
+            <div className="flex items-center gap-2">
+              {hasResource && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="
+                    rounded-2xl
+                  "
+                  onClick={() =>
+                    onViewResource?.(
+                      opportunity
+                    )
+                  }
+                >
+                  <Sparkles className="size-4" />
+
+                  Fungua
+                </Button>
+              )}
+
+              <Button
+                asChild
+                size="sm"
+                className="
+                  rounded-2xl
+                "
+              >
+                <Link
+                  href={`/youth/opportunities/${opportunity.id}`}
+                >
+                  Maelezo
+
+                  <ArrowUpRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </CardFooter>
       </div>
-    </div>
+    </Card>
   );
 }
+

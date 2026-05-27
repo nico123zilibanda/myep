@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -26,14 +25,14 @@ export default function SettingsPage() {
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* HERO SECTION */}
       <div className="relative overflow-hidden rounded-3xl border bg-background p-6 shadow-sm">
-        <div className="absolute inset-0 bg-linear-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-primary/5 via-transparent to-primary/5" />
 
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           {/* LEFT */}
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-xs font-medium">
               <MonitorCog className="size-3.5" />
-              System Preferences
+              Mipangilio ya Mfumo
             </div>
 
             <div>
@@ -55,16 +54,18 @@ export default function SettingsPage() {
 
             <div className="space-y-1">
               <h3 className="font-semibold">
-                Admin Preferences
+                Mapendeleo ya Admin
               </h3>
 
               <p className="text-sm text-muted-foreground">
-                Customize appearance, language and system experience.
+                Badilisha mwonekano,
+                lugha, na matumizi ya
+                mfumo kwa urahisi.
               </p>
 
               <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="size-3.5" />
-                Secure Configuration
+                Mfumo Salama
               </div>
             </div>
           </div>
@@ -78,7 +79,7 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Appearance
+                Mwonekano
               </p>
 
               <h2 className="text-xl font-bold">
@@ -86,7 +87,8 @@ export default function SettingsPage() {
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                Customize dark and light interface styles.
+                Badilisha mfumo kuwa wa
+                giza au mwanga.
               </p>
             </div>
 
@@ -101,15 +103,16 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Language
+                Lugha
               </p>
 
               <h2 className="text-xl font-bold">
-                Localization
+                Tafsiri
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                Switch app language and translation preferences.
+                Badilisha lugha ya mfumo
+                na mapendeleo ya tafsiri.
               </p>
             </div>
 
@@ -124,15 +127,16 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                User Experience
+                Uzoefu wa Mtumiaji
               </p>
 
               <h2 className="text-xl font-bold">
-                Enhanced
+                Bora Zaidi
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                Modern dashboard experience enabled.
+                Mfumo wa kisasa wa
+                dashibodi umewezeshwa.
               </p>
             </div>
 
@@ -147,15 +151,16 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                System
+                Mfumo
               </p>
 
               <h2 className="text-xl font-bold">
-                Stable
+                Imara
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                All configurations are operating normally.
+                Mipangilio yote
+                inafanya kazi kawaida.
               </p>
             </div>
 
@@ -181,11 +186,14 @@ export default function SettingsPage() {
 
                 <div>
                   <h2 className="font-semibold">
-                    Appearance Settings
+                    Mipangilio ya
+                    Mwonekano
                   </h2>
 
                   <p className="text-sm text-muted-foreground">
-                    Customize your dashboard appearance and interface theme.
+                    Badilisha muonekano
+                    wa dashibodi na
+                    theme ya mfumo.
                   </p>
                 </div>
               </div>
@@ -208,11 +216,13 @@ export default function SettingsPage() {
 
                 <div>
                   <h2 className="font-semibold">
-                    Language Settings
+                    Mipangilio ya Lugha
                   </h2>
 
                   <p className="text-sm text-muted-foreground">
-                    Manage translations and localization preferences.
+                    Simamia tafsiri na
+                    lugha ndani ya
+                    mfumo.
                   </p>
                 </div>
               </div>
@@ -236,11 +246,13 @@ export default function SettingsPage() {
 
               <div>
                 <h3 className="font-semibold">
-                  Settings Overview
+                  Muhtasari wa
+                  Mipangilio
                 </h3>
 
                 <p className="text-sm text-muted-foreground">
-                  Manage your dashboard preferences easily.
+                  Simamia mapendeleo ya
+                  dashibodi kwa urahisi.
                 </p>
               </div>
             </div>
@@ -251,11 +263,12 @@ export default function SettingsPage() {
 
                 <div>
                   <p className="text-sm font-medium">
-                    Theme Personalization
+                    Kubadilisha Theme
                   </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Switch between dark and light modes.
+                    Hamia kati ya mode
+                    ya giza na mwanga.
                   </p>
                 </div>
               </div>
@@ -265,11 +278,12 @@ export default function SettingsPage() {
 
                 <div>
                   <p className="text-sm font-medium">
-                    Global Language Support
+                    Msaada wa Lugha
                   </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Configure multilingual dashboard support.
+                    Mfumo unaunga
+                    mkono lugha nyingi.
                   </p>
                 </div>
               </div>
@@ -279,11 +293,14 @@ export default function SettingsPage() {
 
                 <div>
                   <p className="text-sm font-medium">
-                    Secure Preferences
+                    Mipangilio Salama
                   </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Settings are safely stored and protected.
+                    Taarifa zako za
+                    mipangilio
+                    zimehifadhiwa kwa
+                    usalama.
                   </p>
                 </div>
               </div>
@@ -299,26 +316,35 @@ export default function SettingsPage() {
 
               <div>
                 <h3 className="font-semibold">
-                  Customization Tips
+                  Vidokezo vya Mfumo
                 </h3>
 
                 <p className="text-sm text-muted-foreground">
-                  Improve your admin experience.
+                  Boresha matumizi yako
+                  ya admin.
                 </p>
               </div>
             </div>
 
             <div className="mt-5 space-y-3 text-sm text-muted-foreground">
               <div className="rounded-2xl border bg-muted/20 p-4">
-                Use dark mode for better night-time viewing experience.
+                Tumia dark mode kwa
+                mwonekano mzuri zaidi
+                wakati wa usiku.
               </div>
 
               <div className="rounded-2xl border bg-muted/20 p-4">
-                Choose your preferred language for easier navigation.
+                Chagua lugha
+                unayoielewa zaidi kwa
+                matumizi rahisi ya
+                mfumo.
               </div>
 
               <div className="rounded-2xl border bg-muted/20 p-4">
-                Keep your interface clean and personalized for productivity.
+                Weka mfumo wako katika
+                muonekano safi na
+                unaokufaa kwa kazi za
+                kila siku.
               </div>
             </div>
           </div>
@@ -327,4 +353,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-

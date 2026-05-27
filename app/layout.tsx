@@ -1,36 +1,57 @@
+import type { Metadata } from "next";
+
 import "./globals.css";
+
 import AuthGate from "@/components/providers/AuthGate";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+
 import { Toaster } from "sonner";
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+export const metadata: Metadata = {
+  title: "MLELE DC FURSA PORTAL",
 
-export const metadata = {
-  title: "Mleledc.com",
+  description:
+    "Mfumo wa fursa kwa vijana wa Wilaya ya Mlele",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="sw" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
-      <body>
+    <html
+      lang="sw"
+      suppressHydrationWarning
+    >
+      <body
+        className="
+          min-h-screen
+
+          bg-background
+
+          font-sans
+
+          antialiased
+        "
+      >
         <ThemeProvider>
           <AuthGate>
-             <LanguageProvider>
-            {children}
-             <Toaster richColors position="top-right" />
-             </LanguageProvider>
+            <LanguageProvider>
+              {children}
+
+              <Toaster
+                richColors
+                position="top-right"
+                closeButton
+                expand
+                duration={4000}
+              />
+            </LanguageProvider>
           </AuthGate>
         </ThemeProvider>
       </body>
     </html>
   );
 }
-
-

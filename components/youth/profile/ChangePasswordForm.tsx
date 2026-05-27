@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
@@ -13,13 +12,15 @@ import {
   CheckCircle2,
   AlertTriangle,
   LockKeyhole,
+  Sparkles,
 } from "lucide-react";
 
 import { useAppToast } from "@/lib/toast";
 import { useDictionary } from "@/lib/i18n/useDictionary";
 
 export default function ChangePasswordForm() {
-  const { showSuccess, showError } = useAppToast();
+  const { showSuccess, showError } =
+    useAppToast();
 
   const t = useDictionary();
 
@@ -43,7 +44,7 @@ export default function ChangePasswordForm() {
     setShowConfirmPassword,
   ] = useState(false);
 
-  /* ================= PASSWORD VALIDATION ================= */
+  /* ================= VALIDATIONS ================= */
 
   const validations = useMemo(() => {
     const password = form.password;
@@ -72,7 +73,7 @@ export default function ChangePasswordForm() {
       ? "medium"
       : "strong";
 
-  /* ================= INPUT CHANGE ================= */
+  /* ================= INPUT ================= */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -104,7 +105,10 @@ export default function ChangePasswordForm() {
     }
 
     if (!validations.match) {
-      setErrorKey("PASSWORD_MISMATCH_LOCAL");
+      setErrorKey(
+        "PASSWORD_MISMATCH_LOCAL"
+      );
+
       return;
     }
 
@@ -112,14 +116,16 @@ export default function ChangePasswordForm() {
       setIsSubmitting(true);
 
       const res = await fetch(
-        "/api/admin/profile/password",
+        "/api/youth/profile/password",
         {
           method: "PATCH",
           credentials: "include",
+
           headers: {
             "Content-Type":
               "application/json",
           },
+
           body: JSON.stringify({
             password: form.password,
           }),
@@ -153,31 +159,29 @@ export default function ChangePasswordForm() {
     }
   };
 
-  /* ================= BUTTON DISABLED ================= */
+  /* ================= HELPERS ================= */
 
   const isDisabled =
     isSubmitting ||
     !form.password ||
     !form.confirmPassword;
 
-  /* ================= PASSWORD STRENGTH ================= */
-
   const strengthStyles = {
     weak: {
       text: "Weak Password",
-      bar: "w-1/3 bg-red-500/80",
+      bar: "w-1/3 bg-red-500",
       textColor: "text-red-500",
     },
 
     medium: {
       text: "Medium Password",
-      bar: "w-2/3 bg-amber-500/80",
+      bar: "w-2/3 bg-amber-500",
       textColor: "text-amber-500",
     },
 
     strong: {
       text: "Strong Password",
-      bar: "w-full bg-emerald-500/80",
+      bar: "w-full bg-emerald-500",
       textColor: "text-emerald-500",
     },
   };
@@ -185,43 +189,71 @@ export default function ChangePasswordForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative space-y-8"
-    >
-      {/* BACKGROUND */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
+      className="
+        relative overflow-hidden
 
-        <div className="absolute bottom-0 left-0 h-36 w-36 rounded-full bg-violet-500/5 blur-3xl" />
+        rounded-[30px]
+
+        border border-border/60
+
+        bg-background/80
+
+        p-6 sm:p-8
+
+        shadow-sm
+        backdrop-blur-xl
+
+        space-y-8
+      "
+    >
+      {/* BACKGROUND EFFECTS */}
+
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-primary/10 blur-3xl" />
+
+        <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-violet-500/10 blur-3xl" />
       </div>
 
       {/* ================= HEADER ================= */}
 
-      <div className="relative flex items-start gap-4">
+      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-start">
         <div
           className="
-            flex h-12 w-12 shrink-0 items-center justify-center
+            flex h-14 w-14 shrink-0 items-center justify-center
 
-            rounded-2xl
+            rounded-3xl
 
-            bg-red-500/10
-            text-red-500
+            bg-linear-to-br
+            from-red-500
+            to-rose-500
+
+            text-white
+
+            shadow-lg shadow-red-500/20
           "
         >
-          <Shield className="h-5 w-5" />
+          <Shield className="h-6 w-6" />
         </div>
 
-        <div className="space-y-1">
-          <h2 className="text-lg font-semibold tracking-tight">
-            {t("SECURITY_TITLE")}
-          </h2>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-500">
+            <Sparkles className="h-3.5 w-3.5" />
+            Security Settings
+          </div>
 
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {t("SECURITY_SUBTITLE")}
-          </p>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              {t("SECURITY_TITLE")}
+            </h2>
+
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {t("SECURITY_SUBTITLE")}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* ================= ERROR ALERT ================= */}
+      {/* ================= ERROR ================= */}
 
       {errorKey && (
         <div
@@ -248,11 +280,11 @@ export default function ChangePasswordForm() {
 
       {/* ================= CONTENT ================= */}
 
-      <div className="grid gap-8 xl:grid-cols-2">
-        {/* LEFT SIDE */}
+      <div className="relative grid gap-8 xl:grid-cols-2">
+        {/* LEFT */}
 
-        <div className="space-y-5">
-          {/* PASSWORD INPUT */}
+        <div className="space-y-6">
+          {/* PASSWORD */}
 
           <div className="relative">
             <FormInput
@@ -282,17 +314,16 @@ export default function ChangePasswordForm() {
 
                 rounded-xl
 
-                bg-zinc-100
-                dark:bg-zinc-800
+                border border-border
 
-                text-zinc-600
-                dark:text-zinc-300
+                bg-background/80
+
+                text-muted-foreground
 
                 transition-all duration-200
 
-                hover:scale-105
-                hover:bg-zinc-200
-                dark:hover:bg-zinc-700
+                hover:bg-muted
+                hover:text-foreground
               "
             >
               {showPassword ? (
@@ -307,7 +338,7 @@ export default function ChangePasswordForm() {
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Password Strength
               </span>
 
@@ -337,8 +368,18 @@ export default function ChangePasswordForm() {
 
           {/* REQUIREMENTS */}
 
-          <div className="rounded-3xl border bg-muted/30 p-5">
-            <div className="mb-4 flex items-center gap-2">
+          <div
+            className="
+              rounded-3xl
+
+              border border-border/60
+
+              bg-muted/30
+
+              p-5
+            "
+          >
+            <div className="mb-5 flex items-center gap-2">
               <LockKeyhole className="h-4 w-4 text-primary" />
 
               <p className="text-sm font-semibold">
@@ -388,7 +429,7 @@ export default function ChangePasswordForm() {
                       ${
                         rule.ok
                           ? "text-emerald-500"
-                          : "text-zinc-300 dark:text-zinc-700"
+                          : "text-muted-foreground/40"
                       }
                     `}
                   />
@@ -412,9 +453,9 @@ export default function ChangePasswordForm() {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT */}
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* CONFIRM PASSWORD */}
 
           <div className="relative">
@@ -445,17 +486,16 @@ export default function ChangePasswordForm() {
 
                 rounded-xl
 
-                bg-zinc-100
-                dark:bg-zinc-800
+                border border-border
 
-                text-zinc-600
-                dark:text-zinc-300
+                bg-background/80
+
+                text-muted-foreground
 
                 transition-all duration-200
 
-                hover:scale-105
-                hover:bg-zinc-200
-                dark:hover:bg-zinc-700
+                hover:bg-muted
+                hover:text-foreground
               "
             >
               {showConfirmPassword ? (
@@ -466,7 +506,7 @@ export default function ChangePasswordForm() {
             </button>
           </div>
 
-          {/* LIVE MATCH STATUS */}
+          {/* MATCH STATUS */}
 
           {form.confirmPassword && (
             <div className="flex items-center gap-2 text-xs">
@@ -485,7 +525,7 @@ export default function ChangePasswordForm() {
               <span
                 className={
                   validations.match
-                    ? "text-emerald-600 dark:text-emerald-400"
+                    ? "text-emerald-500"
                     : "text-red-500"
                 }
               >
@@ -528,7 +568,7 @@ export default function ChangePasswordForm() {
                   ${
                     validations.match
                       ? "text-emerald-500"
-                      : "text-zinc-400"
+                      : "text-muted-foreground"
                   }
                 `}
               />
@@ -551,7 +591,17 @@ export default function ChangePasswordForm() {
 
           {/* SECURITY TIP */}
 
-          <div className="rounded-3xl border bg-muted/30 p-5">
+          <div
+            className="
+              rounded-3xl
+
+              border border-primary/10
+
+              bg-primary/5
+
+              p-5
+            "
+          >
             <div className="flex items-start gap-3">
               <Shield className="mt-0.5 h-5 w-5 text-primary" />
 
@@ -561,9 +611,9 @@ export default function ChangePasswordForm() {
                 </p>
 
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  Use a strong and unique password that
-                  you have not used on other systems or
-                  websites.
+                  Use a strong and unique password
+                  that you have not used on other
+                  systems or websites.
                 </p>
               </div>
             </div>
@@ -573,7 +623,7 @@ export default function ChangePasswordForm() {
 
       {/* ================= SUBMIT ================= */}
 
-      <div className="flex justify-end">
+      <div className="relative flex justify-end">
         <button
           disabled={isDisabled}
           type="submit"
@@ -590,7 +640,7 @@ export default function ChangePasswordForm() {
             text-sm font-semibold
             text-primary-foreground
 
-            shadow-sm
+            shadow-lg shadow-primary/20
 
             transition-all duration-200
 
@@ -616,4 +666,3 @@ export default function ChangePasswordForm() {
     </form>
   );
 }
-

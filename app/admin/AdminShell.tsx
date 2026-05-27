@@ -1,38 +1,157 @@
 "use client";
 
-import { useState } from "react";
-import Menu from "@/components/menu/Menu";
-import Navbar from "@/components/navbar/Navbar";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import Image from "next/image";
+
 import clsx from "clsx";
+
+import {
+  ChevronLeft,
+  X,
+} from "lucide-react";
+
+import Navbar from "@/components/navbar/Navbar";
+import Menu from "@/components/menu/Menu";
+
 import { CurrentUser } from "@/lib/auth";
-import { ChevronLeft, X } from "lucide-react";
+
+/* ================= TYPES ================= */
 
 interface Props {
   user: CurrentUser;
+
   children: React.ReactNode;
 }
 
-export default function AdminShell({ user, children }: Props) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+/* ================= COMPONENT ================= */
+
+export default function AdminShell({
+  user,
+  children,
+}: Props) {
+  const [
+    sidebarCollapsed,
+    setSidebarCollapsed,
+  ] = useState(false);
+
+  const [mobileOpen, setMobileOpen] =
+    useState(false);
+
+  /* ================= ESC CLOSE ================= */
+
+  useEffect(() => {
+    const handleEsc = (
+      e: KeyboardEvent,
+    ) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      "keydown",
+      handleEsc,
+    );
+
+    return () =>
+      document.removeEventListener(
+        "keydown",
+        handleEsc,
+      );
+  }, []);
+
+  /* ================= BODY LOCK ================= */
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow =
+        "hidden";
+    } else {
+      document.body.style.overflow =
+        "auto";
+    }
+
+    return () => {
+      document.body.style.overflow =
+        "auto";
+    };
+  }, [mobileOpen]);
+
+  /* ================= UI ================= */
 
   return (
-    <div className="h-screen flex overflow-hidden bg-zinc-50 dark:bg-zinc-950">
+    <div
+      className="
+        flex h-screen overflow-hidden
+
+        bg-zinc-50
+        dark:bg-zinc-950
+      "
+    >
       {/* ================= DESKTOP SIDEBAR ================= */}
+
       <aside
         className={clsx(
-          "hidden lg:flex flex-col border-r border-zinc-200/70 dark:border-zinc-800/80",
-          "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl",
-          "transition-all duration-300 ease-in-out",
-          "shadow-sm",
-          sidebarCollapsed ? "w-20" : "w-72"
+          `
+            hidden lg:flex
+            flex-col
+
+            border-r border-zinc-200/70
+            dark:border-zinc-800/80
+
+            bg-white/80
+            dark:bg-zinc-900/80
+
+            backdrop-blur-xl
+
+            shadow-sm
+
+            transition-all duration-300 ease-in-out
+          `,
+          sidebarCollapsed
+            ? "w-20"
+            : "w-72",
         )}
       >
-        {/* HEADER */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-200/70 dark:border-zinc-800/80">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="relative w-10 h-10 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm">
+        {/* ================= HEADER ================= */}
+
+        <div
+          className="
+            flex h-16 items-center justify-between
+
+            border-b border-zinc-200/70
+            dark:border-zinc-800/80
+
+            px-4
+          "
+        >
+          {/* LOGO */}
+
+          <div
+            className="
+              flex items-center gap-3
+
+              overflow-hidden
+            "
+          >
+            <div
+              className="
+                relative
+
+                size-10 overflow-hidden
+
+                rounded-2xl
+
+                border border-zinc-200
+                dark:border-zinc-800
+
+                shadow-sm
+              "
+            >
               <Image
                 src="/logo.png"
                 alt="logo"
@@ -42,53 +161,133 @@ export default function AdminShell({ user, children }: Props) {
             </div>
 
             {!sidebarCollapsed && (
-              <div className="flex flex-col leading-tight">
-                <span className="font-semibold text-[15px] text-zinc-900 dark:text-white truncate">
+              <div
+                className="
+                  flex flex-col
+
+                  leading-tight
+                "
+              >
+                <span
+                  className="
+                    truncate
+
+                    text-[15px]
+                    font-semibold
+
+                    text-zinc-900
+                    dark:text-white
+                  "
+                >
                   Mlele DC
                 </span>
 
-                <span className="text-xs text-zinc-500 truncate">
+                <span
+                  className="
+                    text-xs
+
+                    text-zinc-500
+                  "
+                >
                   Admin Portal
                 </span>
               </div>
             )}
           </div>
 
+          {/* TOGGLE */}
+
           <button
-            onClick={() => setSidebarCollapsed((prev) => !prev)}
+            onClick={() =>
+              setSidebarCollapsed(
+                (prev) => !prev,
+              )
+            }
             className="
               hidden xl:flex
-              items-center justify-center
-              w-8 h-8 rounded-xl
-              hover:bg-zinc-100 dark:hover:bg-zinc-800
+
+              size-8 items-center justify-center
+
+              rounded-xl
+
               transition
+
+              hover:bg-zinc-100
+              dark:hover:bg-zinc-800
             "
           >
             <ChevronLeft
               size={16}
               className={clsx(
-                "transition-transform duration-300",
-                sidebarCollapsed && "rotate-180"
+                `
+                  transition-transform duration-300
+                `,
+                sidebarCollapsed &&
+                  "rotate-180",
               )}
             />
           </button>
         </div>
 
-        {/* MENU */}
-        <div className="flex-1 overflow-y-auto py-6">
-          <Menu isCollapsed={sidebarCollapsed} />
+        {/* ================= MENU ================= */}
+
+        <div
+          className="
+            flex-1 overflow-y-auto
+
+            py-6
+          "
+        >
+          <Menu
+            isCollapsed={
+              sidebarCollapsed
+            }
+          />
         </div>
 
-        {/* FOOTER */}
+        {/* ================= FOOTER ================= */}
+
         {!sidebarCollapsed && (
-          <div className="px-5 py-4 border-t border-zinc-200/70 dark:border-zinc-800/80">
-            <div className="rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 p-4 text-white">
-              <p className="text-sm font-medium">
-                Mlele Opportunity System
+          <div
+            className="
+              border-t border-zinc-200/70
+              dark:border-zinc-800/80
+
+              px-5 py-4
+            "
+          >
+            <div
+              className="
+                rounded-2xl
+
+                bg-linear-to-r
+                from-primary
+                to-indigo-600
+
+                p-4
+
+                text-white
+              "
+            >
+              <p
+                className="
+                  text-sm font-medium
+                "
+              >
+                Mfumo wa Admin
               </p>
 
-              <p className="text-xs opacity-80 mt-1">
-                Production Admin Dashboard
+              <p
+                className="
+                  mt-1
+
+                  text-xs opacity-80
+                "
+              >
+                Mfumo rasmi wa usimamizi wa
+                vijana, fursa, mafunzo,
+                taarifa, na maendeleo ya
+                Wilaya ya Mlele.
               </p>
             </div>
           </div>
@@ -96,30 +295,81 @@ export default function AdminShell({ user, children }: Props) {
       </aside>
 
       {/* ================= MOBILE SIDEBAR ================= */}
+
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          {/* Overlay */}
+        <div
+          className="
+            fixed inset-0 z-50
+
+            lg:hidden
+          "
+        >
+          {/* OVERLAY */}
+
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setMobileOpen(false)}
+            onClick={() =>
+              setMobileOpen(false)
+            }
+            className="
+              absolute inset-0
+
+              bg-black/50
+
+              backdrop-blur-sm
+            "
           />
 
           {/* PANEL */}
+
           <aside
             className="
               relative z-50
-              h-full w-[85%] max-w-[320px]
-              bg-white dark:bg-zinc-950
-              border-r border-zinc-200 dark:border-zinc-800
+
+              flex h-full w-[85%]
+              max-w-[320px]
+              flex-col
+
+              border-r border-zinc-200
+              dark:border-zinc-800
+
+              bg-white
+              dark:bg-zinc-950
+
               shadow-2xl
-              animate-in slide-in-from-left duration-300
-              flex flex-col
+
+              animate-in
+              slide-in-from-left
+              duration-300
             "
           >
             {/* HEADER */}
-            <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-2xl overflow-hidden">
+
+            <div
+              className="
+                flex h-16 items-center justify-between
+
+                border-b border-zinc-200
+                dark:border-zinc-800
+
+                px-4
+              "
+            >
+              {/* LOGO */}
+
+              <div
+                className="
+                  flex items-center gap-3
+                "
+              >
+                <div
+                  className="
+                    relative
+
+                    size-10 overflow-hidden
+
+                    rounded-2xl
+                  "
+                >
                   <Image
                     src="/logo.png"
                     alt="logo"
@@ -129,20 +379,41 @@ export default function AdminShell({ user, children }: Props) {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-sm">Mlele DC</p>
-                  <p className="text-xs text-zinc-500">
+                  <p
+                    className="
+                      text-sm
+                      font-semibold
+                    "
+                  >
+                    Mlele DC
+                  </p>
+
+                  <p
+                    className="
+                      text-xs
+                      text-zinc-500
+                    "
+                  >
                     Admin Portal
                   </p>
                 </div>
               </div>
 
+              {/* CLOSE */}
+
               <button
-                onClick={() => setMobileOpen(false)}
+                onClick={() =>
+                  setMobileOpen(false)
+                }
                 className="
-                  w-9 h-9 rounded-xl
-                  flex items-center justify-center
-                  hover:bg-zinc-100 dark:hover:bg-zinc-800
+                  flex size-9 items-center justify-center
+
+                  rounded-xl
+
                   transition
+
+                  hover:bg-zinc-100
+                  dark:hover:bg-zinc-800
                 "
               >
                 <X size={18} />
@@ -150,10 +421,19 @@ export default function AdminShell({ user, children }: Props) {
             </div>
 
             {/* MENU */}
-            <div className="flex-1 overflow-y-auto py-6">
+
+            <div
+              className="
+                flex-1 overflow-y-auto
+
+                py-6
+              "
+            >
               <Menu
                 isCollapsed={false}
-                onItemClick={() => setMobileOpen(false)}
+                onItemClick={() =>
+                  setMobileOpen(false)
+                }
               />
             </div>
           </aside>
@@ -161,16 +441,40 @@ export default function AdminShell({ user, children }: Props) {
       )}
 
       {/* ================= MAIN ================= */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Navbar user={user} onMenuClick={() => setMobileOpen(true)} />
+
+      <div
+        className="
+          flex min-w-0 flex-1 flex-col
+        "
+      >
+        {/* TOPBAR */}
+
+        <Navbar
+          user={user}
+          onMenuClick={() =>
+            setMobileOpen(true)
+          }
+        />
+
+        {/* PAGE */}
 
         <main
           className="
             flex-1 overflow-y-auto
-            bg-zinc-50 dark:bg-zinc-950
+
+            bg-zinc-50
+            dark:bg-zinc-950
           "
         >
-          <div className="max-w-7xl mx-auto w-full p-4 md:p-6 xl:p-8">
+          <div
+            className="
+              mx-auto w-full max-w-7xl
+
+              p-4
+              md:p-6
+              xl:p-8
+            "
+          >
             {children}
           </div>
         </main>
