@@ -272,6 +272,8 @@ export default function OpportunitiesPage() {
 
       const data: ApiResponse = await res.json();
 
+      console.log("DELETE STATUS:", res.status);
+      console.log("DELETE RESPONSE:", data);
       if (!res.ok) {
         showError(data.messageKey);
         return;
