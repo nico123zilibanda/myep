@@ -32,7 +32,7 @@ export default function ProfilePage() {
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-xs font-medium">
               <ShieldCheck className="size-3.5" />
-              Account Management
+              Usimamizi wa Akaunti
             </div>
 
             <div>
@@ -63,7 +63,7 @@ export default function ProfilePage() {
 
               <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                 <BadgeCheck className="size-3.5" />
-                Verified Account
+                Akaunti Imethibitishwa
               </div>
             </div>
           </div>
@@ -77,15 +77,15 @@ export default function ProfilePage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Profile Status
+                Hali ya Wasifu
               </p>
 
               <h2 className="text-xl font-bold">
-                Active
+                Inatumika
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                Your profile is fully active and accessible.
+                Wasifu wako unatumika kikamilifu na unapatikana kwa matumizi.
               </p>
             </div>
 
@@ -100,15 +100,15 @@ export default function ProfilePage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Security Level
+                Kiwango cha Usalama
               </p>
 
               <h2 className="text-xl font-bold">
-                Strong
+                Imara
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                Your account uses protected authentication.
+                Akaunti yako inalindwa kwa mfumo salama wa uthibitishaji.
               </p>
             </div>
 
@@ -123,15 +123,15 @@ export default function ProfilePage() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Account Activity
+                Shughuli za Akaunti
               </p>
 
               <h2 className="text-xl font-bold">
-                Stable
+                Imara
               </h2>
 
               <p className="text-xs text-muted-foreground">
-                No suspicious activities detected recently.
+                Hakuna shughuli zisizo za kawaida zilizogunduliwa hivi karibuni.
               </p>
             </div>
 
@@ -160,7 +160,7 @@ export default function ProfilePage() {
                   </h2>
 
                   <p className="text-sm text-muted-foreground">
-                    Update your personal information and account details.
+                    Sasisha taarifa zako binafsi na maelezo ya akaunti yako.
                   </p>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
                   </h2>
 
                   <p className="text-sm text-muted-foreground">
-                    Secure your account with a strong password.
+                    Linda akaunti yako kwa kutumia nenosiri imara.
                   </p>
                 </div>
               </div>
@@ -209,11 +209,11 @@ export default function ProfilePage() {
 
               <div>
                 <h3 className="font-semibold">
-                  Security Tips
+                  Vigezo vya Usalama
                 </h3>
 
                 <p className="text-sm text-muted-foreground">
-                  Keep your admin account protected.
+                  Hakikisha akaunti yako ya msimamizi inalindwa wakati wote.
                 </p>
               </div>
             </div>
@@ -224,11 +224,11 @@ export default function ProfilePage() {
 
                 <div>
                   <p className="text-sm font-medium">
-                    Use a valid email
+                    Tumia barua pepe sahihi
                   </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Ensure recovery notifications reach you.
+                    Hakikisha taarifa za urejeshaji wa akaunti zinakufikia.
                   </p>
                 </div>
               </div>
@@ -238,11 +238,11 @@ export default function ProfilePage() {
 
                 <div>
                   <p className="text-sm font-medium">
-                    Strong password
+                    Nenosiri Imara
                   </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Use uppercase, lowercase, symbols and numbers.
+                    Tumia herufi kubwa, herufi ndogo, alama maalum na namba.
                   </p>
                 </div>
               </div>
@@ -252,11 +252,11 @@ export default function ProfilePage() {
 
                 <div>
                   <p className="text-sm font-medium">
-                    Protect your account
+                    Linda Akaunti Yako
                   </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Never share your credentials with others.
+                    Usiwahi kushiriki taarifa zako za kuingia kwenye mfumo na watu wengine.
                   </p>
                 </div>
               </div>

@@ -412,7 +412,15 @@ export default function RegisterForm({
             </SelectItem>
 
             <SelectItem value="Degree">
-              Degree
+              Shahada
+            </SelectItem>
+
+            <SelectItem value="Masters">
+              Shahada ya Uzamili
+            </SelectItem>
+
+            <SelectItem value="Phd">
+              Shahada ya uzamivu
             </SelectItem>
           </SelectContent>
         </Select>

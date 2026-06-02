@@ -164,19 +164,19 @@ export default function ChangePasswordForm() {
 
   const strengthStyles = {
     weak: {
-      text: "Weak Password",
+      text: "Nenosiri Dhaifu",
       bar: "w-1/3 bg-red-500/80",
       textColor: "text-red-500",
     },
 
     medium: {
-      text: "Medium Password",
+      text: "Nenosiri la Kati",
       bar: "w-2/3 bg-amber-500/80",
       textColor: "text-amber-500",
     },
 
     strong: {
-      text: "Strong Password",
+      text: "Nenosiri Imara",
       bar: "w-full bg-emerald-500/80",
       textColor: "text-emerald-500",
     },
@@ -258,6 +258,7 @@ export default function ChangePasswordForm() {
             <FormInput
               labelKey="NEW_PASSWORD_LABEL"
               name="password"
+              placeholder="Neno siri Jipya"
               type={
                 showPassword
                   ? "text"
@@ -308,7 +309,7 @@ export default function ChangePasswordForm() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Password Strength
+                Nguvu ya Nenosiri
               </span>
 
               <span
@@ -342,7 +343,7 @@ export default function ChangePasswordForm() {
               <LockKeyhole className="h-4 w-4 text-primary" />
 
               <p className="text-sm font-semibold">
-                Password Requirements
+                Mahitaji ya Nenosiri
               </p>
             </div>
 
@@ -351,30 +352,30 @@ export default function ChangePasswordForm() {
                 {
                   ok: validations.length,
                   label:
-                    "At least 8 characters",
+                    "Angalau herufi 8",
                 },
 
                 {
                   ok: validations.uppercase,
                   label:
-                    "One uppercase letter",
+                    "Herufi moja kubwa",
                 },
 
                 {
                   ok: validations.lowercase,
                   label:
-                    "One lowercase letter",
+                    "Herufi moja ndogo",
                 },
 
                 {
                   ok: validations.number,
-                  label: "One number",
+                  label: "Namba moja",
                 },
 
                 {
                   ok: validations.special,
                   label:
-                    "One special character",
+                    "Alama maalum moja",
                 },
               ].map((rule, idx) => (
                 <div
@@ -421,6 +422,7 @@ export default function ChangePasswordForm() {
             <FormInput
               labelKey="CONFIRM_PASSWORD_LABEL"
               name="confirmPassword"
+              placeholder="Thibitisha neno siri"
               type={
                 showConfirmPassword
                   ? "text"
@@ -490,8 +492,8 @@ export default function ChangePasswordForm() {
                 }
               >
                 {validations.match
-                  ? "Passwords match"
-                  : "Passwords do not match"}
+                  ? "Manenosiri yanafanana"
+                  : "Manenosiri hayafanani"}
               </span>
             </div>
           )}
@@ -535,15 +537,15 @@ export default function ChangePasswordForm() {
 
               <div>
                 <p className="text-sm font-semibold">
-                  Password Confirmation
+                  Uthibitisho wa Nenosiri
                 </p>
 
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                   {form.confirmPassword.length === 0
-                    ? "Confirm your password to continue."
+                    ? "Thibitisha nenosiri lako ili kuendelea."
                     : validations.match
-                    ? "Passwords match successfully."
-                    : "Passwords do not match."}
+                    ? "Manenosiri yanafanana kikamilifu."
+                    : "Manenosiri hayafanani."}
                 </p>
               </div>
             </div>
@@ -557,13 +559,13 @@ export default function ChangePasswordForm() {
 
               <div>
                 <p className="text-sm font-semibold">
-                  Security Tip
+                  Kidokezo cha Usalama
                 </p>
 
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  Use a strong and unique password that
-                  you have not used on other systems or
-                  websites.
+                  Tumia nenosiri imara na la kipekee ambalo
+                  hujawahi kulitumia kwenye mifumo au
+                  tovuti nyingine.
                 </p>
               </div>
             </div>

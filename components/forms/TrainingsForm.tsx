@@ -347,7 +347,7 @@ export default function TrainingsForm({
                   tracking-tight
                 "
               >
-                Training Resource
+                Rasilimali ya Mafunzo
               </h2>
 
               <Sparkles
@@ -368,9 +368,8 @@ export default function TrainingsForm({
                 text-muted-foreground
               "
             >
-              Create educational
-              content for youth users
-              in the Mlele DC Portal.
+              Unda maudhui ya kielimu kwa watumiaji vijana
+              katika Lango la Mlele DC.
             </p>
           </div>
         </CardContent>
@@ -379,30 +378,6 @@ export default function TrainingsForm({
       {/* FORM */}
       <Card>
         <CardContent className="p-6 space-y-8">
-          {/* HEADER */}
-          <div className="space-y-1">
-            <h3
-              className="
-                text-lg
-                font-semibold
-                tracking-tight
-              "
-            >
-              Training Details
-            </h3>
-
-            <p
-              className="
-                text-sm
-                text-muted-foreground
-              "
-            >
-              Fill all required
-              training information
-              carefully.
-            </p>
-          </div>
-
           {/* FIELDS */}
           <div className="space-y-5">
             {/* TITLE */}

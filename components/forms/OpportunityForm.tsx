@@ -300,28 +300,6 @@ export default function OpportunityForm({
       {/* FORM */}
       <Card>
         <CardContent className="p-6 space-y-8">
-          {/* HEADER */}
-          <div className="space-y-1">
-            <h3
-              className="
-                text-lg
-                font-semibold
-                tracking-tight
-              "
-            >
-              Opportunity Details
-            </h3>
-
-            <p
-              className="
-                text-sm
-                text-muted-foreground
-              "
-            >
-              Fill all required opportunity information.
-            </p>
-          </div>
-
           {/* GRID */}
           <div
             className="
@@ -334,6 +312,7 @@ export default function OpportunityForm({
             <FormInput
               labelKey="OPPORTUNITY_TITLE_LABEL"
               name="title"
+              placeholder="Kichwa cha Fursa"
               value={form.title}
               onChange={handleInputChange}
               required
@@ -342,6 +321,7 @@ export default function OpportunityForm({
             <FormInput
               labelKey="OPPORTUNITY_LOCATION_LABEL"
               name="location"
+              placeholder="Eneo"
               value={form.location}
               onChange={handleInputChange}
               required
@@ -352,6 +332,7 @@ export default function OpportunityForm({
               <FormInput
                 labelKey="OPPORTUNITY_DEADLINE_LABEL"
                 name="deadline"
+                placeholder="tarehe ya mwisho"
                 type="date"
                 value={form.deadline}
                 onChange={handleInputChange}
@@ -363,6 +344,7 @@ export default function OpportunityForm({
             <FormSelect
               labelKey="OPPORTUNITY_STATUS_LABEL"
               name="status"
+              placeholder="Hali"
               value={form.status}
               onChange={(value) => handleSelectChange("status", value)}
               options={[
@@ -389,6 +371,7 @@ export default function OpportunityForm({
 
               <Textarea
                 name="description"
+                placeholder="Maelezo mafupi Kuhusu Fursa"
                 value={form.description}
                 onChange={handleInputChange}
                 className="min-h-28"
@@ -403,6 +386,7 @@ export default function OpportunityForm({
 
               <Textarea
                 name="requirements"
+                placeholder="Mahitaji ya Fursa"
                 value={form.requirements}
                 onChange={handleInputChange}
                 className="min-h-28"
@@ -417,6 +401,7 @@ export default function OpportunityForm({
 
               <Textarea
                 name="howToApply"
+                placeholder="Jinsi ya Kutuma Maombi"
                 value={form.howToApply}
                 onChange={handleInputChange}
                 className="min-h-28"

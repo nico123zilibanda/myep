@@ -46,7 +46,7 @@ export default function Modal({
   closeOnOutsideClick = true,
   showCloseButton = true,
 
-  description = "Fill the required information below",
+  description = "Taarifa Hapa Chini",
 
   footer,
 

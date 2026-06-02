@@ -4,7 +4,7 @@ import RegisterForm from "@/components/auth/RegisterForm";
 export default function RegisterPage() {
   return (
     <AuthLayout
-      title="Create Account"
+      title="Jisajiri"
       subtitle="Jiunge na Mlele DC Fursa Portal kupata fursa za maendeleo"
     >
       <div className="space-y-4">
