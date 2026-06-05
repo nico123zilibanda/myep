@@ -165,7 +165,7 @@ export default function CategoryForm({
                   tracking-tight
                 "
               >
-                Category Management
+                Usimamizi wa Kategoria
               </h2>
 
               <Sparkles
@@ -185,11 +185,11 @@ export default function CategoryForm({
                 text-muted-foreground
               "
             >
-              Create and organize
-              categories for
-              opportunities,
-              trainings, and learning
-              resources.
+             Unda na panga
+              makundi ya
+              fursa, mafunzo,
+              na rasilimali za
+              elimu.
             </p>
           </div>
         </CardContent>
@@ -207,7 +207,7 @@ export default function CategoryForm({
                 tracking-tight
               "
             >
-              Category Details
+              Taarifa za Kundi
             </h3>
 
             <p
@@ -216,8 +216,8 @@ export default function CategoryForm({
                 text-muted-foreground
               "
             >
-              Define the category name
-              and optional description.
+              Bainisha jina la kundi
+              na maelezo ya hiari.
             </p>
           </div>
 

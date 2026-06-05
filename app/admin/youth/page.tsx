@@ -329,7 +329,7 @@ export default function YouthPage() {
             >
               <Users className="size-3.5" />
 
-              Community Members
+              Wanajamii
             </div>
 
             <div>
@@ -394,7 +394,7 @@ export default function YouthPage() {
                   text-muted-foreground
                 "
               >
-                Total Youth
+                Jumla ya Vijana
               </p>
 
               <h3
@@ -451,7 +451,7 @@ export default function YouthPage() {
                   text-muted-foreground
                 "
               >
-                Active
+                Hai
               </p>
 
               <h3
@@ -509,7 +509,7 @@ export default function YouthPage() {
                   text-muted-foreground
                 "
               >
-                Inactive
+                Si Hai
               </p>
 
               <h3

@@ -378,7 +378,7 @@ export default function YouthMenu({
                 >
                   <Sparkles className="size-3.5" />
 
-                  Smart Youth Platform
+                  Mlele DC Fursa Portal
                 </div>
 
                 {/* TITLE */}
@@ -389,7 +389,8 @@ export default function YouthMenu({
                     text-foreground
                   "
                 >
-                  Mlele DC Fursa Portal
+                  Mfumo wa Halmashauri ya Wilaya ya
+                  Mlele
                 </h3>
 
                 {/* DESCRIPTION */}

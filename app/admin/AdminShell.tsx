@@ -189,7 +189,7 @@ export default function AdminShell({
                     text-zinc-500
                   "
                 >
-                  Admin Portal
+                  Fursa Portal
                 </span>
               </div>
             )}
@@ -394,7 +394,7 @@ export default function AdminShell({
                       text-zinc-500
                     "
                   >
-                    Admin Portal
+                    Fursa Portal
                   </p>
                 </div>
               </div>

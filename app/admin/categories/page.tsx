@@ -336,7 +336,7 @@ export default function CategoriesPage() {
             >
               <Layers3 className="size-3.5" />
 
-              Content Management
+              Usimamizi wa Maudhui
             </div>
 
             <div>
@@ -417,7 +417,7 @@ export default function CategoriesPage() {
                   text-muted-foreground
                 "
               >
-                Total Categories
+                Jumla ya Aina
               </p>
 
               <h3
@@ -474,7 +474,7 @@ export default function CategoriesPage() {
                   text-muted-foreground
                 "
               >
-                With Description
+                Yenye Maelezo
               </p>
 
               <h3

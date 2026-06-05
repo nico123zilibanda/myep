@@ -408,7 +408,7 @@ export default function Menu({
                 >
                   <Sparkles className="size-3.5" />
 
-                  Mfumo Mahiri
+                  Mlele DC Fursa Portal
                 </div>
 
                 {/* TITLE */}
@@ -436,10 +436,9 @@ export default function Menu({
                     text-muted-foreground
                   "
                 >
-                  Mfumo wa kisasa wa kidigitali kwa
-                  ajili ya usimamizi wa fursa,
-                  mafunzo, maendeleo ya vijana, na
-                  ukuaji wa ajira ndani ya jamii.
+                   Mfumo wa kisasa wa vijana kwa ajili ya
+                  fursa, mafunzo, ajira, na maendeleo ya
+                  kijamii ndani ya Wilaya ya Mlele.
                 </p>
 
                 {/* STATUS */}

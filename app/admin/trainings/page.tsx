@@ -199,6 +199,11 @@ export default function TrainingsPage() {
       (t) => t.type === "ARTICLE"
     ).length;
 
+  const totalPdf =
+    trainings.filter(
+      (t) => t.type === "PDF"
+    ).length;
+
   /* ================= DELETE ================= */
 
   const confirmDelete = async () => {
@@ -369,7 +374,7 @@ export default function TrainingsPage() {
             >
               <GraduationCap className="size-3.5" />
 
-              Learning Center
+              Kituo cha Kujifunza
             </div>
 
             <div>
@@ -425,7 +430,7 @@ export default function TrainingsPage() {
         className="
           grid gap-4
 
-          md:grid-cols-3
+          md:grid-cols-4
         "
       >
         {/* TOTAL */}
@@ -454,7 +459,7 @@ export default function TrainingsPage() {
                   text-muted-foreground
                 "
               >
-                Total Trainings
+                Jumla ya Mafunzo/Matangazo
               </p>
 
               <h3
@@ -597,6 +602,64 @@ export default function TrainingsPage() {
               "
             >
               <BookOpen className="size-5" />
+            </div>
+          </div>
+        </div>
+
+      {/* PDF */}
+          <div
+          className="
+            rounded-3xl
+            border
+
+            bg-background
+
+            p-5
+
+            shadow-sm
+          "
+        >
+          <div
+            className="
+              flex items-start
+              justify-between
+            "
+          >
+            <div className="space-y-1">
+              <p
+                className="
+                  text-sm
+                  text-muted-foreground
+                "
+              >
+                PDF
+              </p>
+
+              <h3
+                className="
+                  text-3xl
+                  font-bold
+                  text-blue-600
+                "
+              >
+                {totalPdf}
+              </h3>
+            </div>
+
+            <div
+              className="
+                flex size-12
+                items-center
+                justify-center
+
+                rounded-2xl
+
+                bg-blue-500/10
+
+                text-blue-600
+              "
+            >
+              <FileText className="size-5" />
             </div>
           </div>
         </div>

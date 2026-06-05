@@ -331,7 +331,7 @@ export default function AdminQuestionsPage() {
             >
               <MessageSquareText className="size-3.5" />
 
-              Community Support
+              Usaidizi wa Jamii
             </div>
 
             <div>
@@ -400,7 +400,7 @@ export default function AdminQuestionsPage() {
                   text-muted-foreground
                 "
               >
-                Total Questions
+                Jumla ya Maswali
               </p>
 
               <h3
@@ -457,7 +457,7 @@ export default function AdminQuestionsPage() {
                   text-muted-foreground
                 "
               >
-                Answered
+                Yaliyojibiwa
               </p>
 
               <h3
@@ -517,7 +517,7 @@ export default function AdminQuestionsPage() {
                   text-muted-foreground
                 "
               >
-                Pending
+                Yanayosubiri
               </p>
 
               <h3
@@ -657,9 +657,7 @@ export default function AdminQuestionsPage() {
                       </p>
 
                       <p className="mt-1 text-xs">
-                        Try another
-                        keyword or clear
-                        search
+                        Jaribu kutumia neno lingine la utafutaji au futa kichujio cha utafutaji
                       </p>
                     </div>
                   </div>
@@ -779,8 +777,7 @@ export default function AdminQuestionsPage() {
                           >
                             <Clock3 className="size-3.5" />
 
-                            Awaiting
-                            response
+                            Inasubiri jibu
                           </span>
                         )}
                       </div>

@@ -49,16 +49,18 @@ export default function ProfilePage() {
           {/* RIGHT PROFILE PREVIEW */}
           <div className="flex items-center gap-4 rounded-3xl border bg-muted/30 p-4 backdrop-blur-sm">
             <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <UserCircle2 className="size-9" />
+              <UserCircle2 className="size-9  bg-emerald-500/10 dark:text-emerald-400" />
             </div>
 
             <div className="space-y-1">
               <h3 className="font-semibold">
-                {t("ADMIN_ACCOUNT")}
+                {/* {t("ADMIN_ACCOUNT")} */}
+                Akaunti ya Msimamizi
               </h3>
 
               <p className="text-sm text-muted-foreground">
-                {t("PROFILE_SECURITY_TEXT")}
+                {/* {t("PROFILE_SECURITY_TEXT")} */}
+                Usalama wa Wasifu
               </p>
 
               <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
@@ -156,7 +158,8 @@ export default function ProfilePage() {
 
                 <div>
                   <h2 className="font-semibold">
-                    {t("PROFILE_INFORMATION")}
+                    {/* {t("PROFILE_INFORMATION")} */}
+                    Taarifa za Wasifu
                   </h2>
 
                   <p className="text-sm text-muted-foreground">
@@ -185,7 +188,8 @@ export default function ProfilePage() {
 
                 <div>
                   <h2 className="font-semibold">
-                    {t("CHANGE_PASSWORD")}
+                    {/* {t("CHANGE_PASSWORD")} */}
+                    Badilisha Nenosiri
                   </h2>
 
                   <p className="text-sm text-muted-foreground">

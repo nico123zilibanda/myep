@@ -274,7 +274,7 @@ export default function Navbar({
                 text-muted-foreground
               "
             >
-              Welcome back, {user.fullName}
+              Karibu tena, {user.fullName}
             </p>
           </div>
         </div>
@@ -401,7 +401,7 @@ export default function Navbar({
                   text-muted-foreground
                 "
               >
-                {user.role}
+                Msimamizi
               </span>
             </div>
 
@@ -498,7 +498,7 @@ export default function Navbar({
                       "
                     >
                       <BellDot size={12} />
-                      {user.role}
+                      Msimamizi
                     </div>
                   </div>
                 </div>
@@ -542,7 +542,7 @@ export default function Navbar({
                         text-muted-foreground
                       "
                     >
-                      Manage your account
+                      Dhibiti akaunti yako
                     </span>
                   </div>
                 </button>
@@ -575,7 +575,9 @@ export default function Navbar({
                   </div>
 
                   <div className="flex flex-col items-start">
-                    <span>{t("settings")}</span>
+                    <span>
+                      {t("SETTINGS")}
+                    </span>
 
                     <span
                       className="
@@ -583,7 +585,7 @@ export default function Navbar({
                         text-muted-foreground
                       "
                     >
-                      Customize your dashboard
+                      Badilisha dashibodi yako
                     </span>
                   </div>
                 </button>
@@ -615,7 +617,9 @@ export default function Navbar({
                   </div>
 
                   <div className="flex flex-col items-start">
-                    <span>{t("LOGOUT")}</span>
+                    <span>
+                      {t("LOGOUT")}
+                      </span>
 
                     <span
                       className="
@@ -623,7 +627,7 @@ export default function Navbar({
                         text-red-500/70
                       "
                     >
-                      Exit from your account
+                      Toka kwenye akaunti yako
                     </span>
                   </div>
                 </button>

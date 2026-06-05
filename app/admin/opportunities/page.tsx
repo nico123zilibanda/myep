@@ -352,7 +352,7 @@ export default function OpportunitiesPage() {
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border bg-muted/60 px-4 py-1.5 text-xs font-semibold">
               <Sparkles className="size-3.5" />
-              Opportunities Management
+              Usimamizi wa Fursa
             </div>
 
             <div className="space-y-2">
@@ -371,22 +371,22 @@ export default function OpportunitiesPage() {
                 <span className="font-medium">
                   {opportunities.length}
                 </span>
-                Total
+                Jumla
               </div>
 
               <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="size-4" />
-                {publishedCount} Published
+                {publishedCount} Iliyochapishwa
               </div>
 
               <div className="inline-flex items-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-2 text-sm text-amber-600 dark:text-amber-400">
                 <Clock3 className="size-4" />
-                {draftCount} Draft
+                {draftCount} Rasimu
               </div>
 
               <div className="inline-flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-600 dark:text-red-400">
                 <XCircle className="size-4" />
-                {closedCount} Closed
+                {closedCount} Imefungwa
               </div>
             </div>
           </div>
@@ -491,7 +491,7 @@ export default function OpportunitiesPage() {
                       </p>
 
                       <p className="text-sm text-muted-foreground">
-                        Try changing search or filters
+                        Jaribu kubadilisha utafutaji au vichujio.
                       </p>
                     </div>
                   </div>

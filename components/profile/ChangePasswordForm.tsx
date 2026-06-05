@@ -258,7 +258,7 @@ export default function ChangePasswordForm() {
             <FormInput
               labelKey="NEW_PASSWORD_LABEL"
               name="password"
-              placeholder="Neno siri Jipya"
+              placeholder="Nenosiri Jipya"
               type={
                 showPassword
                   ? "text"
@@ -422,7 +422,7 @@ export default function ChangePasswordForm() {
             <FormInput
               labelKey="CONFIRM_PASSWORD_LABEL"
               name="confirmPassword"
-              placeholder="Thibitisha neno siri"
+              placeholder="Thibitisha Nenosiri"
               type={
                 showConfirmPassword
                   ? "text"
