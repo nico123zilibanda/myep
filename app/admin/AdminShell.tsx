@@ -274,7 +274,7 @@ export default function AdminShell({
                   text-sm font-medium
                 "
               >
-                Mfumo wa Admin
+                Mfumo wa Msimamizi
               </p>
 
               <p

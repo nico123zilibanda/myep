@@ -233,8 +233,8 @@ export default function YouthDashboard() {
                     font-black
                     tracking-tight
 
-                    sm:text-4xl
-                    xl:text-5xl
+                    sm:text-3xl
+                    xl:text-4xl
                   "
                 >
                   {getGreeting()},{" "}
@@ -242,7 +242,6 @@ export default function YouthDashboard() {
                     {user?.name ??
                       "Kijana"}
                   </span>{" "}
-                  👋
                 </h1>
 
                 <p

@@ -5,7 +5,6 @@ import {
   useState,
 } from "react";
 
-import Link from "next/link";
 
 import {
   ArrowRight,
@@ -19,7 +18,6 @@ import {
   Users,
 } from "lucide-react";
 
-import clsx from "clsx";
 
 import StatCard from "@/components/StatCard";
 import QuickAction from "@/components/QuickActions";
@@ -60,7 +58,9 @@ interface Stats {
 
   questionsCount: number;
 }
-
+interface User {
+  name: string;
+}
 interface Question {
   id: number;
 
@@ -142,7 +142,8 @@ export default function AdminDashboard({
 
   const [loadingStats, setLoadingStats] =
     useState(true);
-
+  const [user, setUser] =
+    useState<User | null>(null);
   /* ================= FETCH CATEGORIES ================= */
 
   useEffect(() => {
@@ -402,14 +403,14 @@ export default function AdminDashboard({
                     tracking-tight
 
                     sm:text-4xl
-                    xl:text-5xl
+                    xl:text-4xl
                   "
                 >
                   {getGreeting()},{" "}
                   <span className="text-primary">
-                    Admin
+                    {user?.name ??
+                      "Msimamizi"}
                   </span>{" "}
-                  👋
                 </h1>
 
                 <p
