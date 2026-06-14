@@ -17,6 +17,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Sparkles,
+  GraduationCap,
+  Briefcase,
 } from "lucide-react";
 
 import { useAppToast } from "@/lib/toast";
@@ -28,6 +30,9 @@ interface ProfileData {
   phone?: string;
   gender?: string;
   dateOfBirth?: string;
+  educationLevel?: string;
+  program?: string;
+  employmentStatus?: string;
 }
 
 export default function ProfileForm() {
@@ -549,6 +554,255 @@ export default function ProfileForm() {
           />
         </div>
       </div>
+
+      {/* EDUCATION LEVEL */}
+<div className="space-y-2">
+  <div className="flex items-center gap-2 text-sm font-medium">
+    <GraduationCap className="h-4 w-4 text-indigo-600" />
+    Kiwango cha Elimu
+  </div>
+
+  <FormSelect
+    name="educationLevel"
+    value={form.educationLevel || ""}
+    onChange={(value) =>
+      handleSelectChange(
+        "educationLevel",
+        value
+      )
+    }
+    options={[
+      {
+        value: "Elimu ya Msingi",
+        label: "Elimu ya Msingi",
+      },
+      {
+        value: "Kidato cha Nne",
+        label: "Kidato cha Nne",
+      },
+      {
+        value: "Kidato cha Sita",
+        label: "Kidato cha Sita",
+      },
+      {
+        value: "Diploma",
+        label: "Diploma",
+      },
+      {
+        value: "Shahada",
+        label: "Shahada",
+      },
+      {
+        value: "Shahada ya Uzamili",
+        label: "Shahada ya Uzamili",
+      },
+      {
+        value: "Shahada ya Uzamivu",
+        label: "Shahada ya Uzamivu",
+      },
+    ]}
+  />
+</div>
+
+{/* PROGRAM */}
+<div className="space-y-2">
+  <div className="flex items-center gap-2 text-sm font-medium">
+    <GraduationCap className="h-4 w-4 text-emerald-600" />
+    Taaluma / Program Uliyosomea
+  </div>
+
+  <FormSelect
+    name="program"
+    value={form.program || ""}
+    onChange={(value) =>
+      handleSelectChange(
+        "program",
+        value
+      )
+    }
+    options={[
+  {
+    value: "Sayansi ya Kompyuta",
+    label: "Sayansi ya Kompyuta",
+  },
+  {
+    value: "Teknolojia ya Habari",
+    label: "Teknolojia ya Habari",
+  },
+  {
+    value: "Sheria",
+    label: "Sheria",
+  },
+  {
+    value: "Uhasibu",
+    label: "Uhasibu",
+  },
+  {
+    value: "Utawala wa Biashara",
+    label: "Utawala wa Biashara",
+  },
+  {
+    value: "Masoko",
+    label: "Masoko",
+  },
+  {
+    value: "Uchumi",
+    label: "Uchumi",
+  },
+  {
+    value: "Elimu",
+    label: "Elimu",
+  },
+  {
+    value: "Uuguzi",
+    label: "Uuguzi",
+  },
+  {
+    value: "Udaktari",
+    label: "Udaktari",
+  },
+  {
+    value: "Famasi",
+    label: "Famasi",
+  },
+  {
+    value: "Maabara ya Afya",
+    label: "Maabara ya Afya",
+  },
+  {
+    value: "Uhandisi wa Ujenzi",
+    label: "Uhandisi wa Ujenzi",
+  },
+  {
+    value: "Uhandisi wa Umeme",
+    label: "Uhandisi wa Umeme",
+  },
+  {
+    value: "Uhandisi wa Mitambo",
+    label: "Uhandisi wa Mitambo",
+  },
+  {
+    value: "Uhandisi wa Madini",
+    label: "Uhandisi wa Madini",
+  },
+  {
+    value: "Uhandisi wa Mawasiliano",
+    label: "Uhandisi wa Mawasiliano",
+  },
+  {
+    value: "Kilimo",
+    label: "Kilimo",
+  },
+  {
+    value: "Mifugo",
+    label: "Mifugo",
+  },
+  {
+    value: "Uvuvi",
+    label: "Uvuvi",
+  },
+  {
+    value: "Usimamizi wa Rasilimali Watu",
+    label: "Usimamizi wa Rasilimali Watu",
+  },
+  {
+    value: "Ununuzi na Ugavi",
+    label: "Ununuzi na Ugavi",
+  },
+  {
+    value: "Utalii",
+    label: "Utalii",
+  },
+  {
+    value: "Ukarimu na Hoteli",
+    label: "Ukarimu na Hoteli",
+  },
+  {
+    value: "Uandishi wa Habari",
+    label: "Uandishi wa Habari",
+  },
+  {
+    value: "Mahusiano ya Umma",
+    label: "Mahusiano ya Umma",
+  },
+  {
+    value: "Sanaa na Ubunifu",
+    label: "Sanaa na Ubunifu",
+  },
+  {
+    value: "Mipango Miji",
+    label: "Mipango Miji",
+  },
+  {
+    value: "Ardhi na Upimaji",
+    label: "Ardhi na Upimaji",
+  },
+  {
+    value: "Sayansi ya Mazingira",
+    label: "Sayansi ya Mazingira",
+  },
+  {
+    value: "Takwimu",
+    label: "Takwimu",
+  },
+  {
+    value: "Hisabati",
+    label: "Hisabati",
+  },
+  {
+    value: "Fizikia",
+    label: "Fizikia",
+  },
+  {
+    value: "Kemia",
+    label: "Kemia",
+  },
+  {
+    value: "Baiolojia",
+    label: "Baiolojia",
+  },
+  {
+    value: "Nyingine",
+    label: "Nyingine",
+  },
+]}
+  />
+</div>
+
+{/* EMPLOYMENT STATUS */}
+<div className="space-y-2 md:col-span-2">
+  <div className="flex items-center gap-2 text-sm font-medium">
+    <Briefcase className="h-4 w-4 text-amber-600" />
+    Hali ya Ajira
+  </div>
+
+  <FormSelect
+    name="employmentStatus"
+    value={
+      form.employmentStatus || ""
+    }
+    onChange={(value) =>
+      handleSelectChange(
+        "employmentStatus",
+        value
+      )
+    }
+    options={[
+      {
+        value: "Nimeajiriwa",
+        label: "Nimeajiriwa",
+      },
+      {
+        value: "Nimejiajiri",
+        label: "Nimejiajiri",
+      },
+      {
+        value: "Sina Ajira",
+        label: "Sina Ajira",
+      },
+    ]}
+  />
+</div>
 
       {/* ================= INFO BOX ================= */}
 

@@ -9,18 +9,20 @@ export async function GET() {
 
   const { data: youth, error } = await supabaseAdmin
     .from("User")
-    .select("fullName, email, phone, educationLevel, isActive, createdAt")
+    .select("fullName, email, phone, educationLevel, program, employmentStatus, isActive, createdAt")
     .eq("roleId", 1) // ✅ YOUTH roleId
     .order("createdAt", { ascending: false });
 
   if (error) return new Response(error.message, { status: 500 });
 
-  const header = ["Full Name", "Email", "Phone", "Education Level", "Status", "Created At"];
+  const header = ["Jina Kamli", "Email", "Simu", "Elmu", "Taaluma", "Ajira", "Hali", "Tarehe"];
   const rows = youth.map(v => [
     v.fullName,
     v.email,
     v.phone ?? "",
     v.educationLevel ?? "",
+    v.program ?? "",
+    v.employmentStatus ?? "",
     v.isActive ? "Active" : "Inactive",
     new Date(v.createdAt).toISOString().split("T")[0],
   ]);

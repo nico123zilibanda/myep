@@ -10,19 +10,21 @@ export async function GET() {
 
   const { data: youth, error } = await supabaseAdmin
     .from("User")
-    .select("fullName, email, phone, educationLevel, isActive, createdAt")
+    .select("fullName, email, phone, educationLevel, program, employmentStatus, isActive, createdAt")
     .eq("roleId", 1) // ✅ YOUTH roleId
     .order("createdAt", { ascending: false });
 
   if (error) return new Response(error.message, { status: 500 });
 
   const data = youth.map(v => ({
-    "Full Name": v.fullName,
-    Email: v.email,
-    Phone: v.phone ?? "",
-    "Education Level": v.educationLevel ?? "",
-    Status: v.isActive ? "Active" : "Inactive",
-    "Created At": new Date(v.createdAt).toISOString().split("T")[0],
+    "Jina Kamili": v.fullName,
+    "Email": v.email,
+    "Simu": v.phone ?? "",
+    "Elimu": v.educationLevel ?? "",
+    "Taaluma": v.program ?? "",
+    "Ajira": v.employmentStatus ?? "",
+    "Hali": v.isActive ? "Active" : "Inactive",
+    "Tarehe": new Date(v.createdAt).toISOString().split("T")[0],
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(data);

@@ -1,11 +1,6 @@
-
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   Users,
@@ -17,6 +12,9 @@ import {
   CalendarDays,
   ShieldCheck,
   ShieldX,
+  FileText,
+  FileSpreadsheet,
+  Download,
 } from "lucide-react";
 
 import DataTable from "@/components/table/DataTable";
@@ -49,6 +47,10 @@ interface Youth {
 
   educationLevel?: string | null;
 
+  program?: string | null;
+
+  employmentStatus?: string | null;
+
   gender?: string | null;
 
   dateOfBirth?: string | null;
@@ -69,31 +71,23 @@ interface ApiResponse<T = any> {
 /* ================= PAGE ================= */
 
 export default function YouthPage() {
-  const { showSuccess, showError } =
-    useAppToast();
+  const { showSuccess, showError } = useAppToast();
 
   const t = useDictionary();
 
-  const [youth, setYouth] =
-    useState<Youth[]>([]);
+  const [youth, setYouth] = useState<Youth[]>([]);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
 
-  const [page, setPage] =
-    useState(1);
+  const [page, setPage] = useState(1);
 
-  const [viewing, setViewing] =
-    useState<Youth | null>(null);
+  const [viewing, setViewing] = useState<Youth | null>(null);
 
-  const [deleteTarget, setDeleteTarget] =
-    useState<Youth | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Youth | null>(null);
 
-  const [deleting, setDeleting] =
-    useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const perPage = 5;
 
@@ -103,21 +97,15 @@ export default function YouthPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        "/api/admin/youth",
-        {
-          credentials: "include",
-          cache: "no-store",
-        }
-      );
+      const res = await fetch("/api/admin/youth", {
+        credentials: "include",
+        cache: "no-store",
+      });
 
       const data = await res.json();
 
       if (!res.ok) {
-        showError(
-          data.messageKey ??
-            "SERVER_ERROR"
-        );
+        showError(data.messageKey ?? "SERVER_ERROR");
 
         setYouth([]);
 
@@ -147,70 +135,42 @@ export default function YouthPage() {
   const filtered = useMemo(() => {
     return youth.filter(
       (v) =>
-        (v.fullName ?? "")
-          .toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-        (v.email ?? "")
-          .toLowerCase()
-          .includes(
-            search.toLowerCase()
-          )
+        (v.fullName ?? "").toLowerCase().includes(search.toLowerCase()) ||
+        (v.email ?? "").toLowerCase().includes(search.toLowerCase()),
     );
   }, [youth, search]);
 
-  const totalPages = Math.ceil(
-    filtered.length / perPage
-  );
+  const totalPages = Math.ceil(filtered.length / perPage);
 
-  const paginatedData = filtered.slice(
-    (page - 1) * perPage,
-    page * perPage
-  );
+  const paginatedData = filtered.slice((page - 1) * perPage, page * perPage);
 
   /* ================= STATS ================= */
 
-  const totalYouth =
-    youth.length;
+  const totalYouth = youth.length;
 
-  const activeYouth =
-    youth.filter(
-      (v) => v.isActive
-    ).length;
+  const activeYouth = youth.filter((v) => v.isActive).length;
 
-  const inactiveYouth =
-    youth.filter(
-      (v) => !v.isActive
-    ).length;
+  const inactiveYouth = youth.filter((v) => !v.isActive).length;
 
   /* ================= STATUS ================= */
 
-  const toggleStatus = async (
-    v: Youth
-  ) => {
+  const toggleStatus = async (v: Youth) => {
     try {
-      const res = await fetch(
-        `/api/admin/youth/${v.id}`,
-        {
-          method: "PATCH",
+      const res = await fetch(`/api/admin/youth/${v.id}`, {
+        method: "PATCH",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          body: JSON.stringify({
-            isActive:
-              !v.isActive,
-          }),
+        body: JSON.stringify({
+          isActive: !v.isActive,
+        }),
 
-          credentials: "include",
-        }
-      );
+        credentials: "include",
+      });
 
-      const data: ApiResponse =
-        await res.json();
+      const data: ApiResponse = await res.json();
 
       if (!res.ok) {
         showError(data.messageKey);
@@ -234,16 +194,12 @@ export default function YouthPage() {
     try {
       setDeleting(true);
 
-      const res = await fetch(
-        `/api/admin/youth/${deleteTarget.id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`/api/admin/youth/${deleteTarget.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
-      const data: ApiResponse =
-        await res.json();
+      const data: ApiResponse = await res.json();
 
       if (!res.ok) {
         showError(data.messageKey);
@@ -253,12 +209,7 @@ export default function YouthPage() {
 
       showSuccess(data.messageKey);
 
-      setYouth((prev) =>
-        prev.filter(
-          (x) =>
-            x.id !== deleteTarget.id
-        )
-      );
+      setYouth((prev) => prev.filter((x) => x.id !== deleteTarget.id));
 
       setDeleteTarget(null);
     } catch {
@@ -268,6 +219,17 @@ export default function YouthPage() {
     }
   };
 
+  const handleExport = async (
+  type: "pdf" | "excel" | "csv"
+) => {
+  try {
+    const url = `/api/admin/youth/export/${type}`;
+
+    window.open(url, "_blank");
+  } catch {
+    showError("SERVER_ERROR");
+  }
+};
   /* ================= UI ================= */
 
   return (
@@ -328,7 +290,6 @@ export default function YouthPage() {
               "
             >
               <Users className="size-3.5" />
-
               Wanajamii
             </div>
 
@@ -356,6 +317,89 @@ export default function YouthPage() {
                 {t("YOUTH_PAGE_DESC")}
               </p>
             </div>
+          </div>
+
+          {/* EXPORT ACTIONS */}
+          <div
+            className="
+              flex flex-wrap
+              items-center
+              gap-3
+            "
+          >
+            {/* PDF */}
+            <Button
+              variant="outline"
+              onClick={() => handleExport("pdf")}
+              className="
+                h-11
+
+                rounded-2xl
+
+                border-red-500/20
+                bg-red-500/5
+
+                hover:bg-red-500/10
+              "
+            >
+              <FileText className="mr-2 size-4 text-red-600" />
+
+              Export PDF
+            </Button>
+
+            {/* EXCEL */}
+            <Button
+              variant="outline"
+              onClick={() => handleExport("excel")}
+              className="
+                h-11
+
+                rounded-2xl
+
+                border-emerald-500/20
+                bg-emerald-500/5
+
+                hover:bg-emerald-500/10
+              "
+            >
+              <FileSpreadsheet
+                className="
+                  mr-2
+                  size-4
+
+                  text-emerald-600
+                "
+              />
+
+              Export Excel
+            </Button>
+
+            {/* CSV */}
+            <Button
+              variant="outline"
+              onClick={() => handleExport("csv")}
+              className="
+                h-11
+
+                rounded-2xl
+
+                border-blue-500/20
+                bg-blue-500/5
+
+                hover:bg-blue-500/10
+              "
+            >
+              <Download
+                className="
+                  mr-2
+                  size-4
+
+                  text-blue-600
+                "
+              />
+
+              Export CSV
+            </Button>
           </div>
         </div>
       </div>
@@ -555,10 +599,7 @@ export default function YouthPage() {
           shadow-sm
         "
       >
-        <TableSearch
-          value={search}
-          onChange={setSearch}
-        />
+        <TableSearch value={search} onChange={setSearch} />
       </div>
 
       {/* TABLE */}
@@ -580,14 +621,12 @@ export default function YouthPage() {
               t("YOUTH_NAME"),
               t("YOUTH_EMAIL"),
               t("YOUTH_PHONE"),
-              t(
-                "YOUTH_EDUCATION"
-              ),
+              t("YOUTH_EDUCATION"),
+              "Taaluma",
+              "Ajira",
               t("YOUTH_STATUS"),
               t("YOUTH_DATE"),
-              t(
-                "YOUTH_ACTIONS"
-              ),
+              t("YOUTH_ACTIONS"),
             ]}
           />
 
@@ -597,10 +636,7 @@ export default function YouthPage() {
                 length: perPage,
               }).map((_, i) => (
                 <TableRow key={i}>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-5"
-                  >
+                  <td colSpan={9} className="px-4 py-5">
                     <Skeleton
                       className="
                         h-10
@@ -612,8 +648,7 @@ export default function YouthPage() {
                   </td>
                 </TableRow>
               ))
-            ) : paginatedData.length ===
-              0 ? (
+            ) : paginatedData.length === 0 ? (
               <TableRow>
                 <td
                   colSpan={7}
@@ -648,16 +683,10 @@ export default function YouthPage() {
                     </div>
 
                     <div>
-                      <p className="font-medium">
-                        {t(
-                          "NO_YOUTH_FOUND"
-                        )}
-                      </p>
+                      <p className="font-medium">{t("NO_YOUTH_FOUND")}</p>
 
                       <p className="mt-1 text-xs">
-                        Try another
-                        keyword or clear
-                        search
+                        Jaribu neno lingine muhimu au futa utafutaji
                       </p>
                     </div>
                   </div>
@@ -677,7 +706,7 @@ export default function YouthPage() {
                   <td className="px-4 py-4">
                     <div
                       className="
-                        flex items-center gap-3
+                        flex items-center gap-2
                       "
                     >
                       <div
@@ -696,17 +725,11 @@ export default function YouthPage() {
                           text-primary
                         "
                       >
-                        {v.fullName
-                          ?.charAt(0)
-                          ?.toUpperCase() ||
-                          "Y"}
+                        {v.fullName?.charAt(0)?.toUpperCase() || "Y"}
                       </div>
 
                       <div className="space-y-1">
-                        <p className="font-medium">
-                          {v.fullName ||
-                            "-"}
-                        </p>
+                        <p className="font-medium">{v.fullName || "-"}</p>
 
                         <p
                           className="
@@ -714,8 +737,7 @@ export default function YouthPage() {
                             text-muted-foreground
                           "
                         >
-                          Youth #
-                          {v.id}
+                          Kijana #{v.id}
                         </p>
                       </div>
                     </div>
@@ -736,8 +758,7 @@ export default function YouthPage() {
                           text-muted-foreground
                         "
                       >
-                        {v.email ||
-                          "-"}
+                        {v.email || "-"}
                       </span>
                     </div>
                   </td>
@@ -757,8 +778,7 @@ export default function YouthPage() {
                           text-muted-foreground
                         "
                       >
-                        {v.phone ||
-                          "-"}
+                        {v.phone || "-"}
                       </span>
                     </div>
                   </td>
@@ -778,10 +798,65 @@ export default function YouthPage() {
                           text-muted-foreground
                         "
                       >
-                        {v.educationLevel ||
-                          "-"}
+                        {v.educationLevel || "-"}
                       </span>
                     </div>
+                  </td>
+
+                  {/* PROGRAM */}
+                  <td className="px-4 py-4">
+                    <div
+                      className="
+                      inline-flex items-center gap-2
+                    "
+                    >
+                      <GraduationCap className="size-4 text-muted-foreground" />
+
+                      <span
+                        className="
+                        text-sm
+                        text-muted-foreground
+                      "
+                      >
+                        {v.program || "-"}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* EMPLOYMENT STATUS */}
+                  <td className="px-4 py-4">
+                    <span
+                      className={`
+                        inline-flex items-center
+                        rounded-full
+                        px-3 py-1
+
+                        text-xs
+                        font-medium
+
+                        ${
+                          v.employmentStatus === "Nimeajiriwa"
+                            ? `
+                              border border-emerald-500/20
+                              bg-emerald-500/10
+                              text-emerald-600
+                            `
+                            : v.employmentStatus === "Nimejiajiri"
+                              ? `
+                              border border-blue-500/20
+                              bg-blue-500/10
+                              text-blue-600
+                            `
+                              : `
+                              border border-amber-500/20
+                              bg-amber-500/10
+                              text-amber-600
+                            `
+                        }
+                      `}
+                    >
+                      {v.employmentStatus || "-"}
+                    </span>
                   </td>
 
                   {/* STATUS */}
@@ -808,11 +883,7 @@ export default function YouthPage() {
                         }
                       `}
                     >
-                      {v.isActive
-                        ? t("ACTIVE")
-                        : t(
-                            "INACTIVE"
-                          )}
+                      {v.isActive ? t("ACTIVE") : t("INACTIVE")}
                     </span>
                   </td>
 
@@ -829,9 +900,7 @@ export default function YouthPage() {
                       <CalendarDays className="size-4" />
 
                       {v.createdAt
-                        ? new Date(
-                            v.createdAt
-                          ).toLocaleDateString()
+                        ? new Date(v.createdAt).toLocaleDateString()
                         : "-"}
                     </div>
                   </td>
@@ -839,17 +908,9 @@ export default function YouthPage() {
                   {/* ACTIONS */}
                   <td className="px-4 py-4">
                     <ActionButtons
-                      onView={() =>
-                        setViewing(v)
-                      }
-                      onEdit={() =>
-                        toggleStatus(v)
-                      }
-                      onDelete={() =>
-                        setDeleteTarget(
-                          v
-                        )
-                      }
+                      onView={() => setViewing(v)}
+                      onEdit={() => toggleStatus(v)}
+                      onDelete={() => setDeleteTarget(v)}
                     />
                   </td>
                 </TableRow>
@@ -887,9 +948,7 @@ export default function YouthPage() {
             setDeleteTarget(null);
           }
         }}
-        title={t(
-          "DELETE_CONFIRM_TITLE"
-        )}
+        title={t("DELETE_CONFIRM_TITLE")}
         size="sm"
       >
         <div className="space-y-5">
@@ -913,26 +972,18 @@ export default function YouthPage() {
                 text-muted-foreground
               "
             >
-              {t(
-                "CONFIRM_DELETE_YOUTH"
-              )}{" "}
+              {t("CONFIRM_DELETE_YOUTH")}{" "}
               <span
                 className="
                   font-semibold
                   text-foreground
                 "
               >
-                {
-                  deleteTarget?.fullName
-                }
+                {deleteTarget?.fullName}
               </span>
             </p>
 
-            <p className="mt-3 text-xs">
-              {t(
-                "CONFIRM_DELETE_DESCRIPTION"
-              )}
-            </p>
+            <p className="mt-3 text-xs">{t("CONFIRM_DELETE_DESCRIPTION")}</p>
           </div>
 
           <div
@@ -943,9 +994,7 @@ export default function YouthPage() {
             <Button
               variant="outline"
               disabled={deleting}
-              onClick={() =>
-                setDeleteTarget(null)
-              }
+              onClick={() => setDeleteTarget(null)}
             >
               {t("CANCEL")}
             </Button>
@@ -955,11 +1004,7 @@ export default function YouthPage() {
               disabled={deleting}
               onClick={confirmDelete}
             >
-              {deleting
-                ? t("DELETING")
-                : t(
-                    "CONFIRM_DELETE"
-                  )}
+              {deleting ? t("DELETING") : t("CONFIRM_DELETE")}
             </Button>
           </div>
         </div>
@@ -969,9 +1014,7 @@ export default function YouthPage() {
       <Modal
         title={t("YOUTH_PROFILE")}
         open={!!viewing}
-        onClose={() =>
-          setViewing(null)
-        }
+        onClose={() => setViewing(null)}
         size="md"
       >
         {viewing && (
@@ -1001,10 +1044,7 @@ export default function YouthPage() {
                   text-primary
                 "
               >
-                {viewing.fullName
-                  ?.charAt(0)
-                  ?.toUpperCase() ||
-                  "Y"}
+                {viewing.fullName?.charAt(0)?.toUpperCase() || "Y"}
               </div>
 
               <div className="text-center">
@@ -1014,9 +1054,7 @@ export default function YouthPage() {
                     font-semibold
                   "
                 >
-                  {
-                    viewing.fullName
-                  }
+                  {viewing.fullName}
                 </h3>
 
                 <p
@@ -1025,7 +1063,7 @@ export default function YouthPage() {
                     text-muted-foreground
                   "
                 >
-                  Youth Member
+                  {viewing.id}
                 </p>
               </div>
             </div>
@@ -1044,63 +1082,54 @@ export default function YouthPage() {
               >
                 <div className="space-y-4 text-sm">
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium">
-                      {t(
-                        "YOUTH_EMAIL"
-                      )}
-                    </span>
+                    <span className="font-medium">{t("YOUTH_EMAIL")}</span>
 
                     <span className="text-muted-foreground">
-                      {viewing.email ||
-                        "-"}
+                      {viewing.email || "-"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium">
-                      {t(
-                        "YOUTH_PHONE"
-                      )}
-                    </span>
+                    <span className="font-medium">{t("YOUTH_PHONE")}</span>
 
                     <span className="text-muted-foreground">
-                      {viewing.phone ||
-                        "-"}
+                      {viewing.phone || "-"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium">
-                      {t(
-                        "YOUTH_EDUCATION"
-                      )}
-                    </span>
+                    <span className="font-medium">{t("YOUTH_EDUCATION")}</span>
 
                     <span className="text-muted-foreground">
-                      {viewing.educationLevel ||
-                        "-"}
+                      {viewing.educationLevel || "-"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium">Taaluma</span>
+
+                    <span className="text-muted-foreground">
+                      {viewing.program || "-"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium">
-                      {t(
-                        "YOUTH_GENDER"
-                      )}
-                    </span>
+                    <span className="font-medium">Hali ya Ajira</span>
 
                     <span className="text-muted-foreground">
-                      {viewing.gender ||
-                        "-"}
+                      {viewing.employmentStatus || "-"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium">
-                      {t(
-                        "YOUTH_STATUS"
-                      )}
+                    <span className="font-medium">{t("YOUTH_GENDER")}</span>
+
+                    <span className="text-muted-foreground">
+                      {viewing.gender || "-"}
                     </span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium">{t("YOUTH_STATUS")}</span>
 
                     <span
                       className={`
@@ -1124,11 +1153,7 @@ export default function YouthPage() {
                         }
                       `}
                     >
-                      {viewing.isActive
-                        ? t("ACTIVE")
-                        : t(
-                            "INACTIVE"
-                          )}
+                      {viewing.isActive ? t("ACTIVE") : t("INACTIVE")}
                     </span>
                   </div>
                 </div>
@@ -1140,4 +1165,3 @@ export default function YouthPage() {
     </div>
   );
 }
-

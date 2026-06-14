@@ -30,6 +30,8 @@ export async function GET() {
         gender,
         dateOfBirth,
         educationLevel,
+        program,
+        employmentStatus,
         isActive,
         createdAt,
         updatedAt,
@@ -80,6 +82,8 @@ export async function PATCH(req: Request) {
       phone,
       gender,
       dateOfBirth,
+      program,
+      employmentStatus,
       educationLevel,
     } = await req.json();
 
@@ -96,6 +100,8 @@ export async function PATCH(req: Request) {
       gender: gender || null,
       dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
       educationLevel: educationLevel || null,
+      program: program || null,
+      employmentStatus: employmentStatus || null,
       updatedAt: new Date(),
     };
 

@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-
     const {
       fullName,
       email,
@@ -22,6 +21,8 @@ export async function POST(req: NextRequest) {
       gender,
       dateOfBirth,
       educationLevel,
+      program,
+      employmentStatus,
     } = body;
 
     // 1️⃣ Validation
@@ -32,7 +33,9 @@ export async function POST(req: NextRequest) {
       !phone ||
       !gender ||
       !dateOfBirth ||
-      !educationLevel
+      !educationLevel ||
+      !program ||
+      !employmentStatus
     ) {
       return NextResponse.json(
         {
@@ -102,6 +105,8 @@ export async function POST(req: NextRequest) {
         gender,
         dateOfBirth,
         educationLevel,
+        program,
+        employmentStatus,
         roleId: 2, // YOUTH
       })
       .select("id")

@@ -280,7 +280,7 @@ export default function AuditLogsPage() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border bg-muted/60 px-3 py-1 text-xs font-medium">
               <ShieldCheck className="size-3.5" />
-              Security Monitoring
+              Ufuatiliaji wa Usalama.                        v.                                        4.                                            
             </div>
 
             <div>

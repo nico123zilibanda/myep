@@ -29,6 +29,8 @@ export async function GET() {
         email,
         phone,
         educationLevel,
+        program,
+        employmentStatus,
         gender,
         dateOfBirth,
         isActive,

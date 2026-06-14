@@ -1,66 +1,129 @@
-// app/api/admin/youth/export/pdf/route.ts
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getCurrentUser } from "@/lib/auth";
-import PDFDocument from "pdfkit";
+
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+export const runtime = "nodejs";
 
 export async function GET() {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "ADMIN")
-    return new Response("Unauthorized", { status: 401 });
+  try {
+    const user = await getCurrentUser();
 
-  const { data: youth, error } = await supabaseAdmin
-    .from("User")
-    .select("fullName, email, phone, educationLevel, isActive, createdAt")
-    .eq("roleId", 1) // ✅ YOUTH roleId
-    .order("createdAt", { ascending: false });
+    if (!user || user.role !== "ADMIN") {
+      return new Response("Unauthorized", {
+        status: 401,
+      });
+    }
 
-  if (error) return new Response(error.message, { status: 500 });
+    const { data: youth, error } =
+      await supabaseAdmin
+        .from("User")
+        .select(`
+          fullName,
+          email,
+          phone,
+          educationLevel,
+          program,
+          employmentStatus,
+          isActive,
+          createdAt
+        `)
+        .eq("roleId", 1)
+        .order("createdAt", {
+          ascending: false,
+        });
 
-  const doc = new PDFDocument({ size: "A4", margin: 50 });
+    if (error) {
+      return new Response(error.message, {
+        status: 500,
+      });
+    }
 
-  // Collect chunks
-  const chunks: Uint8Array[] = [];
-  doc.on("data", (chunk) => chunks.push(chunk));
-  doc.on("end", () => {});
+    const doc = new jsPDF();
 
-  // Title
-  doc.fontSize(18).text("ORODHA YA VIJANA", { align: "center" });
-  doc.moveDown();
-  doc.fontSize(12).text(`Jumla ya Vijana: ${youth.length}`);
-  doc.moveDown();
+    doc.setFontSize(18);
 
-  // Table headers
-  doc.font("Times-Bold");
-  doc.text("Jina", 50, doc.y, { width: 120 });
-  doc.text("Email", 180, doc.y, { width: 170 });
-  doc.text("Simu", 360, doc.y, { width: 80 });
-  doc.text("Status", 450, doc.y, { width: 80 });
-  doc.moveDown(0.5);
+    doc.text(
+      "ORODHA YA VIJANA",
+      14,
+      20
+    );
 
-  // Table content
-  doc.font("Times-Roman");
-  youth.forEach((v) => {
-    doc.text(v.fullName, 50, doc.y, { width: 120 });
-    doc.text(v.email, 180, doc.y, { width: 170 });
-    doc.text(v.phone ?? "-", 360, doc.y, { width: 80 });
-    doc.text(v.isActive ? "Active" : "Inactive", 450, doc.y, { width: 80 });
-    doc.moveDown(0.5);
-  });
+    doc.setFontSize(11);
 
-  doc.end();
+    doc.text(
+      `Jumla ya Vijana: ${youth.length}`,
+      14,
+      30
+    );
 
-  // Wait for PDF buffer
-  const pdfBuffer: Uint8Array = await new Promise((resolve, reject) => {
-    const buffers: Uint8Array[] = [];
-    doc.on("data", (chunk) => buffers.push(chunk));
-    doc.on("end", () => resolve(Buffer.concat(buffers)));
-    doc.on("error", (err) => reject(err));
-  });
+    autoTable(doc, {
+      startY: 40,
 
-  return new Response(new Uint8Array(pdfBuffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="vijana.pdf"',
-    },
-  });
+      head: [
+        [
+          "Jina",
+          "Email",
+          "Simu",
+          "Elimu",
+          "Taaluma",
+          "Ajira",
+          "Hali",
+          "Tarehe",
+        ],
+      ],
+
+      body: youth.map((v) => [
+        v.fullName ?? "-",
+        v.email ?? "-",
+        v.phone ?? "-",
+        v.educationLevel ?? "-",
+        v.program ?? "-",
+        v.employmentStatus ?? "-",
+        v.isActive
+          ? "Hai"
+          : "Si Hai",
+        v.createdAt
+          ? new Date(
+              v.createdAt
+            ).toLocaleDateString()
+          : "-",
+      ]),
+
+      styles: {
+        fontSize: 8,
+      },
+
+      headStyles: {
+        fillColor: [41, 128, 185],
+      },
+    });
+
+    const pdfBuffer = Buffer.from(
+      doc.output("arraybuffer")
+    );
+
+    return new Response(pdfBuffer, {
+      headers: {
+        "Content-Type":
+          "application/pdf",
+
+        "Content-Disposition":
+          'attachment; filename="vijana.pdf"',
+      },
+    });
+  } catch (error) {
+    console.error(
+      "PDF EXPORT ERROR:",
+      error
+    );
+
+    return new Response(
+      "Failed to generate PDF",
+      {
+        status: 500,
+      }
+    );
+  }
 }
