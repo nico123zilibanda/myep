@@ -144,6 +144,28 @@ export default function AdminDashboard({
     useState(true);
   const [user, setUser] =
     useState<User | null>(null);
+    useEffect(() => {
+  const loadUser = async () => {
+    try {
+      const res = await fetch(
+        "/api/admin/me",
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      setUser(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  loadUser();
+}, []);
   /* ================= FETCH CATEGORIES ================= */
 
   useEffect(() => {
