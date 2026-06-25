@@ -17,6 +17,9 @@ import {
   CalendarDays,
   VenusAndMars,
   ArrowRight,
+  Briefcase,
+  Building2,
+  MapPin,
 } from "lucide-react";
 
 import { useAppToast } from "@/lib/toast";
@@ -58,6 +61,7 @@ interface RegisterFormData {
   ward: string;
   village: string;
   employmentStatus: string;
+  jobType: string;
 }
 
 interface ApiResponse {
@@ -93,6 +97,7 @@ export default function RegisterForm({
     ward: "",
     village: "",
     employmentStatus: "",
+    jobType: "",
   });
 
   /* ================= CHANGE ================= */
@@ -155,6 +160,7 @@ export default function RegisterForm({
   ward: "",
   village: "",
   employmentStatus: "",
+  jobType: "",
 });
 
       setTimeout(() => {
@@ -444,191 +450,39 @@ export default function RegisterForm({
         </Select>
       </div>
 
-      {/* ================= PROGRAM ================= */}
 
-      <div className="space-y-2">
-        <Label>
-          Progam Uliyosomea
-        </Label>
+{/* ================= PROGRAM ================= */}
 
-        <Select
-          value={form.program}
-          onValueChange={(value) =>
-            setForm((prev) => ({
-              ...prev,
-              program:
-                value,
-            }))
-          }
-        >
-          <SelectTrigger
-            className="
-              h-12
-              rounded-2xl
-            "
-          >
-            <div
-              className="
-                flex items-center gap-2
-              "
-            >
-              <GraduationCap
-                className="
-                  size-4
-                  text-muted-foreground
-                "
-              />
+<div className="space-y-2">
+  <Label htmlFor="program">
+    Program / Taaluma Uliyosomea
+  </Label>
 
-              <SelectValue placeholder="Chagua tasinia" />
-            </div>
-          </SelectTrigger>
+  <div className="relative">
+    <GraduationCap
+      className="
+        absolute left-4 top-1/2
+        size-4
+        -translate-y-1/2
+        text-muted-foreground
+      "
+    />
 
-          <SelectContent>
-            <SelectItem value="Sayansi ya Kompyuta">
-              Sayansi ya Kompyuta
-            </SelectItem>
-
-            <SelectItem value="Teknolojia ya Habari">
-              Teknolojia ya Habari
-            </SelectItem>
-
-            <SelectItem value="Sheria">
-              Sheria
-            </SelectItem>
-
-            <SelectItem value="Uhasibu">
-              Uhasibu
-            </SelectItem>
-
-            <SelectItem value="Utawala wa Biashara">
-              Utawala wa Biashara
-            </SelectItem>
-
-            <SelectItem value="Masoko">
-              Masoko
-            </SelectItem>
-
-            <SelectItem value="Uchumi">
-              Uchumi
-            </SelectItem>
-
-            <SelectItem value="Elimu">
-              Elimu
-            </SelectItem>
-
-            <SelectItem value="Uuguzi">
-              Uuguzi
-            </SelectItem>
-
-            <SelectItem value="Udaktari">
-              Udaktari
-            </SelectItem>
-
-            <SelectItem value="Famasi">
-              Famasi
-            </SelectItem>
-
-            <SelectItem value="Maabara ya Afya">
-              Maabara ya Afya
-            </SelectItem>
-
-            <SelectItem value="Uhandisi wa Ujenzi">
-              Uhandisi wa Ujenzi
-            </SelectItem>
-
-            <SelectItem value="Uhandisi wa Umeme">
-              Uhandisi wa Umeme
-            </SelectItem>
-
-            <SelectItem value="Uhandisi wa Mitambo">
-              Uhandisi wa Mitambo
-            </SelectItem>
-
-            <SelectItem value="Uhandisi wa Madini">
-              Uhandisi wa Madini
-            </SelectItem>
-
-            <SelectItem value="Uhandisi wa Mawasiliano">
-              Uhandisi wa Mawasiliano
-            </SelectItem>
-
-            <SelectItem value="Kilimo">
-             Kilimo
-            </SelectItem>
-            <SelectItem value="Mifugo">
-              Mifugo
-            </SelectItem>
-            <SelectItem value="Uvuvi">
-              Uvuvi
-            </SelectItem>
-
-            <SelectItem value="Usimamizi wa Rasilimali Watu">
-              Usimamizi wa Rasilimali Watu
-            </SelectItem>
-
-            <SelectItem value="Ununuzi na Ugavi">
-              Ununuzi na Ugavi
-            </SelectItem>
-
-            <SelectItem value="Utalii">
-              Utalii
-            </SelectItem>
-
-            <SelectItem value="Ukarimu na Hoteli">
-              Ukarimu na Hoteli
-            </SelectItem>
-
-            <SelectItem value="Uandishi wa Habari">
-              Uandishi wa Habari
-            </SelectItem>
-
-            <SelectItem value="Mahusiano ya Umma">
-              Mahusiano ya Umma
-            </SelectItem>
-
-            <SelectItem value="Sanaa na Ubunifu">
-              Sanaa na Ubunifu
-            </SelectItem>
-
-            <SelectItem value="Mipango Miji">
-              Mipango Miji
-            </SelectItem>
-
-            <SelectItem value="Ardhi na Upimaji">
-              Ardhi na Upimaji
-            </SelectItem>
-
-            <SelectItem value="Sayansi ya Mazingira">
-              Sayansi ya Mazingira
-            </SelectItem>
-
-            <SelectItem value="Takwimu">
-              Takwimu
-            </SelectItem>
-
-            <SelectItem value="Hisabati">
-              Hisabati
-            </SelectItem>
-
-            <SelectItem value="Fizikia">
-              Fizikia
-            </SelectItem>
-
-            <SelectItem value="Kemia">
-              Kemia
-            </SelectItem>
-
-            <SelectItem value="Baiolojia">
-              Baiolojia
-            </SelectItem>
-
-            <SelectItem value="Nyingine">
-              Nyingine
-            </SelectItem>
-            
-          </SelectContent>
-        </Select>
-      </div>
+    <Input
+      id="program"
+      name="program"
+      type="text"
+      value={form.program}
+      onChange={handleChange}
+      placeholder="Mfano: sijasoma, sayansi ya kompyuta"
+      className="
+        h-12
+        rounded-2xl
+        pl-11
+      "
+    />
+  </div>
+</div>
 
       {/* ================= EMPLOYMENT STATUS ================= */}
 
@@ -639,13 +493,18 @@ export default function RegisterForm({
 
         <Select
           value={form.employmentStatus}
-          onValueChange={(value) =>
-            setForm((prev) => ({
-              ...prev,
-              employmentStatus:
-                value,
-            }))
-          }
+onValueChange={(value) =>
+  setForm((prev) => ({
+    ...prev,
+    employmentStatus: value,
+
+    // clear job type when unemployed
+    jobType:
+      value === "Sina Ajira"
+        ? ""
+        : prev.jobType,
+  }))
+}
         >
           <SelectTrigger
             className="
@@ -685,40 +544,137 @@ export default function RegisterForm({
         </Select>
       </div>
 
-    <div className="grid gap-4 md:grid-cols-3">
-  <div>
-    <Label htmlFor="Halmashauri">Halmashauri</Label>
-    <Input
-      id="council"
-      name="council"
-      value={form.council}
-      onChange={handleChange}
-      placeholder="mfano: Mlele"
-    />
+ {form.employmentStatus !== "Sina Ajira" &&
+  form.employmentStatus !== "" && (
+    <div className="space-y-2">
+      <Label htmlFor="jobType">
+        Aina ya Kazi
+      </Label>
+
+      <div className="relative">
+        <Briefcase
+          className="
+            absolute left-4 top-1/2
+            size-4
+            -translate-y-1/2
+            text-muted-foreground
+          "
+        />
+
+        <Input
+          id="jobType"
+          name="jobType"
+          type="text"
+          value={form.jobType}
+          onChange={handleChange}
+          placeholder={
+            form.employmentStatus ===
+            "Nimejiajiri"
+              ? "Mfano: Kilimo, Biashara, Ufugaji"
+              : "Mfano: Mwalimu, Daktari, Afisa TEHAMA"
+          }
+          className="
+            h-12
+            rounded-2xl
+            pl-11
+          "
+        />
+      </div>
+    </div>
+)}
+
+  {/* Council */}
+  <div className="space-y-2">
+    <Label htmlFor="council">
+      Halmashauri
+    </Label>
+
+    <div className="relative">
+      <Building2
+        className="
+          absolute left-4 top-1/2
+          size-4
+          -translate-y-1/2
+          text-muted-foreground
+        "
+      />
+
+      <Input
+        id="council"
+        name="council"
+        value={form.council}
+        onChange={handleChange}
+        placeholder="Mfano: Mlele"
+        className="
+          h-12
+          rounded-2xl
+          pl-11
+        "
+      />
+    </div>
   </div>
 
-  <div>
-    <Label htmlFor="Kata">Kata</Label>
-    <Input
-      id="ward"
-      name="ward"
-      value={form.ward}
-      onChange={handleChange}
-      placeholder="mfano: Ilela"
-    />
+  {/* Ward */}
+  <div className="space-y-2">
+    <Label htmlFor="ward">
+      Kata
+    </Label>
+
+    <div className="relative">
+      <MapPin
+        className="
+          absolute left-4 top-1/2
+          size-4
+          -translate-y-1/2
+          text-muted-foreground
+        "
+      />
+
+      <Input
+        id="ward"
+        name="ward"
+        value={form.ward}
+        onChange={handleChange}
+        placeholder="Mfano: Ilela"
+        className="
+          h-12
+          rounded-2xl
+          pl-11
+        "
+      />
+    </div>
   </div>
 
-  <div>
-    <Label htmlFor="Kijiji">Kijiji</Label>
-    <Input
-      id="village"
-      name="village"
-      value={form.village}
-      onChange={handleChange}
-      placeholder="mfano: mapili"
-    />
+  {/* Village */}
+  <div className="space-y-2">
+    <Label htmlFor="village">
+      Kijiji / Mtaa
+    </Label>
+
+    <div className="relative">
+      <MapPin
+        className="
+          absolute left-4 top-1/2
+          size-4
+          -translate-y-1/2
+          text-muted-foreground
+        "
+      />
+
+      <Input
+        id="village"
+        name="village"
+        value={form.village}
+        onChange={handleChange}
+        placeholder="Mfano: Mapili"
+        className="
+          h-12
+          rounded-2xl
+          pl-11
+        "
+      />
+    </div>
   </div>
-</div>
 
       {/* ================= PASSWORD ================= */}
 

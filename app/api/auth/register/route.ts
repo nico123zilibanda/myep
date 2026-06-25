@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       ward,
       village,
       employmentStatus,
+      jobType,
     } = body;
 
     // 1️⃣ Validation
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
       !council ||
       !ward ||
       !village ||
+      !jobType ||
       !employmentStatus
     ) {
       return NextResponse.json(
@@ -116,6 +118,7 @@ export async function POST(req: NextRequest) {
         ward,
         village,
         employmentStatus,
+        jobType,
         roleId: 1, // YOUTH
       })
       .select("id")
