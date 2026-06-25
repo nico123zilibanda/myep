@@ -31,6 +31,9 @@ export async function GET() {
         dateOfBirth,
         educationLevel,
         program,
+        council,
+        ward,
+        village,
         employmentStatus,
         isActive,
         createdAt,
@@ -84,6 +87,9 @@ export async function PATCH(req: Request) {
       dateOfBirth,
       educationLevel,
       program,
+      council,
+      ward,
+      village,
       employmentStatus,
     } = await req.json();
 
@@ -101,6 +107,9 @@ export async function PATCH(req: Request) {
       dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
       educationLevel: educationLevel || null,
       program: program || null,
+      council: council || null,
+      ward: ward || null,
+      village: village || null,
       employmentStatus: employmentStatus || null,
       updatedAt: new Date(),
     };

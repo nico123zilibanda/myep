@@ -22,6 +22,9 @@ export async function POST(req: NextRequest) {
       dateOfBirth,
       educationLevel,
       program,
+      council,
+      ward,
+      village,
       employmentStatus,
     } = body;
 
@@ -35,6 +38,9 @@ export async function POST(req: NextRequest) {
       !dateOfBirth ||
       !educationLevel ||
       !program ||
+      !council ||
+      !ward ||
+      !village ||
       !employmentStatus
     ) {
       return NextResponse.json(
@@ -106,6 +112,9 @@ export async function POST(req: NextRequest) {
         dateOfBirth,
         educationLevel,
         program,
+        council,
+        ward,
+        village,
         employmentStatus,
         roleId: 1, // YOUTH
       })

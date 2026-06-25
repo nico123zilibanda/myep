@@ -19,6 +19,7 @@ import {
   Sparkles,
   GraduationCap,
   Briefcase,
+  MapPin, Building2, Landmark
 } from "lucide-react";
 
 import { useAppToast } from "@/lib/toast";
@@ -32,6 +33,9 @@ interface ProfileData {
   dateOfBirth?: string;
   educationLevel?: string;
   program?: string;
+  council?: string;
+  ward?: string;
+  village?: string;
   employmentStatus?: string;
 }
 
@@ -573,6 +577,10 @@ export default function ProfileForm() {
     }
     options={[
       {
+        value: "Sijasoma",
+        label: "Sijasoma",
+      },
+      {
         value: "Elimu ya Msingi",
         label: "Elimu ya Msingi",
       },
@@ -802,6 +810,97 @@ export default function ProfileForm() {
       },
     ]}
   />
+</div>
+
+{/* ================= LOCATION INFO ================= */}
+
+<div
+  className="
+    rounded-3xl
+
+    border border-zinc-200/70
+    dark:border-zinc-800/70
+
+    bg-white/60
+    dark:bg-zinc-900/40
+
+    p-6
+
+    backdrop-blur-xl
+
+    space-y-5
+  "
+>
+  <div className="flex items-center gap-3">
+    <div
+      className="
+        flex h-10 w-10 items-center justify-center
+
+        rounded-2xl
+
+        bg-emerald-500/10
+      "
+    >
+      <MapPin className="h-5 w-5 text-emerald-600" />
+    </div>
+
+    <div>
+      <h3 className="font-semibold text-zinc-900 dark:text-white">
+        Taarifa za Makazi
+      </h3>
+
+      <p className="text-sm text-zinc-500">
+        Weka eneo lako la utawala
+      </p>
+    </div>
+  </div>
+
+  <div className="grid gap-6 md:grid-cols-3">
+    {/* COUNCIL */}
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 text-sm font-medium">
+        <Building2 className="h-4 w-4 text-blue-600" />
+        Halmashari
+      </div>
+
+      <FormInput
+        name="council"
+        value={form.council || ""}
+        onChange={handleInputChange}
+        placeholder="Mfano: Halmashari"
+      />
+    </div>
+
+    {/* WARD */}
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 text-sm font-medium">
+        <Landmark className="h-4 w-4 text-violet-600" />
+        Kata
+      </div>
+
+      <FormInput
+        name="ward"
+        value={form.ward || ""}
+        onChange={handleInputChange}
+        placeholder="Mfano: Ilela"
+      />
+    </div>
+
+    {/* VILLAGE */}
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 text-sm font-medium">
+        <MapPin className="h-4 w-4 text-emerald-600" />
+        Kijiji / Mtaa
+      </div>
+
+      <FormInput
+        name="village"
+        value={form.village || ""}
+        onChange={handleInputChange}
+        placeholder="Mfano: Mapili"
+      />
+    </div>
+  </div>
 </div>
 
       {/* ================= INFO BOX ================= */}

@@ -54,6 +54,9 @@ interface RegisterFormData {
   dateOfBirth: string;
   educationLevel: string;
   program: string;
+  council: string;
+  ward: string;
+  village: string;
   employmentStatus: string;
 }
 
@@ -86,6 +89,9 @@ export default function RegisterForm({
     dateOfBirth: "",
     educationLevel: "",
     program: "",
+    council: "",
+    ward: "",
+    village: "",
     employmentStatus: "",
   });
 
@@ -145,6 +151,9 @@ export default function RegisterForm({
   dateOfBirth: "",
   educationLevel: "",
   program: "",
+  council: "",
+  ward: "",
+  village: "",
   employmentStatus: "",
 });
 
@@ -401,6 +410,9 @@ export default function RegisterForm({
           </SelectTrigger>
 
           <SelectContent>
+            <SelectItem value="Sijasoma">
+              Sijasoma
+            </SelectItem>
             <SelectItem value="Elimu ya Msingi">
               Elimu ya Msingi
             </SelectItem>
@@ -672,6 +684,41 @@ export default function RegisterForm({
           </SelectContent>
         </Select>
       </div>
+
+    <div className="grid gap-4 md:grid-cols-3">
+  <div>
+    <Label htmlFor="Halmashauri">Halmashauri</Label>
+    <Input
+      id="council"
+      name="council"
+      value={form.council}
+      onChange={handleChange}
+      placeholder="mfano: Mlele"
+    />
+  </div>
+
+  <div>
+    <Label htmlFor="Kata">Kata</Label>
+    <Input
+      id="ward"
+      name="ward"
+      value={form.ward}
+      onChange={handleChange}
+      placeholder="mfano: Ilela"
+    />
+  </div>
+
+  <div>
+    <Label htmlFor="Kijiji">Kijiji</Label>
+    <Input
+      id="village"
+      name="village"
+      value={form.village}
+      onChange={handleChange}
+      placeholder="mfano: mapili"
+    />
+  </div>
+</div>
 
       {/* ================= PASSWORD ================= */}
 

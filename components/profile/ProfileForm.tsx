@@ -573,6 +573,10 @@ export default function ProfileForm() {
     }
     options={[
       {
+        value: "Sijasoma",
+        label: "Sijasoma",
+      },
+      {
         value: "Elimu ya Msingi",
         label: "Elimu ya Msingi",
       },
