@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
       !council ||
       !ward ||
       !village ||
-      !jobType ||
       !employmentStatus
     ) {
       return NextResponse.json(
@@ -53,6 +52,21 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+
+const requiresJobType =
+  employmentStatus === "Nimeajiriwa" ||
+  employmentStatus === "Nimejiajiri";
+
+if (requiresJobType && !jobType) {
+  return NextResponse.json(
+    {
+      success: false,
+      messageKey: "ACTION_FAILED" satisfies MessageKey,
+    },
+    { status: 400 }
+  );
+}
 
     // 2️⃣ Check if user exists
     const { data: existingUser, error: selectError } = await supabaseAdmin
@@ -118,7 +132,10 @@ export async function POST(req: NextRequest) {
         ward,
         village,
         employmentStatus,
-        jobType,
+        jobType:
+        employmentStatus === "Sina Ajira"
+      ? null
+      : jobType,
         roleId: 1, // YOUTH
       })
       .select("id")

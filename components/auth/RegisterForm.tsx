@@ -484,15 +484,14 @@ export default function RegisterForm({
   </div>
 </div>
 
-      {/* ================= EMPLOYMENT STATUS ================= */}
+ {/* ================= EMPLOYMENT STATUS ================= */}
+<div className="space-y-2">
+<Label>
+  Hali ya Ajira
+</Label>
 
-      <div className="space-y-2">
-        <Label>
-          Hali ya Ajira
-        </Label>
-
-        <Select
-          value={form.employmentStatus}
+<Select
+value={form.employmentStatus}
 onValueChange={(value) =>
   setForm((prev) => ({
     ...prev,
