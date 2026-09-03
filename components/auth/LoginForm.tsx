@@ -273,9 +273,12 @@ export default function LoginForm() {
         disabled={loading}
         className="
           h-12 w-full
-          rounded-2xl
+          rounded-xl
+          bg-primary text-primary-foreground
           text-sm font-semibold
-          shadow-lg shadow-primary/20
+          shadow-md shadow-gov-green-900/15
+          dark:shadow-black/20
+          hover:bg-primary-hover
         "
       >
         {loading ? (

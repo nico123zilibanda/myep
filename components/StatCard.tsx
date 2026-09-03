@@ -19,30 +19,30 @@ interface StatCardProps {
 
 const colorMap = {
   blue: {
-    icon: "text-blue-600",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
+    icon: "text-blue-600 dark:text-blue-400",
+    bg: "bg-blue-500/10 dark:bg-blue-500/15",
+    border: "border-blue-500/20 dark:border-blue-500/30",
     glow: "from-blue-500/20",
   },
 
   green: {
-    icon: "text-emerald-600",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
+    icon: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
+    border: "border-emerald-500/20 dark:border-emerald-500/30",
     glow: "from-emerald-500/20",
   },
 
   purple: {
-    icon: "text-violet-600",
-    bg: "bg-violet-500/10",
-    border: "border-violet-500/20",
+    icon: "text-violet-600 dark:text-violet-400",
+    bg: "bg-violet-500/10 dark:bg-violet-500/15",
+    border: "border-violet-500/20 dark:border-violet-500/30",
     glow: "from-violet-500/20",
   },
 
   red: {
-    icon: "text-rose-600",
-    bg: "bg-rose-500/10",
-    border: "border-rose-500/20",
+    icon: "text-rose-600 dark:text-rose-400",
+    bg: "bg-rose-500/10 dark:bg-rose-500/15",
+    border: "border-rose-500/20 dark:border-rose-500/30",
     glow: "from-rose-500/20",
   },
 };
@@ -97,7 +97,7 @@ export default function StatCard({
         relative overflow-hidden
         rounded-3xl
         border ${styles.border}
-        bg-white/70 dark:bg-zinc-900/60
+        bg-background/80 dark:bg-background/60
         backdrop-blur-xl
         p-6
         shadow-sm
@@ -119,11 +119,11 @@ export default function StatCard({
       {/* Loading */}
       {loading ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-4 w-28 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-4 w-28 rounded-full bg-muted" />
 
-          <div className="h-10 w-20 rounded-xl bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-10 w-20 rounded-xl bg-muted" />
 
-          <div className="h-12 w-12 rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-12 w-12 rounded-2xl bg-muted" />
         </div>
       ) : (
         <div className="relative z-10">
@@ -135,7 +135,7 @@ export default function StatCard({
               <p
                 className="
                   text-sm font-medium
-                  text-zinc-500 dark:text-zinc-400
+                  text-muted-foreground
                 "
               >
                 {t(titleKey)}
@@ -147,7 +147,7 @@ export default function StatCard({
                   className="
                     text-3xl md:text-4xl
                     font-bold tracking-tight
-                    text-zinc-900 dark:text-white
+                    text-foreground
                     tabular-nums
                   "
                 >
@@ -160,11 +160,11 @@ export default function StatCard({
                     mb-1
                     flex items-center gap-1
                     rounded-full
-                    bg-emerald-500/10
+                    bg-emerald-500/10 dark:bg-emerald-500/15
                     px-2 py-1
                     text-[11px]
                     font-medium
-                    text-emerald-600
+                    text-emerald-600 dark:text-emerald-400
                   "
                 >
                   <TrendingUp size={12} />
@@ -197,7 +197,7 @@ export default function StatCard({
                 h-1.5
                 overflow-hidden
                 rounded-full
-                bg-zinc-100 dark:bg-zinc-800
+                bg-muted
               "
             >
               <div

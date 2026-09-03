@@ -64,8 +64,7 @@ export default function ProfilePage() {
               "
             >
               <Sparkles className="h-3.5 w-3.5" />
-
-              Youth Account Center
+              Kituo cha Akaunti ya Vijana
             </div>
 
             {/* TITLE */}
@@ -80,7 +79,7 @@ export default function ProfilePage() {
                   sm:text-4xl lg:text-5xl
                 "
               >
-                Profile Settings
+                Mipangilio ya Wasifu
               </h1>
 
               <p
@@ -95,20 +94,17 @@ export default function ProfilePage() {
                   sm:text-base
                 "
               >
-                Manage your personal
-                information, update account
-                details and improve your
-                account security settings in
-                one place.
+                Dhibiti taarifa zako binafsi, sasisha maelezo ya akaunti na uboreshe mipangilio ya 
+                usalama wa akaunti yako katika sehemu moja.
               </p>
             </div>
 
             {/* FEATURES */}
             <div className="flex flex-wrap gap-3">
               {[
-                "Secure account",
-                "Profile management",
-                "Privacy protected",
+                "Akaunti Salama",
+                "Usimamizi wa wasifu",
+                "Faragha inalindwa",
               ].map((item) => (
                 <div
                   key={item}
@@ -179,14 +175,12 @@ export default function ProfilePage() {
 
               <div className="space-y-2">
                 <h2 className="text-lg font-bold tracking-tight">
-                  Account Settings
+                  Mipangilio ya Akaunti
                 </h2>
 
                 <p className="max-w-xs text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                  Keep your information
-                  accurate and your account
-                  protected with strong
-                  security settings.
+                 Weka taarifa zako sahihi na akaunti yako imelindwa kwa 
+                 kutumia mipangilio imara ya usalama.
                 </p>
               </div>
 
@@ -194,12 +188,12 @@ export default function ProfilePage() {
                 {[
                   {
                     icon: ShieldCheck,
-                    label: "Security Enabled",
+                    label: "Usalama Umewezeshwa",
                     color: "text-emerald-500",
                   },
                   {
                     icon: Settings2,
-                    label: "Customizable Profile",
+                    label: "Wasifu Unaoweza Kubinafsishwa",
                     color: "text-blue-500",
                   },
                 ].map((item) => (
@@ -218,13 +212,9 @@ export default function ProfilePage() {
                       px-4 py-3
                     "
                   >
-                    <item.icon
-                      className={`h-5 w-5 ${item.color}`}
-                    />
+                    <item.icon className={`h-5 w-5 ${item.color}`} />
 
-                    <span className="text-sm font-medium">
-                      {item.label}
-                    </span>
+                    <span className="text-sm font-medium">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -254,12 +244,11 @@ export default function ProfilePage() {
 
           <div>
             <h2 className="text-xl font-bold tracking-tight">
-              Personal Information
+              Taarifa Binafsi
             </h2>
 
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Update your profile details
-              and personal information.
+              Sasisha maelezo ya wasifu wako na taarifa binafsi.
             </p>
           </div>
         </div>
@@ -289,12 +278,11 @@ export default function ProfilePage() {
 
           <div>
             <h2 className="text-xl font-bold tracking-tight">
-              Security Settings
+             Mipangilio ya Usalama
             </h2>
 
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Change your password and keep
-              your account secure.
+              Badilisha nenosiri lako na uweke akaunti yako salama.
             </p>
           </div>
         </div>
@@ -333,4 +321,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-

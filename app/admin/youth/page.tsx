@@ -342,7 +342,7 @@ export default function YouthPage() {
                 hover:bg-red-500/10
               "
             >
-              <FileText className="mr-2 size-4 text-red-600" />
+              <FileText className="mr-2 size-4 text-red-600 dark:text-red-400" />
 
               Export PDF
             </Button>
@@ -367,7 +367,7 @@ export default function YouthPage() {
                   mr-2
                   size-4
 
-                  text-emerald-600
+                  text-emerald-600 dark:text-emerald-400
                 "
               />
 
@@ -394,7 +394,7 @@ export default function YouthPage() {
                   mr-2
                   size-4
 
-                  text-blue-600
+                  text-blue-600 dark:text-blue-400
                 "
               />
 
@@ -502,7 +502,7 @@ export default function YouthPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-emerald-600
+                  text-emerald-600 dark:text-emerald-400
                 "
               >
                 {activeYouth}
@@ -517,9 +517,9 @@ export default function YouthPage() {
 
                 rounded-2xl
 
-                bg-emerald-500/10
+                bg-emerald-500/10 dark:bg-emerald-500/15
 
-                text-emerald-600
+                text-emerald-600 dark:text-emerald-400
               "
             >
               <ShieldCheck className="size-5" />
@@ -560,7 +560,7 @@ export default function YouthPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-red-600
+                  text-red-600 dark:text-red-400
                 "
               >
                 {inactiveYouth}
@@ -575,9 +575,9 @@ export default function YouthPage() {
 
                 rounded-2xl
 
-                bg-red-500/10
+                bg-red-500/10 dark:bg-red-500/15
 
-                text-red-600
+                text-red-600 dark:text-red-400
               "
             >
               <ShieldX className="size-5" />
@@ -837,20 +837,20 @@ export default function YouthPage() {
                         ${
                           v.employmentStatus === "Nimeajiriwa"
                             ? `
-                              border border-emerald-500/20
-                              bg-emerald-500/10
-                              text-emerald-600
+                              border border-emerald-500/20 dark:border-emerald-500/30
+                              bg-emerald-500/10 dark:bg-emerald-500/15
+                              text-emerald-600 dark:text-emerald-400
                             `
                             : v.employmentStatus === "Nimejiajiri"
                               ? `
-                              border border-blue-500/20
-                              bg-blue-500/10
-                              text-blue-600
+                              border border-blue-500/20 dark:border-blue-500/30
+                              bg-blue-500/10 dark:bg-blue-500/15
+                              text-blue-600 dark:text-blue-400
                             `
                               : `
-                              border border-amber-500/20
-                              bg-amber-500/10
-                              text-amber-600
+                              border border-amber-500/20 dark:border-amber-500/30
+                              bg-amber-500/10 dark:bg-amber-500/15
+                              text-amber-600 dark:text-amber-400
                             `
                         }
                       `}
@@ -871,14 +871,14 @@ export default function YouthPage() {
                         ${
                           v.isActive
                             ? `
-                              border border-emerald-500/20
-                              bg-emerald-500/10
-                              text-emerald-600
+                              border border-emerald-500/20 dark:border-emerald-500/30
+                              bg-emerald-500/10 dark:bg-emerald-500/15
+                              text-emerald-600 dark:text-emerald-400
                             `
                             : `
-                              border border-red-500/20
-                              bg-red-500/10
-                              text-red-600
+                              border border-red-500/20 dark:border-red-500/30
+                              bg-red-500/10 dark:bg-red-500/15
+                              text-red-600 dark:text-red-400
                             `
                         }
                       `}
@@ -1141,14 +1141,14 @@ export default function YouthPage() {
                         ${
                           viewing.isActive
                             ? `
-                              border border-emerald-500/20
-                              bg-emerald-500/10
-                              text-emerald-600
+                              border border-emerald-500/20 dark:border-emerald-500/30
+                              bg-emerald-500/10 dark:bg-emerald-500/15
+                              text-emerald-600 dark:text-emerald-400
                             `
                             : `
-                              border border-red-500/20
-                              bg-red-500/10
-                              text-red-600
+                              border border-red-500/20 dark:border-red-500/30
+                              bg-red-500/10 dark:bg-red-500/15
+                              text-red-600 dark:text-red-400
                             `
                         }
                       `}

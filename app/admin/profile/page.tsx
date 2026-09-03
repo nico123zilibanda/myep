@@ -114,7 +114,7 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl bg-emerald-500/10 p-3 text-emerald-500">
+            <div className="rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 p-3 text-emerald-600 dark:text-emerald-400">
               <ShieldCheck className="size-5" />
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl bg-violet-500/10 p-3 text-violet-500">
+            <div className="rounded-2xl bg-violet-500/10 dark:bg-violet-500/15 p-3 text-violet-600 dark:text-violet-400">
               <Activity className="size-5" />
             </div>
           </div>
@@ -182,7 +182,7 @@ export default function ProfilePage() {
           <div className="overflow-hidden rounded-3xl border bg-background shadow-sm">
             <div className="border-b bg-muted/20 px-6 py-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-red-500/10 p-2 text-red-500">
+                <div className="rounded-2xl bg-red-500/10 dark:bg-red-500/15 p-2 text-red-600 dark:text-red-400">
                   <LockKeyhole className="size-5" />
                 </div>
 
@@ -207,7 +207,7 @@ export default function ProfilePage() {
           {/* SECURITY INFO */}
           <div className="rounded-3xl border bg-background p-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-emerald-500/10 p-2 text-emerald-500">
+              <div className="rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 p-2 text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="size-5" />
               </div>
 
@@ -238,7 +238,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex items-start gap-3 rounded-2xl border bg-muted/20 p-4">
-                <LockKeyhole className="mt-0.5 size-4 text-red-500" />
+                <LockKeyhole className="mt-0.5 size-4 text-red-600 dark:text-red-400" />
 
                 <div>
                   <p className="text-sm font-medium">
@@ -252,7 +252,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex items-start gap-3 rounded-2xl border bg-muted/20 p-4">
-                <ShieldCheck className="mt-0.5 size-4 text-emerald-500" />
+                <ShieldCheck className="mt-0.5 size-4 text-emerald-600 dark:text-emerald-400" />
 
                 <div>
                   <p className="text-sm font-medium">

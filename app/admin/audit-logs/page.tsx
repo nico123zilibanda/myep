@@ -280,7 +280,7 @@ export default function AuditLogsPage() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border bg-muted/60 px-3 py-1 text-xs font-medium">
               <ShieldCheck className="size-3.5" />
-              Ufuatiliaji wa Usalama.                        v.                                        4.                                            
+              Ufuatiliaji wa Usalama.
             </div>
 
             <div>
@@ -337,7 +337,7 @@ export default function AuditLogsPage() {
               </h2>
             </div>
 
-            <div className="rounded-2xl bg-violet-500/10 p-3 text-violet-500">
+            <div className="rounded-2xl bg-violet-500/10 dark:bg-violet-500/15 p-3 text-violet-600 dark:text-violet-400">
               <User2 className="size-5" />
             </div>
           </div>
@@ -355,7 +355,7 @@ export default function AuditLogsPage() {
               </h2>
             </div>
 
-            <div className="rounded-2xl bg-red-500/10 p-3 text-red-500">
+            <div className="rounded-2xl bg-red-500/10 dark:bg-red-500/15 p-3 text-red-600 dark:text-red-400">
               <Trash2 className="size-5" />
             </div>
           </div>
@@ -373,7 +373,7 @@ export default function AuditLogsPage() {
               </h2>
             </div>
 
-            <div className="rounded-2xl bg-emerald-500/10 p-3 text-emerald-500">
+            <div className="rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 p-3 text-emerald-600 dark:text-emerald-400">
               <CalendarClock className="size-5" />
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { LucideIcon, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import type { ForwardRefExoticComponent } from "react";
 
 import { useDictionary } from "@/lib/i18n/useDictionary";
 import { MessageKey } from "@/lib/messages";
@@ -8,7 +9,7 @@ import { MessageKey } from "@/lib/messages";
 interface QuickActionProps {
   titleKey: MessageKey;
   descriptionKey: MessageKey;
-  icon: LucideIcon;
+  icon: ForwardRefExoticComponent<React.RefAttributes<SVGSVGElement> & Record<string, unknown>>;
   color: "blue" | "green" | "purple" | "red";
   onClick: () => void;
 }
@@ -17,32 +18,32 @@ interface QuickActionProps {
 
 const colorMap = {
   blue: {
-    icon: "text-blue-600",
-    bg: "bg-blue-500/10",
+    icon: "text-blue-600 dark:text-blue-400",
+    bg: "bg-blue-500/10 dark:bg-blue-500/15",
     glow: "from-blue-500/20",
     hover:
       "group-hover:border-blue-200 dark:group-hover:border-blue-800",
   },
 
   green: {
-    icon: "text-emerald-600",
-    bg: "bg-emerald-500/10",
+    icon: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
     glow: "from-emerald-500/20",
     hover:
       "group-hover:border-emerald-200 dark:group-hover:border-emerald-800",
   },
 
   purple: {
-    icon: "text-violet-600",
-    bg: "bg-violet-500/10",
+    icon: "text-violet-600 dark:text-violet-400",
+    bg: "bg-violet-500/10 dark:bg-violet-500/15",
     glow: "from-violet-500/20",
     hover:
       "group-hover:border-violet-200 dark:group-hover:border-violet-800",
   },
 
   red: {
-    icon: "text-rose-600",
-    bg: "bg-rose-500/10",
+    icon: "text-rose-600 dark:text-rose-400",
+    bg: "bg-rose-500/10 dark:bg-rose-500/15",
     glow: "from-rose-500/20",
     hover:
       "group-hover:border-rose-200 dark:group-hover:border-rose-800",
@@ -66,9 +67,9 @@ export default function QuickAction({
       className={`
         group relative overflow-hidden
         rounded-3xl
-        border border-zinc-200/70 dark:border-zinc-800/80
+        border border-border/60
         ${styles.hover}
-        bg-white/70 dark:bg-zinc-900/60
+        bg-background/80 dark:bg-background/60
         backdrop-blur-xl
         p-6
         text-left
@@ -78,7 +79,7 @@ export default function QuickAction({
         hover:shadow-xl
         focus:outline-none
         focus:ring-2
-        focus:ring-blue-500/30
+        focus:ring-primary/30
       `}
     >
       {/* Glow Background */}
@@ -120,13 +121,12 @@ export default function QuickAction({
               flex items-center justify-center
               w-10 h-10
               rounded-xl
-              bg-zinc-100 dark:bg-zinc-800
-              text-zinc-500
+              bg-muted
+              text-muted-foreground
               transition-all duration-300
               group-hover:translate-x-1
               group-hover:-translate-y-1
-              group-hover:text-zinc-900
-              dark:group-hover:text-white
+              group-hover:text-foreground
             "
           >
             <ArrowUpRight size={18} />
@@ -138,7 +138,7 @@ export default function QuickAction({
           <h3
             className="
               text-lg font-semibold
-              text-zinc-900 dark:text-white
+              text-foreground
               transition-colors
             "
           >
@@ -149,7 +149,7 @@ export default function QuickAction({
             className="
               mt-2
               text-sm leading-relaxed
-              text-zinc-500 dark:text-zinc-400
+              text-muted-foreground
             "
           >
             {t(descriptionKey)}
@@ -162,10 +162,9 @@ export default function QuickAction({
             mt-6
             flex items-center gap-2
             text-sm font-medium
-            text-zinc-500
+            text-muted-foreground
             transition-all duration-300
-            group-hover:text-zinc-900
-            dark:group-hover:text-white
+            group-hover:text-foreground
           "
         >
           Open Action

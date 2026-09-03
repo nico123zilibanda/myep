@@ -1,3 +1,4 @@
+
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import AdminDashboard from "./AdminDashboard";
@@ -20,19 +21,29 @@ export default async function AdminPage() {
   // ================= DATA =================
   try {
     const stats = await fetchAdminStats();
+
     return <AdminDashboard stats={stats} />;
   } catch (error) {
     console.error("Error fetching admin stats:", error);
 
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/20 p-6">
-        <h3 className="font-semibold text-red-600">
+      <section
+        role="alert"
+        className="
+          rounded-xl
+          border border-destructive/30
+          bg-destructive/10
+          p-6
+        "
+      >
+        <h3 className="font-semibold text-destructive">
           Kuna tatizo la kupakia taarifa
         </h3>
-        <p className="text-sm text-red-500 mt-1">
+
+        <p className="mt-1 text-sm text-muted-foreground">
           Tafadhali jaribu tena baadae.
         </p>
-      </div>
+      </section>
     );
   }
 }
@@ -46,31 +57,31 @@ async function fetchAdminStats(): Promise<Stats> {
   ] = await Promise.all([
     supabaseAdmin
       .from("User")
-      .select
-      ("*", 
-        { count: "exact", 
-          head: true })
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
       .eq("roleId", 1),
 
     supabaseAdmin
       .from("Opportunity")
-      .select("*", 
-        { count: "exact", 
-          head: true 
-        }),
+      .select("*", {
+        count: "exact",
+        head: true,
+      }),
 
     supabaseAdmin
       .from("Training")
-      .select("*", 
-        { count: "exact",
-           head: true 
-          }),
+      .select("*", {
+        count: "exact",
+        head: true,
+      }),
 
     supabaseAdmin
       .from("Question")
-      .select("*", 
-        { count: "exact", 
-        head: true 
+      .select("*", {
+        count: "exact",
+        head: true,
       }),
   ]);
 
@@ -81,4 +92,4 @@ async function fetchAdminStats(): Promise<Stats> {
     questionsCount: questionsCount ?? 0,
   };
 }
- 
+

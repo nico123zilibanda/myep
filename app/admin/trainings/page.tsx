@@ -56,13 +56,13 @@ interface ApiResponse<T = any> {
 
 const typeStyles = {
   ARTICLE:
-    "bg-blue-500/10 text-blue-600 border border-blue-500/20",
+    "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 dark:border-blue-500/30",
 
   VIDEO:
-    "bg-purple-500/10 text-purple-600 border border-purple-500/20",
+    "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 dark:border-purple-500/30",
 
   PDF:
-    "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20",
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-500/30",
 };
 
 const typeIcons = {
@@ -523,7 +523,7 @@ export default function TrainingsPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-purple-600
+                  text-purple-600 dark:text-purple-400
                 "
               >
                 {totalVideos}
@@ -538,9 +538,9 @@ export default function TrainingsPage() {
 
                 rounded-2xl
 
-                bg-purple-500/10
+                bg-purple-500/10 dark:bg-purple-500/15
 
-                text-purple-600
+                text-purple-600 dark:text-purple-400
               "
             >
               <Video className="size-5" />
@@ -581,7 +581,7 @@ export default function TrainingsPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-blue-600
+                  text-blue-600 dark:text-blue-400
                 "
               >
                 {totalArticles}
@@ -596,9 +596,9 @@ export default function TrainingsPage() {
 
                 rounded-2xl
 
-                bg-blue-500/10
+                bg-blue-500/10 dark:bg-blue-500/15
 
-                text-blue-600
+                text-blue-600 dark:text-blue-400
               "
             >
               <BookOpen className="size-5" />
@@ -639,7 +639,7 @@ export default function TrainingsPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-blue-600
+                  text-blue-600 dark:text-blue-400
                 "
               >
                 {totalPdf}
@@ -654,9 +654,9 @@ export default function TrainingsPage() {
 
                 rounded-2xl
 
-                bg-blue-500/10
+                bg-blue-500/10 dark:bg-blue-500/15
 
-                text-blue-600
+                text-blue-600 dark:text-blue-400
               "
             >
               <FileText className="size-5" />

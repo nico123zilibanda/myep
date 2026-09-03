@@ -5,121 +5,245 @@
 @custom-variant dark (&:is(.dark *));
 
 /* =========================
-   CSS VARIABLES
+   GOVERNMENT DESIGN TOKENS
+   Halmashauri ya Wilaya ya Mlele
+   Inspired by the Tanzania flag.
+
+   Change ONLY these tokens to
+   re-skin the entire system.
 ========================= */
 
 :root {
-  /* BACKGROUND */
+  /* =========================
+     BRAND COLORS
+     (Tanzania flag-inspired)
+  ========================= */
+
+  /* Primary — Government Green (Tanzania flag green) */
+  --gov-green: #006b3f;        /* base */
+  --gov-green-50: #e6f4ec;
+  --gov-green-100: #c2e3d0;
+  --gov-green-200: #8fcdb1;
+  --gov-green-300: #5cb893;
+  --gov-green-400: #2fa374;
+  --gov-green-500: #008c52;
+  --gov-green-600: #006b3f;    /* PRIMARY */
+  --gov-green-700: #005a35;
+  --gov-green-800: #003f25;
+  --gov-green-900: #002417;
+
+  /* Secondary — Tanzania Blue (used sparingly) */
+  --gov-blue: #1e73be;
+  --gov-blue-50: #e7f1fa;
+  --gov-blue-100: #c5ddf2;
+  --gov-blue-200: #8fbde5;
+  --gov-blue-300: #5a9dd8;
+  --gov-blue-400: #2f80cb;
+  --gov-blue-500: #1e73be;     /* SECONDARY */
+  --gov-blue-600: #18609c;
+  --gov-blue-700: #134d7b;
+  --gov-blue-800: #0d3a5b;
+  --gov-blue-900: #08273d;
+
+  /* Accent — Tanzania Yellow / Gold (used sparingly for highlights) */
+  --gov-gold: #fcd116;
+  --gov-gold-50: #fff9d9;
+  --gov-gold-100: #fff3b3;
+  --gov-gold-200: #ffe980;
+  --gov-gold-300: #ffdf4d;
+  --gov-gold-400: #ffd524;
+  --gov-gold-500: #fcd116;     /* ACCENT */
+  --gov-gold-600: #d4ac00;
+  --gov-gold-700: #a38600;
+  --gov-gold-800: #6f5a00;
+  --gov-gold-900: #3d3200;
+
+  /* Status — Error Red (destructive only) */
+  --gov-red: #c0392b;
+  --gov-red-hover: #a02e23;
+
+  /* Neutrals */
+  --gov-ink: #0f1f1a;          /* near-black charcoal for headings/text */
+  --gov-ink-soft: #2a3a35;
+  --gov-paper: #ffffff;
+  --gov-canvas: #f5f7f5;       /* neutral page bg */
+  --gov-mist: #eef2ef;         /* subtle section bg */
+
+  /* =========================
+     MAP INTO SHADCN / APP
+     (Tailwind reads these)
+  ========================= */
 
   /* CARD */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: var(--gov-ink);
 
   /* BORDER */
-  --border: oklch(0.922 0 0);
+  --border: #e3e8e4;
 
   /* =========================
      BUTTONS (PRIMARY SYSTEM)
+     Primary = Government Green
   ========================= */
 
-  --primary: oklch(0.205 0 0); /* blue-600 */
-  --primary-hover: #1d4ed8; /* blue-700 */
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: var(--gov-green-600);
+  --primary-hover: var(--gov-green-700);
+  --primary-foreground: #ffffff;
 
-  --secondary: oklch(0.97 0 0);
+  --secondary: var(--gov-blue-500);
+  --secondary-hover: var(--gov-blue-600);
+
   --success: #16a34a;
-  --danger: #dc2626;
-  --warning: #f59e0b;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --danger: var(--gov-red);
+  --warning: var(--gov-gold-600);
+
+  --background: var(--gov-paper);
+  --foreground: var(--gov-ink);
+
+  --popover: #ffffff;
+  --popover-foreground: var(--gov-ink);
+
+  --secondary-foreground: #ffffff;
+  --muted: var(--gov-mist);
+  --muted-foreground: #5c6b66;
+  --accent: var(--gov-gold-50);
+  --accent-foreground: var(--gov-green-700);
+  --destructive: var(--gov-red);
+
+  --input: #e3e8e4;
+  --ring: var(--gov-green-600);
+
+  --chart-1: var(--gov-green-600);
+  --chart-2: var(--gov-blue-500);
+  --chart-3: var(--gov-gold-500);
+  --chart-4: var(--gov-green-400);
+  --chart-5: var(--gov-blue-700);
+
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* =========================
+     SIDEBAR TOKENS
+  ========================= */
+  --sidebar: #ffffff;
+  --sidebar-foreground: var(--gov-ink);
+  --sidebar-primary: var(--gov-green-600);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--gov-mist);
+  --sidebar-accent-foreground: var(--gov-green-700);
+  --sidebar-border: #e3e8e4;
+  --sidebar-ring: var(--gov-green-600);
 }
 
 /* DARK MODE */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  /* =========================
+     GOVERNMENT NEUTRALS
+     (inverted for dark surfaces)
+  ========================= */
+  --gov-ink: #f1f5f3;
+  --gov-ink-soft: #b8ccc6;
+  --gov-paper: #122621;
+  --gov-canvas: #0b1612;
+  --gov-mist: #15302a;
 
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
+  /* =========================
+     GOVERNMENT GREEN
+     (lighter values for text/icons,
+      medium for primary actions)
+  ========================= */
+  --gov-green-50: #0f2e1e;
+  --gov-green-100: #143a28;
+  --gov-green-200: #1a4633;
+  --gov-green-300: #21523e;
+  --gov-green-400: #2fa374;
+  --gov-green-500: #5cb893;
+  --gov-green-600: #2fa374;
+  --gov-green-700: #5cb893;
+  --gov-green-800: #8fcdb1;
+  --gov-green-900: #c2e3d0;
 
-  --border: oklch(1 0 0 / 10%);
+  /* =========================
+     GOVERNMENT BLUE
+  ========================= */
+  --gov-blue-50: #0d1f2d;
+  --gov-blue-100: #112a3d;
+  --gov-blue-200: #15354b;
+  --gov-blue-300: #1a415a;
+  --gov-blue-400: #2f80cb;
+  --gov-blue-500: #5a9dd8;
+  --gov-blue-600: #2f80cb;
+  --gov-blue-700: #5a9dd8;
+  --gov-blue-800: #8fbde5;
+  --gov-blue-900: #c5ddf2;
 
-  /* buttons in dark mode */
-  --primary: oklch(0.922 0 0);
-  --primary-hover: #2563eb;
-  --primary-foreground: oklch(0.205 0 0);
+  /* =========================
+     GOVERNMENT GOLD
+  ========================= */
+  --gov-gold-50: #2a2510;
+  --gov-gold-100: #35301a;
+  --gov-gold-200: #403b24;
+  --gov-gold-300: #4d462e;
+  --gov-gold-400: #d4ac00;
+  --gov-gold-500: #fcd116;
+  --gov-gold-600: #d4ac00;
+  --gov-gold-700: #fcd116;
+  --gov-gold-800: #ffe980;
+  --gov-gold-900: #fff3b3;
 
-  --secondary: oklch(0.269 0 0);
+  /* =========================
+     GOVERNMENT RED
+  ========================= */
+  --gov-red: #e74c3c;
+  --gov-red-hover: #c0392b;
 
-  --popover: oklch(0.205 0 0);
+  /* =========================
+     SHADCN SEMANTIC TOKENS
+  ========================= */
+  --background: #0b1612;
+  --foreground: #f1f5f3;
 
-  --popover-foreground: oklch(0.985 0 0);
+  --card: #122621;
+  --card-foreground: #f1f5f3;
 
-  --secondary-foreground: oklch(0.985 0 0);
+  --border: #1d3a33;
 
-  --muted: oklch(0.269 0 0);
+  --primary: #2fa374;
+  --primary-hover: #5cb893;
+  --primary-foreground: #002417;
 
-  --muted-foreground: oklch(0.708 0 0);
+  --secondary: #2f80cb;
+  --secondary-hover: #5a9dd8;
 
-  --accent: oklch(0.269 0 0);
+  --popover: #122621;
+  --popover-foreground: #f1f5f3;
 
-  --accent-foreground: oklch(0.985 0 0);
+  --secondary-foreground: #ffffff;
 
-  --destructive: oklch(0.704 0.191 22.216);
+  --muted: #15302a;
+  --muted-foreground: #8aa49c;
 
-  --input: oklch(1 0 0 / 15%);
+  --accent: #1d3a33;
+  --accent-foreground: #fcd116;
 
-  --ring: oklch(0.556 0 0);
+  --destructive: #c0392b;
 
-  --chart-1: oklch(0.87 0 0);
+  --input: #1d3a33;
+  --ring: #2fa374;
 
-  --chart-2: oklch(0.556 0 0);
+  --chart-1: #2fa374;
+  --chart-2: #5a9dd8;
+  --chart-3: #fcd116;
+  --chart-4: #5cb893;
+  --chart-5: #134d7b;
 
-  --chart-3: oklch(0.439 0 0);
-
-  --chart-4: oklch(0.371 0 0);
-
-  --chart-5: oklch(0.269 0 0);
-
-  --sidebar: oklch(0.205 0 0);
-
-  --sidebar-foreground: oklch(0.985 0 0);
-
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-
-  --sidebar-accent: oklch(0.269 0 0);
-
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-
-  --sidebar-border: oklch(1 0 0 / 10%);
-
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: #0e1f1b;
+  --sidebar-foreground: #f1f5f3;
+  --sidebar-primary: #2fa374;
+  --sidebar-primary-foreground: #002417;
+  --sidebar-accent: #15302a;
+  --sidebar-accent-foreground: #fcd116;
+  --sidebar-border: #1d3a33;
+  --sidebar-ring: #2fa374;
 }
 
 /* =========================
@@ -197,6 +321,48 @@ body {
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Government design tokens — exposed to Tailwind utilities */
+  --color-gov-green-50: var(--gov-green-50);
+  --color-gov-green-100: var(--gov-green-100);
+  --color-gov-green-200: var(--gov-green-200);
+  --color-gov-green-300: var(--gov-green-300);
+  --color-gov-green-400: var(--gov-green-400);
+  --color-gov-green-500: var(--gov-green-500);
+  --color-gov-green-600: var(--gov-green-600);
+  --color-gov-green-700: var(--gov-green-700);
+  --color-gov-green-800: var(--gov-green-800);
+  --color-gov-green-900: var(--gov-green-900);
+
+  --color-gov-blue-50: var(--gov-blue-50);
+  --color-gov-blue-100: var(--gov-blue-100);
+  --color-gov-blue-200: var(--gov-blue-200);
+  --color-gov-blue-300: var(--gov-blue-300);
+  --color-gov-blue-400: var(--gov-blue-400);
+  --color-gov-blue-500: var(--gov-blue-500);
+  --color-gov-blue-600: var(--gov-blue-600);
+  --color-gov-blue-700: var(--gov-blue-700);
+  --color-gov-blue-800: var(--gov-blue-800);
+  --color-gov-blue-900: var(--gov-blue-900);
+
+  --color-gov-gold-50: var(--gov-gold-50);
+  --color-gov-gold-100: var(--gov-gold-100);
+  --color-gov-gold-200: var(--gov-gold-200);
+  --color-gov-gold-300: var(--gov-gold-300);
+  --color-gov-gold-400: var(--gov-gold-400);
+  --color-gov-gold-500: var(--gov-gold-500);
+  --color-gov-gold-600: var(--gov-gold-600);
+  --color-gov-gold-700: var(--gov-gold-700);
+  --color-gov-gold-800: var(--gov-gold-800);
+  --color-gov-gold-900: var(--gov-gold-900);
+
+  --color-gov-red: var(--gov-red);
+  --color-gov-red-hover: var(--gov-red-hover);
+  --color-gov-ink: var(--gov-ink);
+  --color-gov-ink-soft: var(--gov-ink-soft);
+  --color-gov-paper: var(--gov-paper);
+  --color-gov-canvas: var(--gov-canvas);
+  --color-gov-mist: var(--gov-mist);
 }
 
 @layer base {
@@ -209,4 +375,112 @@ body {
   html {
     @apply font-sans;
   }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--gov-ink);
+    letter-spacing: -0.01em;
+  }
+  a {
+    color: var(--gov-green-700);
+  }
+  a:hover {
+    color: var(--gov-green-800);
+  }
+
+  /* Ensure links remain visible in dark mode via token overrides */
+  .dark a {
+    color: var(--gov-green-400);
+  }
+  .dark a:hover {
+    color: var(--gov-green-300);
+  }
+}
+
+/* =========================
+   GOVERNMENT UTILITIES
+========================= */
+.gov-shadow {
+  box-shadow:
+    0 1px 2px rgba(15, 31, 26, 0.04),
+    0 4px 12px rgba(15, 31, 26, 0.06);
+}
+
+.dark .gov-shadow {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.gov-divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gov-green-600) 25%,
+    var(--gov-gold-500) 50%,
+    var(--gov-blue-500) 75%,
+    transparent 100%
+  );
+  height: 2px;
+}
+
+.gov-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--gov-green-200);
+  background: var(--gov-green-50);
+  color: var(--gov-green-700);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.gov-focus-ring:focus-visible {
+  outline: 2px solid var(--gov-green-600);
+  outline-offset: 2px;
+}
+
+/* Government form input baseline */
+.gov-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--gov-paper);
+  color: var(--gov-ink);
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.gov-input:focus-visible {
+  outline: none;
+  border-color: var(--gov-green-600);
+  box-shadow: 0 0 0 3px rgba(0, 107, 63, 0.15);
+}
+
+.dark .gov-input:focus-visible {
+  box-shadow: 0 0 0 3px rgba(47, 163, 114, 0.25);
+}
+
+/* Government primary button baseline */
+.gov-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 0.5rem;
+  background: var(--gov-green-600);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.gov-btn-primary:hover {
+  background: var(--gov-green-700);
+}
+.gov-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

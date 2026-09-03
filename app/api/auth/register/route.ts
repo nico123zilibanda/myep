@@ -49,24 +49,22 @@ export async function POST(req: NextRequest) {
           success: false,
           messageKey: "ACTION_FAILED" satisfies MessageKey,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
+    const requiresJobType =
+      employmentStatus === "Nimeajiriwa" || employmentStatus === "Nimejiajiri";
 
-const requiresJobType =
-  employmentStatus === "Nimeajiriwa" ||
-  employmentStatus === "Nimejiajiri";
-
-if (requiresJobType && !jobType) {
-  return NextResponse.json(
-    {
-      success: false,
-      messageKey: "ACTION_FAILED" satisfies MessageKey,
-    },
-    { status: 400 }
-  );
-}
+    if (requiresJobType && !jobType) {
+      return NextResponse.json(
+        {
+          success: false,
+          messageKey: "ACTION_FAILED" satisfies MessageKey,
+        },
+        { status: 400 },
+      );
+    }
 
     // 2️⃣ Check if user exists
     const { data: existingUser, error: selectError } = await supabaseAdmin
@@ -91,7 +89,7 @@ if (requiresJobType && !jobType) {
           success: false,
           messageKey: "SERVER_ERROR" satisfies MessageKey,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -109,7 +107,7 @@ if (requiresJobType && !jobType) {
           success: false,
           messageKey: "AUTH_REGISTER_EMAIL_EXISTS" satisfies MessageKey,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -132,10 +130,7 @@ if (requiresJobType && !jobType) {
         ward,
         village,
         employmentStatus,
-        jobType:
-        employmentStatus === "Sina Ajira"
-      ? null
-      : jobType,
+        jobType: employmentStatus === "Sina Ajira" ? null : jobType,
         roleId: 1, // YOUTH
       })
       .select("id")
@@ -157,7 +152,7 @@ if (requiresJobType && !jobType) {
           success: false,
           messageKey: "SERVER_ERROR" satisfies MessageKey,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -178,7 +173,7 @@ if (requiresJobType && !jobType) {
         success: true,
         messageKey: "AUTH_REGISTER_SUCCESS" satisfies MessageKey,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("REGISTER ERROR:", error);
@@ -196,7 +191,7 @@ if (requiresJobType && !jobType) {
         success: false,
         messageKey: "SERVER_ERROR" satisfies MessageKey,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

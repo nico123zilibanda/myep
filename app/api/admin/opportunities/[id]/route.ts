@@ -92,7 +92,7 @@ export async function DELETE(
   }
 }
 
-
+// ================= UPDATE OPPORTUNITY =================
 export async function PATCH(req: Request) {
   try {
     const user = await getCurrentUser();
@@ -115,7 +115,7 @@ export async function PATCH(req: Request) {
       );
     }
 
-    // 🔥 CHANGE: JSON → FormData
+    // CHANGE: JSON → FormData
     const formData = await req.formData();
 
     const title = formData.get("title") as string;
@@ -127,7 +127,7 @@ export async function PATCH(req: Request) {
     const status = (formData.get("status") as string) || "PUBLISHED";
     const categoryId = Number(formData.get("categoryId"));
 
-    // 🔥 RESOURCE LOGIC
+    // RESOURCE LOGIC
     const resourceTypeRaw = formData.get("resourceType") as string | null;
 
     const resourceType =

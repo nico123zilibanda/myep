@@ -53,17 +53,13 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-semibold">
-                Mapendeleo ya Admin
-              </h3>
+              <h3 className="font-semibold">Mapendeleo ya Msimamizi</h3>
 
               <p className="text-sm text-muted-foreground">
-                Badilisha mwonekano,
-                lugha, na matumizi ya
-                mfumo kwa urahisi.
+                Badilisha mwonekano, lugha, na matumizi ya mfumo kwa urahisi.
               </p>
 
-              <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="size-3.5" />
                 Mfumo Salama
               </div>
@@ -78,17 +74,12 @@ export default function SettingsPage() {
         <div className="rounded-3xl border bg-background p-5 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Mwonekano
-              </p>
+              <p className="text-sm text-muted-foreground">Mwonekano</p>
 
-              <h2 className="text-xl font-bold">
-                Theme
-              </h2>
+              <h2 className="text-xl font-bold">Mandhari</h2>
 
               <p className="text-xs text-muted-foreground">
-                Badilisha mfumo kuwa wa
-                giza au mwanga.
+                Badilisha mfumo kuwa wa giza au mwanga.
               </p>
             </div>
 
@@ -102,21 +93,16 @@ export default function SettingsPage() {
         <div className="rounded-3xl border bg-background p-5 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Lugha
-              </p>
+              <p className="text-sm text-muted-foreground">Lugha</p>
 
-              <h2 className="text-xl font-bold">
-                Tafsiri
-              </h2>
+              <h2 className="text-xl font-bold">Tafsiri</h2>
 
               <p className="text-xs text-muted-foreground">
-                Badilisha lugha ya mfumo
-                na mapendeleo ya tafsiri.
+                Badilisha lugha ya mfumo na mapendeleo ya tafsiri.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-blue-500/10 p-3 text-blue-500">
+            <div className="rounded-2xl bg-blue-500/10 dark:bg-blue-500/15 p-3 text-blue-600 dark:text-blue-400">
               <Languages className="size-5" />
             </div>
           </div>
@@ -130,17 +116,14 @@ export default function SettingsPage() {
                 Uzoefu wa Mtumiaji
               </p>
 
-              <h2 className="text-xl font-bold">
-                Bora Zaidi
-              </h2>
+              <h2 className="text-xl font-bold">Bora Zaidi</h2>
 
               <p className="text-xs text-muted-foreground">
-                Mfumo wa kisasa wa
-                dashibodi umewezeshwa.
+                Mfumo wa kisasa wa dashibodi umewezeshwa.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-violet-500/10 p-3 text-violet-500">
+            <div className="rounded-2xl bg-violet-500/10 dark:bg-violet-500/15 p-3 text-violet-600 dark:text-violet-400">
               <Sparkles className="size-5" />
             </div>
           </div>
@@ -150,21 +133,16 @@ export default function SettingsPage() {
         <div className="rounded-3xl border bg-background p-5 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Mfumo
-              </p>
+              <p className="text-sm text-muted-foreground">Mfumo</p>
 
-              <h2 className="text-xl font-bold">
-                Imara
-              </h2>
+              <h2 className="text-xl font-bold">Imara</h2>
 
               <p className="text-xs text-muted-foreground">
-                Mipangilio yote
-                inafanya kazi kawaida.
+                Mipangilio yote inafanya kazi kawaida.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-emerald-500/10 p-3 text-emerald-500">
+            <div className="rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 p-3 text-emerald-600 dark:text-emerald-400">
               <LayoutDashboard className="size-5" />
             </div>
           </div>
@@ -185,15 +163,10 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <h2 className="font-semibold">
-                    Mipangilio ya
-                    Mwonekano
-                  </h2>
+                  <h2 className="font-semibold">Mipangilio ya Mwonekano</h2>
 
                   <p className="text-sm text-muted-foreground">
-                    Badilisha muonekano
-                    wa dashibodi na
-                    theme ya mfumo.
+                    Badilisha muonekano wa dashibodi na theme ya mfumo.
                   </p>
                 </div>
               </div>
@@ -210,19 +183,15 @@ export default function SettingsPage() {
             {/* HEADER */}
             <div className="border-b bg-muted/20 px-6 py-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-blue-500/10 p-2 text-blue-500">
+                <div className="rounded-2xl bg-blue-500/10 dark:bg-blue-500/15 p-2 text-blue-600 dark:text-blue-400">
                   <Languages className="size-5" />
                 </div>
 
                 <div>
-                  <h2 className="font-semibold">
-                    Mipangilio ya Lugha
-                  </h2>
+                  <h2 className="font-semibold">Mipangilio ya Lugha</h2>
 
                   <p className="text-sm text-muted-foreground">
-                    Simamia tafsiri na
-                    lugha ndani ya
-                    mfumo.
+                    Simamia tafsiri na lugha ndani ya mfumo.
                   </p>
                 </div>
               </div>
@@ -245,14 +214,10 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold">
-                  Muhtasari wa
-                  Mipangilio
-                </h3>
+                <h3 className="font-semibold">Muhtasari wa Mipangilio</h3>
 
                 <p className="text-sm text-muted-foreground">
-                  Simamia mapendeleo ya
-                  dashibodi kwa urahisi.
+                  Simamia mapendeleo ya dashibodi kwa urahisi.
                 </p>
               </div>
             </div>
@@ -262,45 +227,34 @@ export default function SettingsPage() {
                 <Palette className="mt-0.5 size-4 text-primary" />
 
                 <div>
-                  <p className="text-sm font-medium">
-                    Kubadilisha Theme
-                  </p>
+                  <p className="text-sm font-medium">Kubadilisha Mandhari</p>
 
                   <p className="text-xs text-muted-foreground">
-                    Hamia kati ya mode
-                    ya giza na mwanga.
+                    Hamia kati ya mode ya giza na mwanga.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 rounded-2xl border bg-muted/20 p-4">
-                <Globe2 className="mt-0.5 size-4 text-blue-500" />
+                <Globe2 className="mt-0.5 size-4 text-blue-600 dark:text-blue-400" />
 
                 <div>
-                  <p className="text-sm font-medium">
-                    Msaada wa Lugha
-                  </p>
+                  <p className="text-sm font-medium">Msaada wa Lugha</p>
 
                   <p className="text-xs text-muted-foreground">
-                    Mfumo unaunga
-                    mkono lugha nyingi.
+                    Mfumo unaunga mkono lugha mbili.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 rounded-2xl border bg-muted/20 p-4">
-                <ShieldCheck className="mt-0.5 size-4 text-emerald-500" />
+                <ShieldCheck className="mt-0.5 size-4 text-emerald-600 dark:text-emerald-400" />
 
                 <div>
-                  <p className="text-sm font-medium">
-                    Mipangilio Salama
-                  </p>
+                  <p className="text-sm font-medium">Mipangilio Salama</p>
 
                   <p className="text-xs text-muted-foreground">
-                    Taarifa zako za
-                    mipangilio
-                    zimehifadhiwa kwa
-                    usalama.
+                    Taarifa zako za mipangilio zimehifadhiwa kwa usalama.
                   </p>
                 </div>
               </div>
@@ -310,40 +264,30 @@ export default function SettingsPage() {
           {/* TIPS */}
           <div className="rounded-3xl border bg-background p-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-violet-500/10 p-2 text-violet-500">
+              <div className="rounded-2xl bg-violet-500/10 dark:bg-violet-500/15 p-2 text-violet-600 dark:text-violet-400">
                 <Sparkles className="size-5" />
               </div>
 
               <div>
-                <h3 className="font-semibold">
-                  Vidokezo vya Mfumo
-                </h3>
+                <h3 className="font-semibold">Vidokezo vya Mfumo</h3>
 
                 <p className="text-sm text-muted-foreground">
-                  Boresha matumizi yako
-                  ya admin.
+                  Boresha matumizi yako ya admin.
                 </p>
               </div>
             </div>
 
             <div className="mt-5 space-y-3 text-sm text-muted-foreground">
               <div className="rounded-2xl border bg-muted/20 p-4">
-                Tumia dark mode kwa
-                mwonekano mzuri zaidi
-                wakati wa usiku.
+                Tumia dark mode kwa mwonekano mzuri zaidi wakati wa usiku.
               </div>
 
               <div className="rounded-2xl border bg-muted/20 p-4">
-                Chagua lugha
-                unayoielewa zaidi kwa
-                matumizi rahisi ya
-                mfumo.
+                Chagua lugha unayoielewa zaidi kwa matumizi rahisi ya mfumo.
               </div>
 
               <div className="rounded-2xl border bg-muted/20 p-4">
-                Weka mfumo wako katika
-                muonekano safi na
-                unaokufaa kwa kazi za
+                Weka mfumo wako katika muonekano safi na unaokufaa kwa kazi za
                 kila siku.
               </div>
             </div>

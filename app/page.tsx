@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -9,17 +8,22 @@ import {
   ArrowRight,
   Briefcase,
   GraduationCap,
-  Sparkles,
+  Landmark,
   BriefcaseBusiness,
   MessagesSquare,
   Users,
   BookOpenCheck,
   TrendingUp,
   CheckCircle2,
+  ShieldCheck,
+  Building2,
+  Sprout,
+  HeartHandshake,
 } from "lucide-react";
 
 import HeroSlider from "@/components/HeroSlider";
 import HomeNavbar from "@/components/navbar/HomeNavbar";
+import GovernmentFooter from "@/components/government/GovernmentFooter";
 
 import { Button } from "@/components/ui/button";
 
@@ -29,7 +33,7 @@ import {
 } from "@/components/ui/Card";
 
 /* ====================================================== */
-/* ANIMATIONS */
+/* ANIMATIONS — preserved from the existing home page      */
 /* ====================================================== */
 
 const fadeUp: Variants = {
@@ -60,23 +64,23 @@ const staggerContainer: Variants = {
 };
 
 /* ====================================================== */
-/* DATA */
+/* DATA                                                    */
 /* ====================================================== */
 
 const stats = [
   {
     value: "500+",
-    label: "Vijana",
+    label: "Wananchi Waliohudumiwa",
   },
 
   {
     value: "120+",
-    label: "Fursa",
+    label: "Fursa na Mafunzo",
   },
 
   {
     value: "24/7",
-    label: "Upatikanaji",
+    label: "Mfumo wa Kidijitali",
   },
 ];
 
@@ -86,7 +90,8 @@ const features = [
     desc: `
       Pata taarifa za ajira, mikopo,
       nafasi za kujitolea na fursa
-      mbalimbali za maendeleo.
+      mbalimbali za maendeleo kwa
+      wananchi wa Wilaya ya Mlele.
     `,
 
     icon: BriefcaseBusiness,
@@ -97,7 +102,7 @@ const features = [
     desc: `
       Jifunze kupitia semina, mafunzo
       na kozi mbalimbali zinazoongeza
-      ujuzi wa kisasa.
+      ujuzi wa kitaalamu na ujasiriamali.
     `,
 
     icon: GraduationCap,
@@ -108,7 +113,7 @@ const features = [
     desc: `
       Pata msaada, ushauri wa kitaalamu
       na majibu ya maswali kuhusu
-      maendeleo ya vijana.
+      huduma za Serikali ya Wilaya.
     `,
 
     icon: MessagesSquare,
@@ -117,7 +122,7 @@ const features = [
 
 const aboutStats = [
   {
-    title: "Vijana",
+    title: "Wananchi",
     value: "500+",
     icon: Users,
   },
@@ -135,8 +140,8 @@ const aboutStats = [
   },
 
   {
-    title: "Ukuaji",
-    value: "95%",
+    title: "Miradi",
+    value: "45+",
     icon: TrendingUp,
   },
 ];
@@ -146,8 +151,8 @@ const steps = [
     step: "01",
     title: "Jisajili",
     desc: `
-      Fungua akaunti yako ndani ya
-      dakika chache.
+      Fungua akaunti yako rasmi
+      ya mfumo ndani ya dakika chache.
     `,
   },
 
@@ -156,7 +161,7 @@ const steps = [
     title: "Tafuta Fursa",
     desc: `
       Chagua ajira, mafunzo au
-      huduma inayokufaa.
+      huduma inayokufaa kwa wakati wako.
     `,
   },
 
@@ -165,13 +170,31 @@ const steps = [
     title: "Anza Safari",
     desc: `
       Omba fursa au anza kujifunza
-      moja kwa moja.
+      moja kwa moja kupitia mfumo.
     `,
   },
 ];
 
+const priorities = [
+  {
+    icon: Sprout,
+    title: "Kilimo na Ujasiriamali",
+    desc: "Kuinua uchumi wa wananchi kupitia kilimo chenye tija na ujasiriamali endelevu.",
+  },
+  {
+    icon: Building2,
+    title: "Miundombinu",
+    desc: "Kujenga na kudumisha miundombinu ya kisasa kwa maendeleo ya Wilaya.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Huduma kwa Jamii",
+    desc: "Kutoa huduma bora za kijamii, elimu na afya kwa wananchi wote.",
+  },
+];
+
 /* ====================================================== */
-/* PAGE */
+/* PAGE                                                    */
 /* ====================================================== */
 
 export default function HomePage() {
@@ -179,18 +202,20 @@ export default function HomePage() {
     <main
       className="
         min-h-screen
+
         bg-background
+
         text-foreground
       "
     >
       {/* ====================================================== */}
-      {/* NAVBAR */}
+      {/* NAVBAR                                                  */}
       {/* ====================================================== */}
 
       <HomeNavbar />
 
       {/* ====================================================== */}
-      {/* HERO */}
+      {/* HERO                                                    */}
       {/* ====================================================== */}
 
       <section
@@ -198,16 +223,14 @@ export default function HomePage() {
         className="
           relative overflow-hidden
 
-          border-b border-border/50
+          border-b border-gov-mist
 
-          bg-linear-to-b
-          from-primary/5
-          via-background
-          to-background
+          bg-gov-paper
         "
       >
-        {/* GLOW */}
+        {/* SUBTLE GOV GLOW */}
         <div
+          aria-hidden
           className="
             pointer-events-none
 
@@ -219,7 +242,23 @@ export default function HomePage() {
 
             rounded-full
 
-            bg-primary/10
+            bg-gov-green-100/40
+
+            blur-3xl
+          "
+        />
+        <div
+          aria-hidden
+          className="
+            pointer-events-none
+
+            absolute right-0 top-32
+
+            h-72 w-72
+
+            rounded-full
+
+            bg-gov-gold-100/40
 
             blur-3xl
           "
@@ -231,10 +270,11 @@ export default function HomePage() {
 
             mx-auto max-w-7xl
 
-            px-6
+            px-4 sm:px-6
 
-            pt-32 pb-16
-            md:pt-40 md:pb-24
+            pt-28 pb-16
+            md:pt-36 md:pb-24
+            lg:pt-40
           "
         >
           <div
@@ -245,7 +285,7 @@ export default function HomePage() {
             "
           >
             {/* ====================================================== */}
-            {/* LEFT */}
+            {/* LEFT                                                    */}
             {/* ====================================================== */}
 
             <motion.div
@@ -264,28 +304,27 @@ export default function HomePage() {
 
                   rounded-full
 
-                  border border-border/60
+                  border border-gov-green-200
 
-                  bg-background/80
+                  bg-gov-green-50
 
                   px-4 py-2
 
-                  text-xs font-medium
+                  text-xs font-semibold
+                  text-gov-green-700
 
                   shadow-sm
-
-                  backdrop-blur
                 "
               >
-                <Sparkles
+                <Landmark
                   className="
                     size-3.5
-                    text-primary
+                    text-gov-green-700
                   "
                 />
 
                 <span>
-                  Mfumo Rasmi wa Vijana — Mlele DC
+                  Mfumo Rasmi wa Serikali · Halmashauri ya Mlele
                 </span>
               </div>
 
@@ -295,20 +334,22 @@ export default function HomePage() {
                   mt-7
 
                   text-4xl
-                  font-black
+                  font-bold
                   tracking-tight
 
                   leading-tight
+
+                  text-gov-ink
 
                   sm:text-5xl
                   lg:text-6xl
                 "
               >
                 Fursa za{" "}
-                <span className="text-primary">
+                <span className="text-gov-green-700">
                   Maendeleo
                 </span>{" "}
-                kwa Vijana wa Mlele
+                kwa Wananchi wa Mlele
               </h1>
 
               {/* DESCRIPTION */}
@@ -320,21 +361,20 @@ export default function HomePage() {
 
                   text-base leading-relaxed
 
-                  text-muted-foreground
+                  text-gov-ink-soft/80
 
                   sm:text-lg
 
                   lg:mx-0
                 "
               >
-                Mlele DC Fursa Portal ni
-                jukwaa la kisasa
-                linalowaunganisha vijana
-                na taarifa muhimu kuhusu
-                ajira, mafunzo, mikopo,
-                biashara na fursa za
-                maendeleo kwa urahisi na
-                uwazi zaidi.
+                Mfumo rasmi wa kidijitali wa
+                Halmashauri ya Wilaya ya Mlele
+                unaowaunganisha wananchi na
+                taarifa muhimu kuhusu ajira,
+                mafunzo, mikopo, biashara na
+                fursa nyingine za maendeleo kwa
+                urahisi na uwazi.
               </p>
 
               {/* BUTTONS */}
@@ -353,12 +393,16 @@ export default function HomePage() {
                   asChild
                   size="lg"
                   className="
-                    h-13 rounded-2xl
-                    px-8 text-base
+                    h-12 rounded-xl
+                    bg-primary px-7
+                    text-sm font-semibold text-primary-foreground
+                    shadow-md shadow-gov-green-900/15
+                    dark:shadow-black/20
+                    hover:bg-primary-hover
                   "
                 >
                   <Link href="/register">
-                    Jiunge Sasa
+                    Jisajili Sasa
 
                     <ArrowRight
                       className="
@@ -373,8 +417,13 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   className="
-                    h-13 rounded-2xl
-                    px-8 text-base
+                    h-12 rounded-xl
+                    border-gov-mist
+                    bg-gov-paper
+                    px-7 text-sm font-semibold
+                    text-gov-ink
+                    hover:bg-gov-mist
+                    hover:text-gov-green-700
                   "
                 >
                   <Link href="/login">
@@ -391,7 +440,7 @@ export default function HomePage() {
                   flex flex-col gap-3
 
                   text-sm
-                  text-muted-foreground
+                  text-gov-ink-soft/80
 
                   sm:flex-row
                   sm:flex-wrap
@@ -405,6 +454,7 @@ export default function HomePage() {
                   "Ajira",
                   "Mafunzo",
                   "Mikopo",
+                  "Ujasiriamali",
                 ].map((item) => (
                   <div
                     key={item}
@@ -414,7 +464,7 @@ export default function HomePage() {
                   >
                     <CheckCircle2
                       className="
-                        size-4 text-primary
+                        size-4 text-gov-green-700
                       "
                     />
 
@@ -428,7 +478,7 @@ export default function HomePage() {
                 className="
                   mt-12
 
-                  grid grid-cols-3 gap-4
+                  grid grid-cols-3 gap-3 sm:gap-4
                 "
               >
                 {stats.map((item, index) => (
@@ -437,22 +487,20 @@ export default function HomePage() {
                     className="
                       rounded-2xl
 
-                      border border-border/60
+                      border border-gov-mist
 
-                      bg-background/70
+                      bg-gov-paper
 
                       px-4 py-5
 
                       shadow-sm
-
-                      backdrop-blur
                     "
                   >
                     <div
                       className="
                         text-2xl
                         font-bold
-                        text-primary
+                        text-gov-green-700
                       "
                     >
                       {item.value}
@@ -463,7 +511,7 @@ export default function HomePage() {
                         mt-1
 
                         text-xs
-                        text-muted-foreground
+                        text-gov-ink-soft/70
 
                         sm:text-sm
                       "
@@ -476,7 +524,7 @@ export default function HomePage() {
             </motion.div>
 
             {/* ====================================================== */}
-            {/* RIGHT */}
+            {/* RIGHT (HERO SLIDER)                                    */}
             {/* ====================================================== */}
 
             <motion.div
@@ -491,16 +539,26 @@ export default function HomePage() {
 
                 overflow-hidden
 
-                rounded-[32px]
+                rounded-3xl
 
-                border border-border/60
+                border border-gov-mist
 
-                bg-card
+                bg-gov-paper
 
-                shadow-2xl
-                shadow-primary/10
+                shadow-xl shadow-gov-ink/5
               "
             >
+              {/* Subtle Tanzania tricolor accent */}
+              <div
+                aria-hidden
+                className="absolute inset-x-0 top-0 z-20 flex h-1"
+              >
+                <div className="flex-1 bg-gov-green-600" />
+                <div className="flex-1 bg-gov-gold-500" />
+                <div className="flex-1 bg-gov-blue-500" />
+                <div className="flex-1 bg-gov-ink-soft/70" />
+              </div>
+
               <HeroSlider
                 images={[
                   "/hero1.jpg",
@@ -517,7 +575,7 @@ export default function HomePage() {
       </section>
 
       {/* ====================================================== */}
-      {/* ABOUT */}
+      {/* ABOUT                                                   */}
       {/* ====================================================== */}
 
       <motion.section
@@ -529,11 +587,12 @@ export default function HomePage() {
         className="
           relative overflow-hidden
 
-          py-24
+          py-20 sm:py-24
         "
       >
         {/* DECORATION */}
         <div
+          aria-hidden
           className="
             absolute right-0 top-0
 
@@ -543,7 +602,7 @@ export default function HomePage() {
 
             rounded-full
 
-            bg-primary/10
+            bg-gov-green-100/50
 
             blur-3xl
           "
@@ -555,12 +614,12 @@ export default function HomePage() {
 
             mx-auto max-w-7xl
 
-            px-6
+            px-4 sm:px-6
           "
         >
           <div
             className="
-              grid items-center gap-16
+              grid items-center gap-14
 
               lg:grid-cols-2
             "
@@ -573,17 +632,18 @@ export default function HomePage() {
 
                   rounded-full
 
-                  border border-primary/20
+                  border border-gov-green-200
 
-                  bg-primary/10
+                  bg-gov-green-50
 
                   px-4 py-1.5
 
                   text-xs font-semibold
 
-                  text-primary
+                  text-gov-green-700
                 "
               >
+                <ShieldCheck className="size-3.5" />
                 Kuhusu Mfumo
               </div>
 
@@ -591,7 +651,8 @@ export default function HomePage() {
                 className="
                   mt-6
 
-                  text-3xl font-black tracking-tight
+                  text-3xl font-bold tracking-tight
+                  text-gov-ink
 
                   sm:text-4xl
                   md:text-5xl
@@ -601,10 +662,10 @@ export default function HomePage() {
                 <span
                   className="
                     block
-                    text-primary
+                    text-gov-green-700
                   "
                 >
-                  Fursa kwa Vijana
+                  Serikali ya Wilaya
                 </span>
               </h2>
 
@@ -616,20 +677,17 @@ export default function HomePage() {
 
                   text-base leading-relaxed
 
-                  text-muted-foreground
+                  text-gov-ink-soft/80
 
                   sm:text-lg
                 "
               >
-                Mlele DC Fursa Portal ni
-                jukwaa maalumu
-                linalounganisha vijana na
-                taarifa muhimu za ajira,
-                mafunzo, mikopo,
-                uwezeshaji na maendeleo
-                kupitia mfumo mmoja wa
-                kisasa wenye uwazi na
-                urahisi wa matumizi.
+                Halmashauri ya Wilaya ya Mlele
+                ni miongoni mwa mamlaka za
+                Serikali za Mitaa zinazotoa
+                huduma kwa wananchi kupitia
+                mfumo wa kidijitali wenye
+                uwazi na urahisi wa matumizi.
               </p>
 
               <p
@@ -640,15 +698,13 @@ export default function HomePage() {
 
                   text-base leading-relaxed
 
-                  text-muted-foreground
+                  text-gov-ink-soft/80
                 "
               >
-                Mfumo huu umeundwa
-                kusaidia vijana kupata
-                taarifa sahihi kwa wakati,
-                kuongeza ujuzi na
-                kuimarisha ushiriki wao
-                katika shughuli za
+                Mfumo huu umeundwa kusaidia
+                wananchi kupata taarifa sahihi
+                kwa wakati, kuongeza ujuzi na
+                kushiriki katika shughuli za
                 maendeleo ya jamii.
               </p>
             </div>
@@ -676,17 +732,16 @@ export default function HomePage() {
 
                           overflow-hidden
 
-                          border-border/60
+                          border-gov-mist
 
-                          bg-background/80
+                          bg-gov-paper
 
-                          backdrop-blur
-
-                          transition-all duration-300
+                          transition-all duration-200
 
                           hover:-translate-y-1
-                          hover:border-primary/30
-                          hover:shadow-xl
+                          hover:border-gov-green-300
+                          hover:shadow-lg
+                          hover:shadow-gov-green-900/5
                         "
                       >
                         <div
@@ -694,13 +749,13 @@ export default function HomePage() {
                             absolute inset-0
 
                             bg-linear-to-br
-                            from-primary/5
+                            from-gov-green-50
                             via-transparent
                             to-transparent
 
                             opacity-0
 
-                            transition-opacity duration-300
+                            transition-opacity duration-200
 
                             group-hover:opacity-100
                           "
@@ -718,9 +773,11 @@ export default function HomePage() {
 
                               rounded-2xl
 
-                              bg-primary/10
+                              bg-gov-green-50
 
-                              text-primary
+                              text-gov-green-700
+
+                              ring-1 ring-gov-green-100
                             "
                           >
                             <Icon
@@ -735,8 +792,9 @@ export default function HomePage() {
                               mt-6
 
                               text-3xl
-                              font-black
+                              font-bold
                               tracking-tight
+                              text-gov-ink
                             "
                           >
                             {item.value}
@@ -749,7 +807,7 @@ export default function HomePage() {
                               text-sm
                               font-medium
 
-                              text-muted-foreground
+                              text-gov-ink-soft/70
                             "
                           >
                             {item.title}
@@ -766,7 +824,7 @@ export default function HomePage() {
       </motion.section>
 
       {/* ====================================================== */}
-      {/* SERVICES */}
+      {/* SERVICES                                                */}
       {/* ====================================================== */}
 
       <motion.section
@@ -778,30 +836,24 @@ export default function HomePage() {
         className="
           relative overflow-hidden
 
-          py-24
+          bg-gov-mist/50
+
+          py-20 sm:py-24
         "
       >
-        {/* BACKGROUND */}
-        <div
-          className="
-            absolute inset-0
-            bg-muted/30
-          "
-        />
-
         <div
           className="
             relative z-10
 
             mx-auto max-w-7xl
 
-            px-6
+            px-4 sm:px-6
           "
         >
           {/* HEADER */}
           <div
             className="
-              mx-auto mb-16
+              mx-auto mb-14
 
               max-w-3xl
 
@@ -814,18 +866,18 @@ export default function HomePage() {
 
                 rounded-full
 
-                border border-primary/20
+                border border-gov-green-200
 
-                bg-primary/10
+                bg-gov-green-50
 
                 px-4 py-1.5
 
                 text-xs font-semibold
 
-                text-primary
+                text-gov-green-700
               "
             >
-              Huduma Muhimu
+              Huduma za Serikali
             </div>
 
             <h2
@@ -833,8 +885,9 @@ export default function HomePage() {
                 mt-6
 
                 text-3xl
-                font-black
+                font-bold
                 tracking-tight
+                text-gov-ink
 
                 sm:text-4xl
               "
@@ -843,10 +896,10 @@ export default function HomePage() {
               <span
                 className="
                   block
-                  text-primary
+                  text-gov-green-700
                 "
               >
-                Vijana Kufikia Fursa
+                Kupata Huduma za Msingi
               </span>
             </h2>
 
@@ -856,24 +909,22 @@ export default function HomePage() {
 
                 text-base leading-relaxed
 
-                text-muted-foreground
+                text-gov-ink-soft/80
 
                 sm:text-lg
               "
             >
-              Pata huduma mbalimbali
-              muhimu zinazokusaidia
-              kukuza ujuzi, kupata
-              ajira na kujifunza kwa
-              urahisi kupitia mfumo
-              mmoja.
+              Pata huduma mbalimbali muhimu
+              zinazotolewa na Halmashauri ya
+              Wilaya ya Mlele kupitia mfumo
+              mmoja wa kidijitali.
             </p>
           </div>
 
-          {/* GRID */}
+          {/* FEATURE CARDS */}
           <div
             className="
-              grid gap-8
+              grid gap-6
 
               md:grid-cols-2
               xl:grid-cols-3
@@ -891,20 +942,18 @@ export default function HomePage() {
                     className="
                       group relative
 
-                      overflow-hidden
+                      h-full overflow-hidden
 
-                      border-border/60
+                      border-gov-mist
 
-                      bg-background/80
+                      bg-gov-paper
 
-                      backdrop-blur
-
-                      transition-all duration-300
+                      transition-all duration-200
 
                       hover:-translate-y-1
-                      hover:border-primary/30
-                      hover:shadow-2xl
-                      hover:shadow-primary/5
+                      hover:border-gov-green-300
+                      hover:shadow-xl
+                      hover:shadow-gov-green-900/5
                     "
                   >
                     <div
@@ -918,13 +967,13 @@ export default function HomePage() {
 
                         rounded-full
 
-                        bg-primary/10
+                        bg-gov-green-100
 
                         blur-3xl
 
                         opacity-0
 
-                        transition-opacity duration-300
+                        transition-opacity duration-200
 
                         group-hover:opacity-100
                       "
@@ -938,17 +987,17 @@ export default function HomePage() {
                     >
                       <div
                         className="
-                          flex size-15 items-center justify-center
+                          flex size-14 items-center justify-center
 
-                          rounded-3xl
+                          rounded-2xl
 
-                          bg-primary/10
+                          bg-gov-green-50
 
-                          text-primary
+                          text-gov-green-700
 
-                          shadow-sm
+                          ring-1 ring-gov-green-100
 
-                          transition-transform duration-300
+                          transition-transform duration-200
 
                           group-hover:scale-110
                         "
@@ -970,6 +1019,7 @@ export default function HomePage() {
                             text-xl
                             font-bold
                             tracking-tight
+                            text-gov-ink
                           "
                         >
                           {item.title}
@@ -981,7 +1031,7 @@ export default function HomePage() {
 
                             leading-relaxed
 
-                            text-muted-foreground
+                            text-gov-ink-soft/80
                           "
                         >
                           {item.desc}
@@ -993,11 +1043,67 @@ export default function HomePage() {
               );
             })}
           </div>
+
+          {/* PRIORITY GRID — Government priorities */}
+          <div
+            className="
+              mt-16
+
+              grid gap-5
+
+              md:grid-cols-3
+            "
+          >
+            {priorities.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={index}
+                  variants={fadeUp}
+                  className="
+                    flex items-start gap-4
+
+                    rounded-2xl
+
+                    border border-gov-mist
+
+                    bg-gov-paper
+
+                    p-5
+                  "
+                >
+                  <div
+                    className="
+                      flex size-11 shrink-0 items-center justify-center
+
+                      rounded-xl
+
+                      bg-gov-gold-50
+
+                      text-gov-gold-700
+
+                      ring-1 ring-gov-gold-100
+                    "
+                  >
+                    <Icon className="size-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-gov-ink">
+                      {item.title}
+                    </h4>
+                    <p className="mt-1 text-sm leading-relaxed text-gov-ink-soft/80">
+                      {item.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </motion.section>
 
       {/* ====================================================== */}
-      {/* HOW IT WORKS */}
+      {/* HOW IT WORKS                                            */}
       {/* ====================================================== */}
 
       <motion.section
@@ -1007,13 +1113,13 @@ export default function HomePage() {
         whileInView="visible"
         viewport={{ once: true }}
         className="
-          py-24
+          py-20 sm:py-24
         "
       >
         <div
           className="
             mx-auto max-w-7xl
-            px-6
+            px-4 sm:px-6
           "
         >
           {/* HEADER */}
@@ -1028,15 +1134,15 @@ export default function HomePage() {
 
                 rounded-full
 
-                border border-primary/20
+                border border-gov-green-200
 
-                bg-primary/10
+                bg-gov-green-50
 
                 px-4 py-1.5
 
                 text-xs font-semibold
 
-                text-primary
+                text-gov-green-700
               "
             >
               Mfumo Unavyofanya Kazi
@@ -1047,8 +1153,9 @@ export default function HomePage() {
                 mt-6
 
                 text-3xl
-                font-black
+                font-bold
                 tracking-tight
+                text-gov-ink
 
                 md:text-4xl
               "
@@ -1060,11 +1167,11 @@ export default function HomePage() {
             <p
               className="
                 mt-4
-                text-muted-foreground
+                text-gov-ink-soft/80
               "
             >
               Jiunge ndani ya muda mfupi
-              na uanze kupata fursa.
+              na uanze kupata fursa za maendeleo.
             </p>
           </div>
 
@@ -1083,18 +1190,17 @@ export default function HomePage() {
               >
                 <Card
                   className="
-                    relative overflow-hidden
+                    relative h-full overflow-hidden
 
-                    rounded-[28px]
+                    border-gov-mist
 
-                    border-border/60
+                    bg-gov-paper
 
-                    bg-card
-
-                    transition-all duration-300
+                    transition-all duration-200
 
                     hover:-translate-y-1
-                    hover:shadow-xl
+                    hover:border-gov-green-300
+                    hover:shadow-lg
                   "
                 >
                   <div
@@ -1108,7 +1214,7 @@ export default function HomePage() {
 
                       rounded-full
 
-                      bg-primary/10
+                      bg-gov-green-100
 
                       blur-3xl
                     "
@@ -1123,9 +1229,9 @@ export default function HomePage() {
                     <div
                       className="
                         text-5xl
-                        font-black
+                        font-bold
 
-                        text-primary/20
+                        text-gov-green-200
                       "
                     >
                       {item.step}
@@ -1136,7 +1242,8 @@ export default function HomePage() {
                         mt-6
 
                         text-xl
-                        font-semibold
+                        font-bold
+                        text-gov-ink
                       "
                     >
                       {item.title}
@@ -1148,7 +1255,7 @@ export default function HomePage() {
 
                         leading-relaxed
 
-                        text-muted-foreground
+                        text-gov-ink-soft/80
                       "
                     >
                       {item.desc}
@@ -1162,7 +1269,7 @@ export default function HomePage() {
       </motion.section>
 
       {/* ====================================================== */}
-      {/* CTA */}
+      {/* CTA                                                     */}
       {/* ====================================================== */}
 
       <motion.section
@@ -1173,16 +1280,18 @@ export default function HomePage() {
         className="
           relative overflow-hidden
 
-          border-y border-border/50
+          border-y border-gov-green-700/40
 
-          bg-primary
+          bg-gov-green-600
 
-          py-24
+          py-20 sm:py-24
 
-          text-primary-foreground
+          text-white
         "
       >
+        {/* Decorative rings */}
         <div
+          aria-hidden
           className="
             absolute left-1/2 top-1/2
 
@@ -1198,6 +1307,20 @@ export default function HomePage() {
             blur-3xl
           "
         />
+        <div
+          aria-hidden
+          className="
+            absolute -right-24 -bottom-24
+
+            h-72 w-72
+
+            rounded-full
+
+            bg-gov-gold-400/20
+
+            blur-3xl
+        "
+        />
 
         <div
           className="
@@ -1205,16 +1328,41 @@ export default function HomePage() {
 
             mx-auto max-w-4xl
 
-            px-6
+            px-4 sm:px-6
 
             text-center
           "
         >
+          <div
+            className="
+              mx-auto inline-flex items-center gap-2
+
+              rounded-full
+
+              border border-white/20
+
+              bg-white/10
+
+              px-4 py-1.5
+
+              text-xs font-semibold uppercase tracking-[0.18em]
+              text-white/90
+
+              backdrop-blur
+            "
+          >
+            <Landmark className="size-3.5" />
+            Mfumo wa Serikali
+          </div>
+
           <h2
             className="
-              text-4xl
-              font-black
+              mt-6
+              text-3xl
+              font-bold
               tracking-tight
+
+              sm:text-4xl
             "
           >
             Jiunge Leo na
@@ -1230,39 +1378,40 @@ export default function HomePage() {
 
               text-base leading-relaxed
 
-              text-primary-foreground/80
+              text-white/90
             "
           >
             Usikose nafasi za
             ajira, mafunzo na
-            huduma muhimu
-            zinazotolewa kupitia
-            mfumo huu wa kisasa.
+            huduma nyingine muhimu
+            zinazotolewa na Halmashauri
+            ya Wilaya ya Mlele.
           </p>
 
           <div
             className="
               mt-10
+
+              flex flex-col items-center justify-center gap-3
+
+              sm:flex-row
             "
           >
             <Button
               asChild
               size="lg"
-              variant="secondary"
               className="
-                rounded-2xl
+                h-12 rounded-xl
 
-                bg-white
+                bg-white px-7
 
-                px-8
-
-                text-primary
+                text-sm font-semibold text-gov-green-700
 
                 hover:bg-white/90
               "
             >
               <Link href="/register">
-                Anza Sasa
+                Jisajili Sasa
 
                 <ArrowRight
                   className="
@@ -1271,77 +1420,34 @@ export default function HomePage() {
                 />
               </Link>
             </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="
+                h-12 rounded-xl
+
+                border-white/30
+                bg-transparent
+                px-7 text-sm font-semibold text-white
+
+                hover:bg-white/10
+                hover:text-white
+              "
+            >
+              <Link href="/login">
+                Ingia Kwenye Mfumo
+              </Link>
+            </Button>
           </div>
         </div>
       </motion.section>
 
       {/* ====================================================== */}
-      {/* FOOTER */}
+      {/* FOOTER (Government)                                     */}
       {/* ====================================================== */}
 
-      <footer
-        className="
-          border-t border-border/50
-
-          bg-background
-
-          py-8
-        "
-      >
-        <div
-          className="
-            mx-auto max-w-7xl
-            px-6
-          "
-        >
-          <div
-            className="
-              flex flex-col items-center
-              justify-between gap-4
-
-              text-center
-
-              md:flex-row
-              md:text-left
-            "
-          >
-            <div>
-              <h3
-                className="
-                  font-semibold
-                "
-              >
-                Mlele DC Fursa Portal
-              </h3>
-
-              <p
-                className="
-                  mt-1
-
-                  text-sm
-
-                  text-muted-foreground
-                "
-              >
-                Mfumo wa kisasa wa
-                maendeleo kwa vijana.
-              </p>
-            </div>
-
-            <p
-              className="
-                text-sm
-                text-muted-foreground
-              "
-            >
-              © {new Date().getFullYear()}{" "}
-              Mlele DC. Haki zote
-              zimehifadhiwa.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <GovernmentFooter />
     </main>
   );
 }
-

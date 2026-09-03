@@ -481,7 +481,7 @@ export default function CategoriesPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-emerald-600
+                  text-emerald-600 dark:text-emerald-400
                 "
               >
                 {
@@ -498,9 +498,9 @@ export default function CategoriesPage() {
 
                 rounded-2xl
 
-                bg-emerald-500/10
+                bg-emerald-500/10 dark:bg-emerald-500/15
 
-                text-emerald-600
+                text-emerald-600 dark:text-emerald-400
               "
             >
               <FileText className="size-5" />

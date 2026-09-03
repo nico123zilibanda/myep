@@ -8,7 +8,7 @@ import {
   UserCircle2,
 } from "lucide-react";
 
-import type { LucideIcon } from "lucide-react";
+import type { ForwardRefExoticComponent } from "react";
 
 /* ================= TYPES ================= */
 
@@ -17,7 +17,7 @@ export interface YouthMenuItem {
 
   href: string;
 
-  icon: LucideIcon;
+  icon: ForwardRefExoticComponent<React.RefAttributes<SVGSVGElement> & Record<string, unknown>>;
 
   badge?: string | number;
 }

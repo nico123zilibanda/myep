@@ -1,3 +1,4 @@
+
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AdminShell from "./AdminShell";
@@ -15,3 +16,4 @@ export default async function AdminLayout({
 
   return <AdminShell user={user}>{children}</AdminShell>;
 }
+

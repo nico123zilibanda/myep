@@ -9,10 +9,25 @@ import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "MLELE DC FURSA PORTAL",
+  title: "Mlele DC Fursa Portal",
 
   description:
-    "Mfumo wa fursa kwa vijana wa Wilaya ya Mlele",
+    "Mfumo rasmi wa kidijitali wa Halmashauri ya Wilaya ya Mlele kwa ajili ya fursa za ajira, mafunzo, mikopo na huduma nyingine za maendeleo kwa wananchi.",
+
+  applicationName: "Mlele DC Digital Services",
+
+  authors: [
+    { name: "Mlele Fursa Potal" },
+  ],
+
+  keywords: [
+    "Halmashauri ya Mlele",
+    "Mlele District Council",
+    "Serikali ya Tanzania",
+    "Fursa",
+    "Mafunzo",
+    "Ajira",
+  ],
 };
 
 export default function RootLayout({
@@ -34,6 +49,8 @@ export default function RootLayout({
           font-sans
 
           antialiased
+
+          text-foreground
         "
       >
         <ThemeProvider>

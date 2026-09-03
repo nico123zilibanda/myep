@@ -374,6 +374,7 @@ export default function Navbar({
                   size-3 rounded-full
                   border-2 border-background
                   bg-emerald-500
+                  dark:bg-emerald-400
                 "
               />
             </div>
@@ -448,7 +449,7 @@ export default function Navbar({
                     bg-linear-to-br
                     from-primary/8
                     via-transparent
-                    to-indigo-500/5
+                    to-primary/5
                   "
                 />
 

@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -8,13 +7,15 @@ import { useEffect, useState } from "react";
 import {
   Menu,
   X,
-  Sparkles,
   ArrowRight,
+  Landmark,
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
+
+import { HalmashauriLogo } from "@/components/government/HalmashauriLogo";
 
 import { cn } from "@/lib/utils";
 
@@ -104,29 +105,42 @@ export default function HomeNavbar() {
           `,
           scrolled
             ? `
-              border-b border-border/50
+              border-b border-border/60
 
-              bg-background/80
+              bg-background/90
 
               shadow-sm
 
               backdrop-blur-2xl
             `
             : `
-              bg-transparent
+              bg-gov-paper/70 backdrop-blur
             `,
         )}
       >
+        {/* Subtle tricolor stripe */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-0.5 flex"
+        >
+          <div className="flex-1 bg-gov-green-600" />
+          <div className="flex-1 bg-gov-gold-500" />
+          <div className="flex-1 bg-gov-blue-500" />
+          <div className="flex-1 bg-gov-ink-soft/70" />
+        </div>
+
         <div
           className="
             mx-auto max-w-7xl
 
-            px-6
+            px-4 sm:px-6
           "
         >
           <div
             className="
-              flex h-20 items-center justify-between
+              flex h-16 items-center justify-between
+
+              lg:h-20
             "
           >
             {/* ================= LOGO ================= */}
@@ -136,52 +150,37 @@ export default function HomeNavbar() {
               className="
                 flex items-center gap-3
               "
+              aria-label="Halmashauri ya Wilaya ya Mlele — Mwanzo"
             >
-              {/* ICON */}
-              <div
-                className="
-                  flex size-11 items-center justify-center
-
-                  rounded-2xl
-
-                  bg-primary
-
-                  text-primary-foreground
-
-                  shadow-lg
-                  shadow-primary/20
-                "
-              >
-                <Sparkles
-                  className="
-                    size-5
-                  "
-                />
-              </div>
+              {/* HALMASHAURI LOGO */}
+              <HalmashauriLogo size="md" priority />
 
               {/* TEXT */}
               <div
                 className="
-                  flex flex-col
+                  flex flex-col leading-tight
                 "
               >
                 <span
                   className="
                     text-sm
-                    font-black
+                    font-bold
                     tracking-tight
+                    text-gov-ink
+
+                    sm:text-base
                   "
                 >
-                  Mlele DC
+                  Halmashauri ya Wilaya ya Mlele
                 </span>
 
                 <span
                   className="
-                    text-xs
-                    text-muted-foreground
+                    text-[11px] font-medium
+                    text-gov-ink-soft/70
                   "
                 >
-                  Fursa Portal
+                  Mlele District Council
                 </span>
               </div>
             </Link>
@@ -207,12 +206,12 @@ export default function HomeNavbar() {
                     text-sm
                     font-medium
 
-                    text-muted-foreground
+                    text-gov-ink-soft
 
-                    transition-all duration-200
+                    transition-colors
 
-                    hover:bg-muted
-                    hover:text-foreground
+                    hover:bg-gov-mist
+                    hover:text-gov-green-700
                   "
                 >
                   {link.label}
@@ -224,7 +223,7 @@ export default function HomeNavbar() {
 
             <div
               className="
-                flex items-center gap-3
+                flex items-center gap-2 sm:gap-3
               "
             >
               {/* DESKTOP BUTTONS */}
@@ -238,9 +237,7 @@ export default function HomeNavbar() {
                 <Button
                   asChild
                   variant="ghost"
-                  className="
-                    rounded-2xl
-                  "
+                  className="rounded-xl text-gov-ink hover:bg-gov-mist hover:text-gov-green-700"
                 >
                   <Link href="/login">
                     Ingia
@@ -250,20 +247,21 @@ export default function HomeNavbar() {
                 <Button
                   asChild
                   className="
-                    rounded-2xl
+                    rounded-xl
 
-                    px-5
+                    bg-primary px-5
 
-                    shadow-lg
-                    shadow-primary/20
+                    text-primary-foreground shadow-sm
+
+                    hover:bg-primary-hover
                   "
                 >
                   <Link href="/register">
-                    Jiunge Sasa
+                    Jisajili
 
                     <ArrowRight
                       className="
-                        size-4
+                        ml-2 size-4
                       "
                     />
                   </Link>
@@ -278,10 +276,13 @@ export default function HomeNavbar() {
                   setMobileOpen(true)
                 }
                 className="
-                  rounded-2xl
+                  rounded-xl
+
+                  border-gov-mist
 
                   lg:hidden
                 "
+                aria-label="Fungua menyu"
               >
                 <Menu
                   className="
@@ -343,9 +344,9 @@ export default function HomeNavbar() {
                 max-w-sm
                 flex-col
 
-                border-l border-border/50
+                border-l border-gov-mist
 
-                bg-background
+                bg-gov-paper
 
                 shadow-2xl
               "
@@ -355,55 +356,31 @@ export default function HomeNavbar() {
                 className="
                   flex items-center justify-between
 
-                  border-b border-border/50
+                  border-b border-gov-mist
 
-                  px-6 py-5
+                  px-5 py-4
                 "
               >
                 {/* LOGO */}
-                <div
+                <Link
+                  href="/"
+                  onClick={() =>
+                    setMobileOpen(false)
+                  }
                   className="
                     flex items-center gap-3
                   "
                 >
-                  <div
-                    className="
-                      flex size-10 items-center justify-center
-
-                      rounded-2xl
-
-                      bg-primary
-
-                      text-primary-foreground
-                    "
-                  >
-                    <Sparkles
-                      className="
-                        size-4
-                      "
-                    />
+                  <HalmashauriLogo size="sm" />
+                  <div className="flex flex-col leading-tight">
+                    <span className="text-sm font-bold text-gov-ink">
+                      Halmashauri ya Mlele
+                    </span>
+                    <span className="text-[11px] text-gov-ink-soft/70">
+                      Mlele District Council
+                    </span>
                   </div>
-
-                  <div>
-                    <h3
-                      className="
-                        text-sm
-                        font-bold
-                      "
-                    >
-                      Mlele DC
-                    </h3>
-
-                    <p
-                      className="
-                        text-xs
-                        text-muted-foreground
-                      "
-                    >
-                      Fursa Portal
-                    </p>
-                  </div>
-                </div>
+                </Link>
 
                 {/* CLOSE */}
                 <Button
@@ -412,9 +389,8 @@ export default function HomeNavbar() {
                   onClick={() =>
                     setMobileOpen(false)
                   }
-                  className="
-                    rounded-2xl
-                  "
+                  className="rounded-xl"
+                  aria-label="Funga menyu"
                 >
                   <X
                     className="
@@ -434,7 +410,7 @@ export default function HomeNavbar() {
               >
                 <nav
                   className="
-                    flex flex-col gap-2
+                    flex flex-col gap-1
                   "
                 >
                   {navLinks.map(
@@ -464,16 +440,19 @@ export default function HomeNavbar() {
                           className="
                             flex items-center
 
-                            rounded-2xl
+                            rounded-xl
 
-                            px-4 py-4
+                            px-4 py-3.5
 
                             text-sm
                             font-medium
 
+                            text-gov-ink-soft
+
                             transition-colors
 
-                            hover:bg-muted
+                            hover:bg-gov-mist
+                            hover:text-gov-green-700
                           "
                         >
                           {link.label}
@@ -487,7 +466,7 @@ export default function HomeNavbar() {
               {/* FOOTER */}
               <div
                 className="
-                  border-t border-border/50
+                  border-t border-gov-mist
 
                   p-4
                 "
@@ -500,29 +479,44 @@ export default function HomeNavbar() {
                   <Button
                     asChild
                     variant="outline"
-                    className="
-                      h-11
-
-                      rounded-2xl
-                    "
+                    className="h-11 w-full rounded-xl border-gov-mist"
                   >
-                    <Link href="/login">
+                    <Link
+                      href="/login"
+                      onClick={() =>
+                        setMobileOpen(false)
+                      }
+                    >
+                      <Landmark className="mr-2 size-4" />
                       Ingia
                     </Link>
                   </Button>
-
                   <Button
                     asChild
                     className="
-                      h-11
+                      h-11 w-full
 
-                      rounded-2xl
+                      rounded-xl
+
+                      bg-primary text-primary-foreground
+
+                      hover:bg-primary-hover
                     "
                   >
-                    <Link href="/register">
-                      Jiunge Sasa
+                    <Link
+                      href="/register"
+                      onClick={() =>
+                        setMobileOpen(false)
+                      }
+                    >
+                      Jisajili
+                      <ArrowRight className="ml-2 size-4" />
                     </Link>
                   </Button>
+
+                  <p className="mt-2 text-center text-[11px] uppercase tracking-[0.18em] text-gov-ink-soft/70">
+                    Mfumo Rasmi wa Serikali
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -532,4 +526,3 @@ export default function HomeNavbar() {
     </>
   );
 }
-

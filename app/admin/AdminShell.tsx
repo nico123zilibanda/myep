@@ -1,98 +1,84 @@
+
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import Image from "next/image";
-
+import { useEffect, useState } from "react";
 import clsx from "clsx";
-
-import {
-  ChevronLeft,
-  X,
-} from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 
 import Navbar from "@/components/navbar/Navbar";
 import Menu from "@/components/menu/Menu";
 
-import { CurrentUser } from "@/lib/auth";
+import { HalmashauriLogo } from "@/components/government/HalmashauriLogo";
+import { TanzaniaLogo } from "@/components/government/TanzaniaLogo";
 
-/* ================= TYPES ================= */
+import { CurrentUser } from "@/lib/auth";
 
 interface Props {
   user: CurrentUser;
-
   children: React.ReactNode;
 }
-
-/* ================= COMPONENT ================= */
 
 export default function AdminShell({
   user,
   children,
 }: Props) {
-  const [
-    sidebarCollapsed,
-    setSidebarCollapsed,
-  ] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] =
+    useState(false);
 
   const [mobileOpen, setMobileOpen] =
     useState(false);
 
-  /* ================= ESC CLOSE ================= */
+  /* =====================================================
+   * CLOSE MOBILE SIDEBAR WITH ESC
+   * ===================================================== */
 
   useEffect(() => {
-    const handleEsc = (
-      e: KeyboardEvent,
-    ) => {
-      if (e.key === "Escape") {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
         setMobileOpen(false);
       }
     };
 
-    document.addEventListener(
-      "keydown",
-      handleEsc,
-    );
+    document.addEventListener("keydown", handleEsc);
 
-    return () =>
+    return () => {
       document.removeEventListener(
         "keydown",
         handleEsc,
       );
+    };
   }, []);
 
-  /* ================= BODY LOCK ================= */
+  /* =====================================================
+   * LOCK BODY SCROLL WHEN MOBILE SIDEBAR IS OPEN
+   * ===================================================== */
 
   useEffect(() => {
     if (mobileOpen) {
-      document.body.style.overflow =
-        "hidden";
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow =
-        "auto";
+      document.body.style.overflow = "";
     }
 
     return () => {
-      document.body.style.overflow =
-        "auto";
+      document.body.style.overflow = "";
     };
   }, [mobileOpen]);
-
-  /* ================= UI ================= */
 
   return (
     <div
       className="
         flex h-screen overflow-hidden
 
-        bg-zinc-50
-        dark:bg-zinc-950
+        bg-background
+        text-foreground
+
+        transition-colors duration-200
       "
     >
-      {/* ================= DESKTOP SIDEBAR ================= */}
+      {/* =================================================
+       * DESKTOP SIDEBAR
+       * ================================================= */}
 
       <aside
         className={clsx(
@@ -100,13 +86,9 @@ export default function AdminShell({
             hidden lg:flex
             flex-col
 
-            border-r border-zinc-200/70
-            dark:border-zinc-800/80
+            border-r border-border
 
-            bg-white/80
-            dark:bg-zinc-900/80
-
-            backdrop-blur-xl
+            bg-card
 
             shadow-sm
 
@@ -117,54 +99,50 @@ export default function AdminShell({
             : "w-72",
         )}
       >
-        {/* ================= HEADER ================= */}
+        {/* =================================================
+         * TANZANIA-INSPIRED GOVERNMENT STRIPE
+         * ================================================= */}
+
+        <div
+          aria-hidden="true"
+          className="flex h-0.5 w-full shrink-0"
+        >
+          <div className="flex-1 bg-gov-green-600" />
+          <div className="flex-1 bg-gov-gold-500" />
+          <div className="flex-1 bg-gov-blue-500" />
+          <div className="flex-1 bg-gov-ink-soft/50" />
+        </div>
+
+        {/* =================================================
+         * SIDEBAR HEADER
+         * ================================================= */}
 
         <div
           className="
-            flex h-16 items-center justify-between
+            flex h-16 shrink-0 items-center justify-between
 
-            border-b border-zinc-200/70
-            dark:border-zinc-800/80
+            border-b border-border
 
             px-4
           "
         >
-          {/* LOGO */}
+          {/* LOGO + TITLE */}
 
           <div
             className="
-              flex items-center gap-3
-
+              flex min-w-0 items-center gap-3
               overflow-hidden
             "
           >
-            <div
-              className="
-                relative
-
-                size-10 overflow-hidden
-
-                rounded-2xl
-
-                border border-zinc-200
-                dark:border-zinc-800
-
-                shadow-sm
-              "
-            >
-              <Image
-                src="/logo.png"
-                alt="logo"
-                fill
-                className="object-cover"
-              />
-            </div>
+            <HalmashauriLogo
+              size="sm"
+              priority
+            />
 
             {!sidebarCollapsed && (
               <div
                 className="
-                  flex flex-col
-
+                  flex min-w-0 flex-col
                   leading-tight
                 "
               >
@@ -172,56 +150,72 @@ export default function AdminShell({
                   className="
                     truncate
 
-                    text-[15px]
-                    font-semibold
+                    text-[14px]
+                    font-bold
 
-                    text-zinc-900
-                    dark:text-white
+                    text-foreground
                   "
                 >
-                  Mlele DC
+                  Halmashauri ya Mlele
                 </span>
 
                 <span
                   className="
-                    text-xs
+                    truncate
 
-                    text-zinc-500
+                    text-[11px]
+                    font-medium
+
+                    text-muted-foreground
                   "
                 >
-                  Fursa Portal
+                  Mlele District Council
                 </span>
               </div>
             )}
           </div>
 
-          {/* TOGGLE */}
+          {/* COLLAPSE BUTTON */}
 
           <button
+            type="button"
             onClick={() =>
               setSidebarCollapsed(
-                (prev) => !prev,
+                (previous) => !previous,
               )
             }
             className="
               hidden xl:flex
 
-              size-8 items-center justify-center
+              size-8 shrink-0
+              items-center justify-center
 
               rounded-xl
 
-              transition
+              text-muted-foreground
 
-              hover:bg-zinc-100
-              dark:hover:bg-zinc-800
+              transition-colors
+
+              hover:bg-muted
+              hover:text-gov-green-600
+
+              focus-visible:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-gov-green-500
+              focus-visible:ring-offset-2
+              focus-visible:ring-offset-card
             "
+            aria-label={
+              sidebarCollapsed
+                ? "Panua menyu"
+                : "Punguza menyu"
+            }
+            aria-expanded={!sidebarCollapsed}
           >
             <ChevronLeft
               size={16}
               className={clsx(
-                `
-                  transition-transform duration-300
-                `,
+                "transition-transform duration-300",
                 sidebarCollapsed &&
                   "rotate-180",
               )}
@@ -229,111 +223,165 @@ export default function AdminShell({
           </button>
         </div>
 
-        {/* ================= MENU ================= */}
+        {/* =================================================
+         * SIDEBAR MENU
+         * ================================================= */}
 
         <div
           className="
             flex-1 overflow-y-auto
-
             py-6
           "
         >
           <Menu
-            isCollapsed={
-              sidebarCollapsed
-            }
+            isCollapsed={sidebarCollapsed}
           />
         </div>
 
-        {/* ================= FOOTER ================= */}
+        {/* =================================================
+         * SIDEBAR GOVERNMENT INFO CARD
+         * ================================================= */}
 
         {!sidebarCollapsed && (
           <div
             className="
-              border-t border-zinc-200/70
-              dark:border-zinc-800/80
+              border-t border-border
 
               px-5 py-4
             "
           >
             <div
               className="
+                relative overflow-hidden
                 rounded-2xl
 
-                bg-linear-to-r
-                from-primary
-                to-indigo-600
+                border border-gov-green-500/30
+
+                bg-gov-green-600
+                dark:bg-gov-green-700
 
                 p-4
 
                 text-white
+
+                shadow-sm
+                shadow-gov-green-900/10
               "
             >
-              <p
+              {/* Tanzania-inspired accent */}
+
+              <div
+                aria-hidden="true"
                 className="
-                  text-sm font-medium
+                  absolute inset-x-0 top-0
+                  flex h-0.5
                 "
               >
-                Mfumo wa Msimamizi
+                <div className="flex-1 bg-gov-gold-400" />
+                <div className="flex-1 bg-gov-blue-400" />
+                <div className="flex-1 bg-white/70" />
+              </div>
+
+              <div className="flex items-start gap-2">
+                <TanzaniaLogo
+                  size="sm"
+                  className="h-7! w-7!"
+                />
+
+                <p
+                  className="
+                    text-[11px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.18em]
+                    text-white/80
+                  "
+                >
+                  Msimamizi
+                </p>
+              </div>
+
+              <p
+                className="
+                  mt-2
+
+                  text-sm
+                  font-bold
+                  leading-tight
+                  text-white
+                "
+              >
+                Mfumo wa Usimamizi wa Serikali
               </p>
 
               <p
                 className="
                   mt-1
 
-                  text-xs opacity-80
+                  text-xs
+                  leading-relaxed
+
+                  text-white/85
                 "
               >
-                Mfumo rasmi wa usimamizi wa
-                vijana, fursa, mafunzo,
-                taarifa, na maendeleo ya
-                Wilaya ya Mlele.
+                Mfumo rasmi wa usimamizi wa fursa,
+                mafunzo, na maendeleo ya Wilaya ya
+                Mlele.
               </p>
             </div>
           </div>
         )}
       </aside>
 
-      {/* ================= MOBILE SIDEBAR ================= */}
+      {/* ===================================================
+       * MOBILE SIDEBAR
+       * =================================================== */}
 
       {mobileOpen && (
         <div
           className="
             fixed inset-0 z-50
-
             lg:hidden
           "
         >
-          {/* OVERLAY */}
+          {/* =================================================
+           * OVERLAY
+           * ================================================= */}
 
-          <div
+          <button
+            type="button"
+            aria-label="Funga menyu"
             onClick={() =>
               setMobileOpen(false)
             }
             className="
               absolute inset-0
 
-              bg-black/50
+              cursor-default
 
+              bg-black/50
               backdrop-blur-sm
             "
           />
 
-          {/* PANEL */}
+          {/* =================================================
+           * MOBILE PANEL
+           * ================================================= */}
 
           <aside
             className="
               relative z-50
 
-              flex h-full w-[85%]
+              flex h-full
+              w-[85%]
               max-w-[320px]
               flex-col
 
-              border-r border-zinc-200
-              dark:border-zinc-800
+              border-r border-border
 
-              bg-white
-              dark:bg-zinc-950
+              bg-card
+
+              text-foreground
 
               shadow-2xl
 
@@ -341,15 +389,34 @@ export default function AdminShell({
               slide-in-from-left
               duration-300
             "
+            aria-label="Menyu kuu"
           >
-            {/* HEADER */}
+            {/* =================================================
+             * TRICOLOR STRIPE
+             * ================================================= */}
+
+            <div
+              aria-hidden="true"
+              className="
+                flex h-0.5 w-full shrink-0
+              "
+            >
+              <div className="flex-1 bg-gov-green-600" />
+              <div className="flex-1 bg-gov-gold-500" />
+              <div className="flex-1 bg-gov-blue-500" />
+              <div className="flex-1 bg-gov-ink-soft/50" />
+            </div>
+
+            {/* =================================================
+             * MOBILE HEADER
+             * ================================================= */}
 
             <div
               className="
-                flex h-16 items-center justify-between
+                flex h-16 shrink-0
+                items-center justify-between
 
-                border-b border-zinc-200
-                dark:border-zinc-800
+                border-b border-border
 
                 px-4
               "
@@ -358,74 +425,86 @@ export default function AdminShell({
 
               <div
                 className="
-                  flex items-center gap-3
+                  flex min-w-0
+                  items-center gap-3
                 "
               >
+                <HalmashauriLogo
+                  size="sm"
+                  priority
+                />
+
                 <div
                   className="
-                    relative
-
-                    size-10 overflow-hidden
-
-                    rounded-2xl
+                    min-w-0
                   "
                 >
-                  <Image
-                    src="/logo.png"
-                    alt="logo"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-
-                <div>
                   <p
                     className="
+                      truncate
+
                       text-sm
-                      font-semibold
+                      font-bold
+
+                      text-foreground
                     "
                   >
-                    Mlele DC
+                    Halmashauri ya Mlele
                   </p>
 
                   <p
                     className="
-                      text-xs
-                      text-zinc-500
+                      truncate
+
+                      text-[11px]
+
+                      text-muted-foreground
                     "
                   >
-                    Fursa Portal
+                    Mlele District Council
                   </p>
                 </div>
               </div>
 
-              {/* CLOSE */}
+              {/* CLOSE BUTTON */}
 
               <button
+                type="button"
                 onClick={() =>
                   setMobileOpen(false)
                 }
                 className="
-                  flex size-9 items-center justify-center
+                  flex size-9 shrink-0
+                  items-center justify-center
 
                   rounded-xl
 
-                  transition
+                  text-muted-foreground
 
-                  hover:bg-zinc-100
-                  dark:hover:bg-zinc-800
+                  transition-colors
+
+                  hover:bg-muted
+                  hover:text-gov-green-600
+
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-gov-green-500
+                  focus-visible:ring-offset-2
+                  focus-visible:ring-offset-card
                 "
+                aria-label="Funga menyu"
               >
                 <X size={18} />
               </button>
             </div>
 
-            {/* MENU */}
+            {/* =================================================
+             * MOBILE MENU
+             * ================================================= */}
 
             <div
               className="
                 flex-1 overflow-y-auto
-
                 py-6
               "
             >
@@ -440,14 +519,19 @@ export default function AdminShell({
         </div>
       )}
 
-      {/* ================= MAIN ================= */}
+      {/* =====================================================
+       * MAIN APPLICATION AREA
+       * ===================================================== */}
 
       <div
         className="
-          flex min-w-0 flex-1 flex-col
+          flex min-w-0
+          flex-1 flex-col
         "
       >
-        {/* TOPBAR */}
+        {/* =================================================
+         * TOP NAVBAR
+         * ================================================= */}
 
         <Navbar
           user={user}
@@ -456,19 +540,25 @@ export default function AdminShell({
           }
         />
 
-        {/* PAGE */}
+        {/* =================================================
+         * PAGE CONTENT
+         * ================================================= */}
 
         <main
           className="
             flex-1 overflow-y-auto
 
-            bg-zinc-50
-            dark:bg-zinc-950
+            bg-background
+            text-foreground
+
+            transition-colors duration-200
           "
         >
           <div
             className="
-              mx-auto w-full max-w-7xl
+              mx-auto
+              w-full
+              max-w-7xl
 
               p-4
               md:p-6
@@ -482,3 +572,4 @@ export default function AdminShell({
     </div>
   );
 }
+

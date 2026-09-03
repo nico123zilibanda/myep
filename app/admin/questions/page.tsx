@@ -464,7 +464,7 @@ export default function AdminQuestionsPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-emerald-600
+                  text-emerald-600 dark:text-emerald-400
                 "
               >
                 {
@@ -481,9 +481,9 @@ export default function AdminQuestionsPage() {
 
                 rounded-2xl
 
-                bg-emerald-500/10
+                bg-emerald-500/10 dark:bg-emerald-500/15
 
-                text-emerald-600
+                text-emerald-600 dark:text-emerald-400
               "
             >
               <CheckCircle2 className="size-5" />
@@ -524,7 +524,7 @@ export default function AdminQuestionsPage() {
                 className="
                   text-3xl
                   font-bold
-                  text-amber-600
+                  text-amber-600 dark:text-amber-400
                 "
               >
                 {pendingQuestions}
@@ -539,9 +539,9 @@ export default function AdminQuestionsPage() {
 
                 rounded-2xl
 
-                bg-amber-500/10
+                bg-amber-500/10 dark:bg-amber-500/15
 
-                text-amber-600
+                text-amber-600 dark:text-amber-400
               "
             >
               <Clock3 className="size-5" />
@@ -765,14 +765,14 @@ export default function AdminQuestionsPage() {
 
                               rounded-full
 
-                              bg-amber-500/10
+                              bg-amber-500/10 dark:bg-amber-500/15
 
                               px-3 py-1
 
                               text-xs
                               font-medium
 
-                              text-amber-600
+                              text-amber-600 dark:text-amber-400
                             "
                           >
                             <Clock3 className="size-3.5" />

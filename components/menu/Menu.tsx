@@ -57,7 +57,7 @@ export default function Menu({
 
               {!isCollapsed && (
                 <div className="mb-4 flex items-center gap-3 px-3">
-                  <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
+                  <div className="h-px flex-1 bg-linear-to-r from-gov-mist to-transparent" />
 
                   <p
                     className="
@@ -65,13 +65,13 @@ export default function Menu({
                       font-bold
                       uppercase
                       tracking-[0.24em]
-                      text-muted-foreground/80
+                      text-gov-ink-soft/70
                     "
                   >
                     {t(section.title)}
                   </p>
 
-                  <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
+                  <div className="h-px flex-1 bg-linear-to-l from-gov-mist to-transparent" />
                 </div>
               )}
 
@@ -118,26 +118,25 @@ export default function Menu({
                           ? `
                             border-primary/20
 
-                            bg-linear-to-r
-                            from-primary
-                            via-primary
-                            to-indigo-600
+                            bg-gov-green-600
 
-                            text-primary-foreground
+                            text-white
 
-                            shadow-lg
-                            shadow-primary/20
+                            shadow-md
+                            shadow-gov-green-900/15
                           `
                           : `
                             border-transparent
 
-                            text-muted-foreground
+                            text-gov-ink-soft
 
-                            hover:border-border
-                            hover:bg-muted/60
-                            hover:text-foreground
+                            hover:border-gov-mist
+                            hover:bg-gov-mist
+                            hover:text-gov-green-700
 
-                            dark:hover:bg-zinc-900/70
+                            dark:text-gov-paper/70
+                            dark:hover:bg-gov-green-900
+                            dark:hover:text-gov-paper
                           `,
                       )}
                     >
@@ -172,9 +171,9 @@ export default function Menu({
                             group-hover:opacity-100
 
                             bg-linear-to-r
-                            from-primary/5
-                            via-primary/3
-                            to-indigo-500/5
+                            from-gov-green-50
+                            via-gov-green-50/60
+                            to-transparent
                           "
                         />
                       )}
@@ -197,15 +196,15 @@ export default function Menu({
                             : "size-9",
                           isActive
                             ? `
-                              bg-white/10
+                              bg-white/15
                             `
                             : `
-                              bg-muted/70
+                              bg-gov-mist
 
-                              group-hover:bg-background
+                              group-hover:bg-gov-paper
 
-                              dark:bg-zinc-800/80
-                              dark:group-hover:bg-zinc-800
+                              dark:bg-gov-green-900
+                              dark:group-hover:bg-gov-green-800
                             `,
                         )}
                       >
@@ -347,12 +346,9 @@ export default function Menu({
 
                 rounded-3xl border
 
-                border-primary/10
+                border-gov-green-100
 
-                bg-linear-to-br
-                from-background
-                via-muted/40
-                to-primary/5
+                bg-gov-green-50
 
                 p-5
 
@@ -367,7 +363,7 @@ export default function Menu({
 
                   size-20 rounded-full
 
-                  bg-primary/10
+                  bg-gov-green-200
 
                   blur-2xl
                 "
@@ -379,7 +375,7 @@ export default function Menu({
 
                   size-24 rounded-full
 
-                  bg-indigo-500/10
+                  bg-gov-gold-200
 
                   blur-3xl
                 "
@@ -396,19 +392,19 @@ export default function Menu({
 
                     rounded-full border
 
-                    border-primary/10
+                    border-gov-green-200
 
-                    bg-primary/10
+                    bg-gov-paper
 
                     px-3 py-1
 
                     text-xs font-semibold
-                    text-primary
+                    text-gov-green-700
                   "
                 >
                   <Sparkles className="size-3.5" />
 
-                  Mlele DC Fursa Portal
+                  Mfumo Rasmi wa Serikali
                 </div>
 
                 {/* TITLE */}
@@ -417,11 +413,10 @@ export default function Menu({
                   className="
                     text-sm font-bold
                     tracking-tight
-                    text-foreground
+                    text-gov-ink
                   "
                 >
-                  Mfumo wa Halmashauri ya Wilaya ya
-                  Mlele
+                  Halmashauri ya Wilaya ya Mlele
                 </h3>
 
                 {/* DESCRIPTION */}
@@ -433,12 +428,12 @@ export default function Menu({
                     text-xs
                     leading-relaxed
 
-                    text-muted-foreground
+                    text-gov-ink-soft/80
                   "
                 >
-                   Mfumo wa kisasa wa vijana kwa ajili ya
-                  fursa, mafunzo, ajira, na maendeleo ya
-                  kijamii ndani ya Wilaya ya Mlele.
+                   Mfumo rasmi wa fursa, mafunzo,
+                   ajira, na maendeleo ya kijamii
+                   ndani ya Wilaya ya Mlele.
                 </p>
 
                 {/* STATUS */}
@@ -449,22 +444,20 @@ export default function Menu({
 
                     rounded-2xl border
 
-                    border-border/60
+                    border-gov-green-200
 
-                    bg-background/70
+                    bg-gov-paper
 
                     px-3 py-2
 
-                    text-xs text-muted-foreground
-
-                    backdrop-blur-sm
+                    text-xs text-gov-ink-soft
                   "
                 >
                   <div
                     className="
                       size-2 rounded-full
 
-                      bg-emerald-500
+                      bg-gov-green-500
 
                       animate-pulse
                     "
@@ -480,11 +473,11 @@ export default function Menu({
                     mt-4
 
                     text-[10px]
-                    text-muted-foreground
+
+                    text-gov-ink-soft/70
                   "
                 >
-                  © {new Date().getFullYear()} Mlele
-                  DC
+                  © {new Date().getFullYear()} Halmashauri ya Mlele
                 </p>
               </div>
             </div>

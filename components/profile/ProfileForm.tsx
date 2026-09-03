@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -36,24 +35,19 @@ interface ProfileData {
 }
 
 export default function ProfileForm() {
-  const { showSuccess, showError } =
-    useAppToast();
+  const { showSuccess, showError } = useAppToast();
 
   const t = useDictionary();
 
   /* ================= STATE ================= */
 
-  const [form, setForm] =
-    useState<ProfileData | null>(null);
+  const [form, setForm] = useState<ProfileData | null>(null);
 
-  const [initialForm, setInitialForm] =
-    useState<ProfileData | null>(null);
+  const [initialForm, setInitialForm] = useState<ProfileData | null>(null);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /* ================= FETCH ================= */
 
@@ -67,14 +61,9 @@ export default function ProfileForm() {
           const prepared = {
             ...res.data,
 
-            dateOfBirth:
-              res.data.dateOfBirth
-                ? new Date(
-                    res.data.dateOfBirth
-                  )
-                    .toISOString()
-                    .slice(0, 10)
-                : "",
+            dateOfBirth: res.data.dateOfBirth
+              ? new Date(res.data.dateOfBirth).toISOString().slice(0, 10)
+              : "",
           };
 
           setForm(prepared);
@@ -93,9 +82,7 @@ export default function ProfileForm() {
 
   /* ================= INPUT CHANGE ================= */
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setForm((prev) => ({
@@ -106,10 +93,7 @@ export default function ProfileForm() {
 
   /* ================= SELECT CHANGE ================= */
 
-  const handleSelectChange = (
-    name: keyof ProfileData,
-    value: string
-  ) => {
+  const handleSelectChange = (name: keyof ProfileData, value: string) => {
     setForm((prev) => ({
       ...(prev as ProfileData),
       [name]: value,
@@ -118,9 +102,7 @@ export default function ProfileForm() {
 
   /* ================= SUBMIT ================= */
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!form) return;
@@ -128,35 +110,25 @@ export default function ProfileForm() {
     try {
       setIsSubmitting(true);
 
-      const res = await fetch(
-        "/api/admin/profile",
-        {
-          method: "PATCH",
+      const res = await fetch("/api/admin/profile", {
+        method: "PATCH",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          body: JSON.stringify(form),
-        }
-      );
+        body: JSON.stringify(form),
+      });
 
       const data = await res.json();
 
       if (!res.ok) {
-        showError(
-          data.messageKey ||
-            "ACTION_FAILED"
-        );
+        showError(data.messageKey || "ACTION_FAILED");
 
         return;
       }
 
-      showSuccess(
-        data.messageKey ||
-          "ACTION_SUCCESS"
-      );
+      showSuccess(data.messageKey || "ACTION_SUCCESS");
 
       setInitialForm(form);
     } catch {
@@ -168,29 +140,18 @@ export default function ProfileForm() {
 
   /* ================= HELPERS ================= */
 
-  const isDirty =
-    JSON.stringify(form) !==
-    JSON.stringify(initialForm);
+  const isDirty = JSON.stringify(form) !== JSON.stringify(initialForm);
 
   const initials = useMemo(() => {
     if (!form?.fullName) return "U";
 
-    const names =
-      form.fullName.trim().split(" ");
+    const names = form.fullName.trim().split(" ");
 
     if (names.length === 1) {
-      return (
-        names[0][0]?.toUpperCase() ||
-        "U"
-      );
+      return names[0][0]?.toUpperCase() || "U";
     }
 
-    return (
-      (
-        names[0][0] +
-        names[names.length - 1][0]
-      ).toUpperCase()
-    );
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
   }, [form]);
 
   /* ================= LOADING ================= */
@@ -227,9 +188,7 @@ export default function ProfileForm() {
           </div>
 
           <div className="space-y-2 text-center">
-            <h3 className="text-lg font-semibold">
-              Inapakia Wasifu
-            </h3>
+            <h3 className="text-lg font-semibold">Inapakia Wasifu</h3>
 
             <p className="text-sm text-zinc-500">
               Tafadhali subiri tunapoleta taarifa zako...
@@ -464,9 +423,7 @@ export default function ProfileForm() {
           <FormInput
             name="fullName"
             value={form.fullName}
-            onChange={
-              handleInputChange
-            }
+            onChange={handleInputChange}
             required
           />
         </div>
@@ -496,9 +453,7 @@ export default function ProfileForm() {
           <FormInput
             name="phone"
             value={form.phone || ""}
-            onChange={
-              handleInputChange
-            }
+            onChange={handleInputChange}
           />
         </div>
 
@@ -512,24 +467,15 @@ export default function ProfileForm() {
           <FormSelect
             name="gender"
             value={form.gender || ""}
-            onChange={(value) =>
-              handleSelectChange(
-                "gender",
-                value
-              )
-            }
+            onChange={(value) => handleSelectChange("gender", value)}
             options={[
               {
                 value: "Male",
-                label:
-                  t("GENDER_MALE"),
+                label: t("GENDER_MALE"),
               },
               {
                 value: "Female",
-                label:
-                  t(
-                    "GENDER_FEMALE"
-                  ),
+                label: t("GENDER_FEMALE"),
               },
             ]}
           />
@@ -545,268 +491,247 @@ export default function ProfileForm() {
           <FormInput
             name="dateOfBirth"
             type="date"
-            value={
-              form.dateOfBirth || ""
-            }
-            onChange={
-              handleInputChange
-            }
+            value={form.dateOfBirth || ""}
+            onChange={handleInputChange}
           />
         </div>
       </div>
 
       {/* EDUCATION LEVEL */}
-<div className="space-y-2">
-  <div className="flex items-center gap-2 text-sm font-medium">
-    <GraduationCap className="h-4 w-4 text-indigo-600" />
-    Kiwango cha Elimu
-  </div>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <GraduationCap className="h-4 w-4 text-indigo-600" />
+          Kiwango cha Elimu
+        </div>
 
-  <FormSelect
-    name="educationLevel"
-    value={form.educationLevel || ""}
-    onChange={(value) =>
-      handleSelectChange(
-        "educationLevel",
-        value
-      )
-    }
-    options={[
-      {
-        value: "Sijasoma",
-        label: "Sijasoma",
-      },
-      {
-        value: "Elimu ya Msingi",
-        label: "Elimu ya Msingi",
-      },
-      {
-        value: "Kidato cha Nne",
-        label: "Kidato cha Nne",
-      },
-      {
-        value: "Kidato cha Sita",
-        label: "Kidato cha Sita",
-      },
-      {
-        value: "Diploma",
-        label: "Diploma",
-      },
-      {
-        value: "Shahada",
-        label: "Shahada",
-      },
-      {
-        value: "Shahada ya Uzamili",
-        label: "Shahada ya Uzamili",
-      },
-      {
-        value: "Shahada ya Uzamivu",
-        label: "Shahada ya Uzamivu",
-      },
-    ]}
-  />
-</div>
+        <FormSelect
+          name="educationLevel"
+          value={form.educationLevel || ""}
+          onChange={(value) => handleSelectChange("educationLevel", value)}
+          options={[
+            {
+              value: "Sijasoma",
+              label: "Sijasoma",
+            },
+            {
+              value: "Elimu ya Msingi",
+              label: "Elimu ya Msingi",
+            },
+            {
+              value: "Kidato cha Nne",
+              label: "Kidato cha Nne",
+            },
+            {
+              value: "Kidato cha Sita",
+              label: "Kidato cha Sita",
+            },
+            {
+              value: "Diploma",
+              label: "Diploma",
+            },
+            {
+              value: "Shahada",
+              label: "Shahada",
+            },
+            {
+              value: "Shahada ya Uzamili",
+              label: "Shahada ya Uzamili",
+            },
+            {
+              value: "Shahada ya Uzamivu",
+              label: "Shahada ya Uzamivu",
+            },
+          ]}
+        />
+      </div>
 
-{/* PROGRAM */}
-<div className="space-y-2">
-  <div className="flex items-center gap-2 text-sm font-medium">
-    <GraduationCap className="h-4 w-4 text-emerald-600" />
-    Taaluma / Program Uliyosomea
-  </div>
+      {/* PROGRAM */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <GraduationCap className="h-4 w-4 text-emerald-600" />
+          Taaluma / Program Uliyosomea
+        </div>
 
-  <FormSelect
-    name="program"
-    value={form.program || ""}
-    onChange={(value) =>
-      handleSelectChange(
-        "program",
-        value
-      )
-    }
-    options={[
-  {
-    value: "Sayansi ya Kompyuta",
-    label: "Sayansi ya Kompyuta",
-  },
-  {
-    value: "Teknolojia ya Habari",
-    label: "Teknolojia ya Habari",
-  },
-  {
-    value: "Sheria",
-    label: "Sheria",
-  },
-  {
-    value: "Uhasibu",
-    label: "Uhasibu",
-  },
-  {
-    value: "Utawala wa Biashara",
-    label: "Utawala wa Biashara",
-  },
-  {
-    value: "Masoko",
-    label: "Masoko",
-  },
-  {
-    value: "Uchumi",
-    label: "Uchumi",
-  },
-  {
-    value: "Elimu",
-    label: "Elimu",
-  },
-  {
-    value: "Uuguzi",
-    label: "Uuguzi",
-  },
-  {
-    value: "Udaktari",
-    label: "Udaktari",
-  },
-  {
-    value: "Famasi",
-    label: "Famasi",
-  },
-  {
-    value: "Maabara ya Afya",
-    label: "Maabara ya Afya",
-  },
-  {
-    value: "Uhandisi wa Ujenzi",
-    label: "Uhandisi wa Ujenzi",
-  },
-  {
-    value: "Uhandisi wa Umeme",
-    label: "Uhandisi wa Umeme",
-  },
-  {
-    value: "Uhandisi wa Mitambo",
-    label: "Uhandisi wa Mitambo",
-  },
-  {
-    value: "Uhandisi wa Madini",
-    label: "Uhandisi wa Madini",
-  },
-  {
-    value: "Uhandisi wa Mawasiliano",
-    label: "Uhandisi wa Mawasiliano",
-  },
-  {
-    value: "Kilimo",
-    label: "Kilimo",
-  },
-  {
-    value: "Mifugo",
-    label: "Mifugo",
-  },
-  {
-    value: "Uvuvi",
-    label: "Uvuvi",
-  },
-  {
-    value: "Usimamizi wa Rasilimali Watu",
-    label: "Usimamizi wa Rasilimali Watu",
-  },
-  {
-    value: "Ununuzi na Ugavi",
-    label: "Ununuzi na Ugavi",
-  },
-  {
-    value: "Utalii",
-    label: "Utalii",
-  },
-  {
-    value: "Ukarimu na Hoteli",
-    label: "Ukarimu na Hoteli",
-  },
-  {
-    value: "Uandishi wa Habari",
-    label: "Uandishi wa Habari",
-  },
-  {
-    value: "Mahusiano ya Umma",
-    label: "Mahusiano ya Umma",
-  },
-  {
-    value: "Sanaa na Ubunifu",
-    label: "Sanaa na Ubunifu",
-  },
-  {
-    value: "Mipango Miji",
-    label: "Mipango Miji",
-  },
-  {
-    value: "Ardhi na Upimaji",
-    label: "Ardhi na Upimaji",
-  },
-  {
-    value: "Sayansi ya Mazingira",
-    label: "Sayansi ya Mazingira",
-  },
-  {
-    value: "Takwimu",
-    label: "Takwimu",
-  },
-  {
-    value: "Hisabati",
-    label: "Hisabati",
-  },
-  {
-    value: "Fizikia",
-    label: "Fizikia",
-  },
-  {
-    value: "Kemia",
-    label: "Kemia",
-  },
-  {
-    value: "Baiolojia",
-    label: "Baiolojia",
-  },
-  {
-    value: "Nyingine",
-    label: "Nyingine",
-  },
-]}
-  />
-</div>
+        <FormSelect
+          name="program"
+          value={form.program || ""}
+          onChange={(value) => handleSelectChange("program", value)}
+          options={[
+            {
+              value: "Sayansi ya Kompyuta",
+              label: "Sayansi ya Kompyuta",
+            },
+            {
+              value: "Teknolojia ya Habari",
+              label: "Teknolojia ya Habari",
+            },
+            {
+              value: "Sheria",
+              label: "Sheria",
+            },
+            {
+              value: "Uhasibu",
+              label: "Uhasibu",
+            },
+            {
+              value: "Utawala wa Biashara",
+              label: "Utawala wa Biashara",
+            },
+            {
+              value: "Masoko",
+              label: "Masoko",
+            },
+            {
+              value: "Uchumi",
+              label: "Uchumi",
+            },
+            {
+              value: "Elimu",
+              label: "Elimu",
+            },
+            {
+              value: "Uuguzi",
+              label: "Uuguzi",
+            },
+            {
+              value: "Udaktari",
+              label: "Udaktari",
+            },
+            {
+              value: "Famasi",
+              label: "Famasi",
+            },
+            {
+              value: "Maabara ya Afya",
+              label: "Maabara ya Afya",
+            },
+            {
+              value: "Uhandisi wa Ujenzi",
+              label: "Uhandisi wa Ujenzi",
+            },
+            {
+              value: "Uhandisi wa Umeme",
+              label: "Uhandisi wa Umeme",
+            },
+            {
+              value: "Uhandisi wa Mitambo",
+              label: "Uhandisi wa Mitambo",
+            },
+            {
+              value: "Uhandisi wa Madini",
+              label: "Uhandisi wa Madini",
+            },
+            {
+              value: "Uhandisi wa Mawasiliano",
+              label: "Uhandisi wa Mawasiliano",
+            },
+            {
+              value: "Kilimo",
+              label: "Kilimo",
+            },
+            {
+              value: "Mifugo",
+              label: "Mifugo",
+            },
+            {
+              value: "Uvuvi",
+              label: "Uvuvi",
+            },
+            {
+              value: "Usimamizi wa Rasilimali Watu",
+              label: "Usimamizi wa Rasilimali Watu",
+            },
+            {
+              value: "Ununuzi na Ugavi",
+              label: "Ununuzi na Ugavi",
+            },
+            {
+              value: "Utalii",
+              label: "Utalii",
+            },
+            {
+              value: "Ukarimu na Hoteli",
+              label: "Ukarimu na Hoteli",
+            },
+            {
+              value: "Uandishi wa Habari",
+              label: "Uandishi wa Habari",
+            },
+            {
+              value: "Mahusiano ya Umma",
+              label: "Mahusiano ya Umma",
+            },
+            {
+              value: "Sanaa na Ubunifu",
+              label: "Sanaa na Ubunifu",
+            },
+            {
+              value: "Mipango Miji",
+              label: "Mipango Miji",
+            },
+            {
+              value: "Ardhi na Upimaji",
+              label: "Ardhi na Upimaji",
+            },
+            {
+              value: "Sayansi ya Mazingira",
+              label: "Sayansi ya Mazingira",
+            },
+            {
+              value: "Takwimu",
+              label: "Takwimu",
+            },
+            {
+              value: "Hisabati",
+              label: "Hisabati",
+            },
+            {
+              value: "Fizikia",
+              label: "Fizikia",
+            },
+            {
+              value: "Kemia",
+              label: "Kemia",
+            },
+            {
+              value: "Baiolojia",
+              label: "Baiolojia",
+            },
+            {
+              value: "Nyingine",
+              label: "Nyingine",
+            },
+          ]}
+        />
+      </div>
 
-{/* EMPLOYMENT STATUS */}
-<div className="space-y-2 md:col-span-2">
-  <div className="flex items-center gap-2 text-sm font-medium">
-    <Briefcase className="h-4 w-4 text-amber-600" />
-    Hali ya Ajira
-  </div>
+      {/* EMPLOYMENT STATUS */}
+      <div className="space-y-2 md:col-span-2">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Briefcase className="h-4 w-4 text-amber-600" />
+          Hali ya Ajira
+        </div>
 
-  <FormSelect
-    name="employmentStatus"
-    value={
-      form.employmentStatus || ""
-    }
-    onChange={(value) =>
-      handleSelectChange(
-        "employmentStatus",
-        value
-      )
-    }
-    options={[
-      {
-        value: "Nimeajiriwa",
-        label: "Nimeajiriwa",
-      },
-      {
-        value: "Nimejiajiri",
-        label: "Nimejiajiri",
-      },
-      {
-        value: "Sina Ajira",
-        label: "Sina Ajira",
-      },
-    ]}
-  />
-</div>
+        <FormSelect
+          name="employmentStatus"
+          value={form.employmentStatus || ""}
+          onChange={(value) => handleSelectChange("employmentStatus", value)}
+          options={[
+            {
+              value: "Nimeajiriwa",
+              label: "Nimeajiriwa",
+            },
+            {
+              value: "Nimejiajiri",
+              label: "Nimejiajiri",
+            },
+            {
+              value: "Sina Ajira",
+              label: "Sina Ajira",
+            },
+          ]}
+        />
+      </div>
 
       {/* ================= INFO BOX ================= */}
 
@@ -832,9 +757,7 @@ export default function ProfileForm() {
             </h3>
 
             <p className="mt-1 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-              {t(
-                "PROFILE_EMAIL_LOCKED_NOTE"
-              )}
+              {t("PROFILE_EMAIL_LOCKED_NOTE")}
             </p>
           </div>
         </div>
@@ -844,9 +767,7 @@ export default function ProfileForm() {
 
       <div className="relative flex justify-end">
         <button
-          disabled={
-            isSubmitting || !isDirty
-          }
+          disabled={isSubmitting || !isDirty}
           type="submit"
           className="
              inline-flex items-center justify-center gap-2
@@ -874,16 +795,12 @@ export default function ProfileForm() {
           {isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              {t(
-                "PROFILE_SAVING_BUTTON"
-              )}
+              {t("PROFILE_SAVING_BUTTON")}
             </>
           ) : (
             <>
               <Save className="h-4 w-4" />
-              {t(
-                "PROFILE_SAVE_BUTTON"
-              )}
+              {t("PROFILE_SAVE_BUTTON")}
             </>
           )}
         </button>
@@ -891,4 +808,3 @@ export default function ProfileForm() {
     </form>
   );
 }
-

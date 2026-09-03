@@ -582,9 +582,9 @@ export default function AdminDashboard({
 
                   rounded-2xl
 
-                  bg-emerald-500/10
+                  bg-emerald-500/10 dark:bg-emerald-500/15
 
-                  text-emerald-500
+                  text-emerald-500 dark:text-emerald-400
                 "
               >
                 <ShieldCheck className="size-5" />
@@ -659,7 +659,6 @@ export default function AdminDashboard({
 
               text-xs
               text-emerald-600
-
               dark:text-emerald-400
             "
           >
@@ -982,9 +981,9 @@ export default function AdminDashboard({
 
                 rounded-2xl
 
-                bg-emerald-500/10
+                bg-emerald-500/10 dark:bg-emerald-500/15
 
-                text-emerald-500
+                text-emerald-600 dark:text-emerald-400
               "
             >
               <Briefcase className="size-5" />
@@ -1037,16 +1036,14 @@ export default function AdminDashboard({
                 className="
                   rounded-2xl
 
-                  border border-zinc-200
-                  dark:border-zinc-800
+                  border border-border
 
-                  bg-zinc-50
-                  dark:bg-zinc-900
+                  bg-muted/50
 
                   p-6
 
                   text-center
-                  text-sm text-zinc-500
+                  text-sm text-muted-foreground
                 "
               >
                 Inapakia maswali...
@@ -1062,8 +1059,7 @@ export default function AdminDashboard({
                     rounded-2xl
 
                     border border-dashed
-                    border-zinc-300
-                    dark:border-zinc-700
+                    border-border
 
                     p-8
 
@@ -1074,12 +1070,12 @@ export default function AdminDashboard({
                     className="
                       mx-auto mb-3
 
-                      text-zinc-400
+                      text-muted-foreground
                     "
                     size={40}
                   />
 
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-muted-foreground">
                     Hakuna maswali
                     yanayosubiri kwa
                     sasa.
@@ -1097,11 +1093,9 @@ export default function AdminDashboard({
 
                     rounded-2xl
 
-                    border border-zinc-200
-                    dark:border-zinc-800
+                    border border-border
 
-                    bg-white
-                    dark:bg-zinc-900
+                    bg-background
 
                     p-5
                   "
@@ -1113,8 +1107,7 @@ export default function AdminDashboard({
 
                         leading-relaxed
 
-                        text-zinc-900
-                        dark:text-white
+                        text-foreground
                       "
                     >
                       {q.questionText}
