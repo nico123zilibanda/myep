@@ -4,7 +4,6 @@
 import { useState } from "react";
 
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
 
 import {
@@ -14,19 +13,19 @@ import {
   Mail,
   LockKeyhole,
   ArrowRight,
+  ShieldCheck,
 } from "lucide-react";
 
 import { useAppToast } from "@/lib/toast";
-
 import type { MessageKey } from "@/lib/messages";
 
 import { Button } from "@/components/ui/button";
-
 import { Input } from "@/components/ui/input";
-
 import { Label } from "@/components/ui/label";
 
-/* ================= TYPES ================= */
+/* ============================================================================
+ * TYPES
+ * ========================================================================== */
 
 interface LoginFormData {
   email: string;
@@ -39,65 +38,64 @@ interface ApiResponse {
   redirectTo?: string;
 }
 
-/* ================= COMPONENT ================= */
+/* ============================================================================
+ * COMPONENT
+ * ========================================================================== */
 
 export default function LoginForm() {
   const router = useRouter();
 
-  const { showSuccess, showError } =
-    useAppToast();
+  const { showSuccess, showError } = useAppToast();
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [form, setForm] =
-    useState<LoginFormData>({
-      email: "",
-      password: "",
-    });
+  const [form, setForm] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
 
-  /* ================= HANDLE CHANGE ================= */
+  /* ==========================================================================
+   * HANDLE CHANGE
+   * ======================================================================== */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setForm({
-      ...form,
+    setForm((previous) => ({
+      ...previous,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
-  /* ================= SUBMIT ================= */
+  /* ==========================================================================
+   * SUBMIT
+   * ======================================================================== */
 
   const handleSubmit = async (
     e: React.FormEvent,
   ) => {
     e.preventDefault();
 
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "/api/auth/login",
-        {
-          method: "POST",
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
 
-      const data: ApiResponse =
-        await res.json();
+        body: JSON.stringify(form),
+      });
 
-      setLoading(false);
+      const data: ApiResponse = await res.json();
 
       if (!res.ok) {
         showError(data.messageKey);
@@ -108,33 +106,44 @@ export default function LoginForm() {
 
       setTimeout(() => {
         router.replace(
-          data.redirectTo ||
-            "/dashboard",
+          data.redirectTo || "/dashboard",
         );
       }, 700);
     } catch {
-      setLoading(false);
-
       showError("SERVER_ERROR");
+    } finally {
+      setLoading(false);
     }
   };
 
-  /* ================= UI ================= */
+  /* ==========================================================================
+   * TOGGLE PASSWORD
+   * ======================================================================== */
+
+  const togglePassword = () => {
+    setShowPassword((previous) => !previous);
+  };
+
+  /* ==========================================================================
+   * UI
+   * ======================================================================== */
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="
-        space-y-6
-      "
+      className="space-y-6"
     >
-      {/* ================= EMAIL ================= */}
+      {/* ======================================================================
+          EMAIL
+      ====================================================================== */}
 
       <div className="space-y-2">
         <Label
           htmlFor="email"
           className="
-            text-sm font-medium
+            text-sm
+            font-medium
+            text-foreground
           "
         >
           Barua Pepe
@@ -142,8 +151,12 @@ export default function LoginForm() {
 
         <div className="relative">
           <Mail
+            aria-hidden="true"
             className="
-              absolute left-4 top-1/2
+              pointer-events-none
+              absolute
+              left-4
+              top-1/2
               size-4
               -translate-y-1/2
               text-muted-foreground
@@ -159,6 +172,7 @@ export default function LoginForm() {
             placeholder="example@email.com"
             value={form.email}
             onChange={handleChange}
+            disabled={loading}
             className="
               h-12
               rounded-2xl
@@ -167,26 +181,38 @@ export default function LoginForm() {
               pl-11
               shadow-sm
               transition-all
+
+              placeholder:text-muted-foreground/60
+
               focus-visible:ring-2
               focus-visible:ring-primary/30
+
+              disabled:cursor-not-allowed
+              disabled:opacity-60
             "
           />
         </div>
       </div>
 
-      {/* ================= PASSWORD ================= */}
+      {/* ======================================================================
+          PASSWORD
+      ====================================================================== */}
 
       <div className="space-y-2">
         <div
           className="
-            flex items-center
+            flex
+            items-center
             justify-between
+            gap-3
           "
         >
           <Label
             htmlFor="password"
             className="
-              text-sm font-medium
+              text-sm
+              font-medium
+              text-foreground
             "
           >
             Nenosiri
@@ -194,11 +220,17 @@ export default function LoginForm() {
 
           <Link
             href="/forgot-password"
+            tabIndex={loading ? -1 : 0}
             className="
-              text-xs font-medium
+              text-xs
+              font-semibold
               text-primary
               transition-colors
               hover:text-primary/80
+              focus:outline-none
+              focus-visible:rounded
+              focus-visible:ring-2
+              focus-visible:ring-primary/30
             "
           >
             Umesahau nenosiri?
@@ -207,8 +239,12 @@ export default function LoginForm() {
 
         <div className="relative">
           <LockKeyhole
+            aria-hidden="true"
             className="
-              absolute left-4 top-1/2
+              pointer-events-none
+              absolute
+              left-4
+              top-1/2
               size-4
               -translate-y-1/2
               text-muted-foreground
@@ -228,6 +264,7 @@ export default function LoginForm() {
             }
             value={form.password}
             onChange={handleChange}
+            disabled={loading}
             className="
               h-12
               rounded-2xl
@@ -237,55 +274,106 @@ export default function LoginForm() {
               pr-12
               shadow-sm
               transition-all
+
+              placeholder:text-muted-foreground/60
+
               focus-visible:ring-2
               focus-visible:ring-primary/30
+
+              disabled:cursor-not-allowed
+              disabled:opacity-60
             "
           />
 
           <button
             type="button"
-            onClick={() =>
-              setShowPassword(
-                !showPassword,
-              )
+            onClick={togglePassword}
+            disabled={loading}
+            aria-label={
+              showPassword
+                ? "Ficha nenosiri"
+                : "Onyesha nenosiri"
             }
+            aria-pressed={showPassword}
             className="
-              absolute right-4 top-1/2
+              absolute
+              right-3
+              top-1/2
+              flex
+              size-9
               -translate-y-1/2
+              items-center
+              justify-center
+              rounded-xl
               text-muted-foreground
-              transition-colors
+              transition-all
+              hover:bg-muted
               hover:text-foreground
+              focus:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-primary/30
+              disabled:pointer-events-none
+              disabled:opacity-50
             "
           >
             {showPassword ? (
-              <EyeOff className="size-4" />
+              <EyeOff
+                aria-hidden="true"
+                className="size-4"
+              />
             ) : (
-              <Eye className="size-4" />
+              <Eye
+                aria-hidden="true"
+                className="size-4"
+              />
             )}
           </button>
         </div>
       </div>
 
-      {/* ================= LOGIN BUTTON ================= */}
+      {/* ======================================================================
+          LOGIN BUTTON
+      ====================================================================== */}
 
       <Button
         type="submit"
         disabled={loading}
         className="
-          h-12 w-full
+          h-12
+          w-full
           rounded-xl
-          bg-primary text-primary-foreground
-          text-sm font-semibold
-          shadow-md shadow-gov-green-900/15
-          dark:shadow-black/20
+
+          bg-primary
+          text-primary-foreground
+
+          text-sm
+          font-semibold
+
+          shadow-md
+          shadow-gov-green-900/15
+
+          transition-all
+          duration-200
+
           hover:bg-primary-hover
+          hover:shadow-lg
+          hover:shadow-gov-green-900/20
+
+          active:scale-[0.99]
+
+          dark:shadow-black/20
+
+          disabled:cursor-not-allowed
+          disabled:opacity-70
         "
       >
         {loading ? (
           <>
             <Loader2
+              aria-hidden="true"
               className="
-                mr-2 size-4
+                mr-2
+                size-4
                 animate-spin
               "
             />
@@ -297,26 +385,67 @@ export default function LoginForm() {
             Ingia Kwenye Mfumo
 
             <ArrowRight
+              aria-hidden="true"
               className="
-                ml-2 size-4
+                ml-2
+                size-4
               "
             />
           </>
         )}
       </Button>
 
-      {/* ================= DIVIDER ================= */}
+      {/* ======================================================================
+          SECURITY MESSAGE
+      ====================================================================== */}
 
       <div
         className="
-          relative
-          py-1
+          flex
+          items-center
+          justify-center
+          gap-2
+          rounded-xl
+          border
+          border-border/50
+          bg-muted/30
+          px-3
+          py-2.5
+          text-center
         "
       >
-        <div
+        <ShieldCheck
+          aria-hidden="true"
           className="
-            absolute inset-0
-            flex items-center
+            size-4
+            shrink-0
+            text-primary
+          "
+        />
+
+        <span
+          className="
+            text-[11px]
+            font-medium
+            text-muted-foreground
+          "
+        >
+          Taarifa zako zinalindwa kwa usalama
+        </span>
+      </div>
+
+      {/* ======================================================================
+          DIVIDER
+      ====================================================================== */}
+
+      <div className="relative py-1">
+        <div
+          aria-hidden="true"
+          className="
+            absolute
+            inset-0
+            flex
+            items-center
           "
         >
           <span
@@ -331,14 +460,17 @@ export default function LoginForm() {
         <div
           className="
             relative
-            flex justify-center
-            text-xs uppercase
+            flex
+            justify-center
+            text-xs
+            uppercase
           "
         >
           <span
             className="
               bg-background
               px-3
+              font-medium
               text-muted-foreground
             "
           >
@@ -347,7 +479,9 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* ================= REGISTER ================= */}
+      {/* ======================================================================
+          REGISTER
+      ====================================================================== */}
 
       <div
         className="
@@ -360,11 +494,16 @@ export default function LoginForm() {
 
         <Link
           href="/register"
+          tabIndex={loading ? -1 : 0}
           className="
             font-semibold
             text-primary
             transition-colors
             hover:text-primary/80
+            focus:outline-none
+            focus-visible:rounded
+            focus-visible:ring-2
+            focus-visible:ring-primary/30
           "
         >
           Jisajili hapa

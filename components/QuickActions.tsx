@@ -144,39 +144,6 @@ export default function QuickAction({
           >
             {t(titleKey)}
           </h3>
-
-          <p
-            className="
-              mt-2
-              text-sm leading-relaxed
-              text-muted-foreground
-            "
-          >
-            {t(descriptionKey)}
-          </p>
-        </div>
-
-        {/* BOTTOM ACTION */}
-        <div
-          className="
-            mt-6
-            flex items-center gap-2
-            text-sm font-medium
-            text-muted-foreground
-            transition-all duration-300
-            group-hover:text-foreground
-          "
-        >
-          Open Action
-
-          <ArrowUpRight
-            size={15}
-            className="
-              transition-transform duration-300
-              group-hover:translate-x-1
-              group-hover:-translate-y-1
-            "
-          />
         </div>
       </div>
     </button>

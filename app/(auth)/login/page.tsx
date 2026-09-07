@@ -19,10 +19,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthLayout
-      title="Karibu Tena 👋"
+      title="Ingia"
       subtitle="
-        Ingia kwenye akaunti yako
-        kuendelea kutumia mfumo.
+        Ingia kwenye akaunti.
       "
     >
       <LoginForm />

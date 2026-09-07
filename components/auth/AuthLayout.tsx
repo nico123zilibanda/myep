@@ -36,7 +36,6 @@ export default function AuthLayout({
     <GovernmentFormShell
       title={title}
       description={subtitle}
-      maxWidth="md"
     >
       {children}
     </GovernmentFormShell>

@@ -324,7 +324,7 @@ export default function HomePage() {
                 />
 
                 <span>
-                  Mfumo Rasmi wa Serikali · Halmashauri ya Mlele
+                  Mlele DC Fursa Portal · Halmashauri ya Mlele
                 </span>
               </div>
 
@@ -368,8 +368,7 @@ export default function HomePage() {
                   lg:mx-0
                 "
               >
-                Mfumo rasmi wa kidijitali wa
-                Halmashauri ya Wilaya ya Mlele
+                Mlele DC Fursa portal,
                 unaowaunganisha wananchi na
                 taarifa muhimu kuhusu ajira,
                 mafunzo, mikopo, biashara na
@@ -419,15 +418,21 @@ export default function HomePage() {
                   className="
                     h-12 rounded-xl
                     border-gov-mist
-                    bg-gov-paper
-                    px-7 text-sm font-semibold
+                    bg-gov-gold-400
+                    text-sm font-semibold
                     text-gov-ink
-                    hover:bg-gov-mist
+                    hover:bg-gov-gold-300
                     hover:text-gov-green-700
                   "
                 >
                   <Link href="/login">
                     Ingia Kwenye Mfumo
+
+                       <ArrowRight
+                      className="
+                        ml-2 size-4
+                      "
+                    />
                   </Link>
                 </Button>
               </div>
@@ -488,8 +493,8 @@ export default function HomePage() {
                       rounded-2xl
 
                       border border-gov-mist
-
-                      bg-gov-paper
+                      text-gov-ink
+                      bg-gov-green-100
 
                       px-4 py-5
 
@@ -658,14 +663,14 @@ export default function HomePage() {
                   md:text-5xl
                 "
               >
-                Mfumo wa Kisasa wa
+                Mlele Dc Fursa Portal
                 <span
                   className="
                     block
                     text-gov-green-700
                   "
                 >
-                  Serikali ya Wilaya
+                  Halmashauri ya mlele
                 </span>
               </h2>
 
@@ -1282,7 +1287,7 @@ export default function HomePage() {
 
           border-y border-gov-green-700/40
 
-          bg-gov-green-600
+          bg-gov-green-800
 
           py-20 sm:py-24
 
@@ -1397,48 +1402,53 @@ export default function HomePage() {
               sm:flex-row
             "
           >
-            <Button
-              asChild
-              size="lg"
-              className="
-                h-12 rounded-xl
-
-                bg-white px-7
-
-                text-sm font-semibold text-gov-green-700
-
-                hover:bg-white/90
-              "
-            >
-              <Link href="/register">
-                Jisajili Sasa
-
-                <ArrowRight
+                <Button
+                  asChild
+                  size="lg"
                   className="
-                    ml-2 size-4
+                    h-12 rounded-xl
+                    bg-primary px-7
+                    text-sm font-semibold text-primary-foreground
+                    shadow-md shadow-gov-green-900/15
+                    dark:shadow-black/20
+                    hover:bg-primary-hover
                   "
-                />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="
-                h-12 rounded-xl
+                >
+                  <Link href="/register">
+                    Jisajili Sasa
 
-                border-white/30
-                bg-transparent
-                px-7 text-sm font-semibold text-white
+                    <ArrowRight
+                      className="
+                        ml-2 size-4
+                      "
+                    />
+                  </Link>
+                </Button>
 
-                hover:bg-white/10
-                hover:text-white
-              "
-            >
-              <Link href="/login">
-                Ingia Kwenye Mfumo
-              </Link>
-            </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="
+                    h-12 rounded-xl
+                    border-gov-mist
+                    bg-gov-gold-400
+                    text-sm font-semibold
+                    text-gov-ink
+                    hover:bg-gov-gold-300
+                    hover:text-gov-green-700
+                  "
+                >
+                  <Link href="/login">
+                    Ingia Kwenye Mfumo
+
+                       <ArrowRight
+                      className="
+                        ml-2 size-4
+                      "
+                    />
+                  </Link>
+                </Button>
           </div>
         </div>
       </motion.section>

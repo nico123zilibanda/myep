@@ -383,31 +383,6 @@ export default function AdminDashboard({
         >
           {/* LEFT */}
           <div className="max-w-3xl">
-            {/* BADGE */}
-            <Badge
-              variant="secondary"
-              className="
-                mb-5
-
-                rounded-full
-
-                border border-primary/10
-
-                bg-background/70
-
-                px-4 py-1.5
-
-                text-xs
-                font-semibold
-
-                backdrop-blur-sm
-              "
-            >
-              <Sparkles className="mr-2 size-3.5 text-primary" />
-
-              Mfumo wa Usimamizi wa
-              Mlele DC
-            </Badge>
 
             {/* TITLE */}
             {loadingStats ? (
@@ -450,11 +425,7 @@ export default function AdminDashboard({
                 >
                   Simamia vijana,
                   fursa, mafunzo, na
-                  maswali yote ndani ya
-                  mfumo wa Mlele District
-                  Council kupitia
-                  dashibodi hii ya
-                  kisasa.
+                  maswali yote.
                 </p>
               </>
             )}
@@ -637,34 +608,8 @@ export default function AdminDashboard({
                 tracking-tight
               "
             >
-              Muhtasari wa Mfumo
+              Takwimu Muhimu
             </h2>
-
-            <p
-              className="
-                mt-1
-
-                text-sm
-                text-muted-foreground
-              "
-            >
-              Takwimu muhimu za mfumo
-              kwa sasa.
-            </p>
-          </div>
-
-          <div
-            className="
-              flex items-center gap-2
-
-              text-xs
-              text-emerald-600
-              dark:text-emerald-400
-            "
-          >
-            <TrendingUp className="size-4" />
-
-            Mfumo unaendelea vizuri
           </div>
         </div>
 
@@ -732,18 +677,6 @@ export default function AdminDashboard({
             >
               Vitendo vya Haraka
             </h2>
-
-            <p
-              className="
-                mt-1
-
-                text-sm
-                text-muted-foreground
-              "
-            >
-              Simamia shughuli muhimu
-              kwa urahisi zaidi.
-            </p>
           </div>
         </div>
 
@@ -790,233 +723,6 @@ export default function AdminDashboard({
             }}
           />
         </div>
-      </section>
-
-      {/* ================= INFO SECTION ================= */}
-
-      <section
-        className="
-          grid grid-cols-1 gap-5
-
-          xl:grid-cols-3
-        "
-      >
-        {/* LEFT */}
-        <div className="xl:col-span-2">
-          <Alert
-            className="
-              rounded-[28px]
-
-              border-primary/10
-
-              bg-primary/3
-            "
-          >
-            <Sparkles className="size-5" />
-
-            <div>
-              <AlertTitle>
-                Taarifa Muhimu
-              </AlertTitle>
-
-              <AlertDescription
-                className="
-                  mt-2
-
-                  leading-relaxed
-                "
-              >
-                Hakikisha taarifa zote
-                za fursa na mafunzo
-                zinawekwa kwa usahihi
-                ili vijana waweze kupata
-                taarifa sahihi kwa wakati
-                unaofaa.
-              </AlertDescription>
-            </div>
-          </Alert>
-        </div>
-
-        {/* RIGHT */}
-        <Card
-          className="
-            rounded-[28px]
-
-            border-border/60
-          "
-        >
-          <CardContent className="p-6">
-            <div
-              className="
-                flex size-12 items-center justify-center
-
-                rounded-2xl
-
-                bg-primary/10
-
-                text-primary
-              "
-            >
-              <ShieldCheck className="size-5" />
-            </div>
-
-            <h3
-              className="
-                mt-5
-
-                text-lg
-                font-bold
-              "
-            >
-              Mfumo wa Kisasa
-            </h3>
-
-            <p
-              className="
-                mt-3
-
-                text-sm
-                leading-relaxed
-                text-muted-foreground
-              "
-            >
-              Mfumo umeboreshwa kwa
-              matumizi ya kisasa ili
-              kuongeza ufanisi wa
-              usimamizi wa taarifa za
-              vijana, mafunzo, na
-              fursa.
-            </p>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* ================= EXTRA CARDS ================= */}
-
-      <section
-        className="
-          grid grid-cols-1 gap-5
-
-          lg:grid-cols-2
-        "
-      >
-        {/* CARD */}
-        <Card
-          className="
-            group
-
-            rounded-[28px]
-
-            border-border/60
-
-            transition-all duration-300
-
-            hover:-translate-y-1
-            hover:shadow-xl
-          "
-        >
-          <CardContent className="p-6">
-            <div
-              className="
-                flex size-12 items-center justify-center
-
-                rounded-2xl
-
-                bg-indigo-500/10
-
-                text-indigo-500
-              "
-            >
-              <Users className="size-5" />
-            </div>
-
-            <h3
-              className="
-                mt-5
-
-                text-lg
-                font-bold
-              "
-            >
-              Usimamizi wa Vijana
-            </h3>
-
-            <p
-              className="
-                mt-3
-
-                text-sm
-                leading-relaxed
-                text-muted-foreground
-              "
-            >
-              Fuatilia taarifa za
-              vijana waliosajiliwa ndani
-              ya mfumo na usimamie
-              maendeleo yao kwa
-              ufanisi zaidi.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* CARD */}
-        <Card
-          className="
-            group
-
-            rounded-[28px]
-
-            border-border/60
-
-            transition-all duration-300
-
-            hover:-translate-y-1
-            hover:shadow-xl
-          "
-        >
-          <CardContent className="p-6">
-            <div
-              className="
-                flex size-12 items-center justify-center
-
-                rounded-2xl
-
-                bg-emerald-500/10 dark:bg-emerald-500/15
-
-                text-emerald-600 dark:text-emerald-400
-              "
-            >
-              <Briefcase className="size-5" />
-            </div>
-
-            <h3
-              className="
-                mt-5
-
-                text-lg
-                font-bold
-              "
-            >
-              Fursa na Ajira
-            </h3>
-
-            <p
-              className="
-                mt-3
-
-                text-sm
-                leading-relaxed
-                text-muted-foreground
-              "
-            >
-              Ongeza na simamia
-              matangazo ya ajira,
-              mafunzo, pamoja na
-              shughuli mbalimbali za
-              maendeleo ya vijana.
-            </p>
-          </CardContent>
-        </Card>
       </section>
 
       {/* ================= QUESTIONS MODAL ================= */}

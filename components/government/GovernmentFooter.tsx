@@ -73,7 +73,7 @@ export function GovernmentFooter({
                   Halmashauri ya Wilaya ya Mlele
                 </span>
                 <span className="text-xs font-medium text-gov-ink-soft/70">
-                  Mlele District Council
+                  Mkoa wa Katavi
                 </span>
               </div>
             </div>
