@@ -428,9 +428,9 @@ export default function HomePage() {
           className="
             pointer-events-none
             absolute
-            left-1/2
+            left-2/4
             top-0
-            h-[500px]
+            h-125
             w-125
             -translate-x-1/2
             rounded-full
@@ -482,263 +482,254 @@ export default function HomePage() {
           "
         >
           <div
+          className="
+            grid
+            items-center
+            gap-10
+
+            lg:grid-cols-[1.45fr_0.75fr]
+            lg:gap-12
+
+            xl:grid-cols-[1.50fr_0.75fr]
+            xl:gap-16
+          "
+          >
+          {/* ==================================================
+              HERO SLIDER — LEFT / LARGE
+          ================================================== */}
+
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
             className="
-              grid
-              items-center
-              gap-10
+              relative
+              w-full
+              overflow-hidden
+              rounded-3xl
+              border
+              border-gov-mist
+              bg-gov-paper
+              shadow-2xl
+              shadow-gov-ink/10
 
-              lg:grid-cols-[0.8fr_1.4fr]
-              lg:gap-12
+              dark:border-white/10
+              dark:bg-slate-950
+              dark:shadow-black/40
 
-              xl:grid-cols-[0.75fr_1.45fr]
-              xl:gap-16
+              min-h-120
+              sm:min-h-140
+              md:min-h-155
+              lg:min-h-170
+              xl:min-h-180
             "
           >
-            {/* ==================================================
-                HERO CONTENT
-            ================================================== */}
-
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
+            <HeroSlider
+              images={heroSlides}
               className="
-                text-center
-                lg:text-left
-              "
-            >
-              <SectionBadge icon={Landmark}>
-                Mlele DC Fursa Portal · Halmashauri ya Mlele
-              </SectionBadge>
+                h-120
+                sm:h-140
+                md:h-155
+                lg:h-170
+                xl:h-180
 
-              <h1
-                id="hero-title"
-                className="
-                  mt-7
-                  text-4xl
-                  font-extrabold
-                  leading-[1.08]
-                  tracking-tight
-                  text-gov-ink
-
-                  sm:text-5xl
-
-                  lg:text-5xl
-
-                  xl:text-6xl
-
-                  dark:text-white
-                "
-              >
-                Fursa za{" "}
-                <span className="text-gov-green-700 dark:text-gov-green-400">
-                  Maendeleo
-                </span>{" "}
-                kwa Wananchi wa Mlele
-              </h1>
-
-              <p
-                className="
-                  mx-auto
-                  mt-6
-                  max-w-2xl
-                  text-base
-                  leading-relaxed
-                  text-gov-ink-soft/80
-
-                  sm:text-lg
-
-                  lg:mx-0
-
-                  dark:text-white/65
-                "
-              >
-                Mlele DC Fursa Portal unaowaunganisha wananchi
-                na taarifa muhimu kuhusu ajira, mafunzo, mikopo,
-                biashara na fursa nyingine za maendeleo kwa
-                urahisi na uwazi.
-              </p>
-
-              {/* CTA */}
-              <div
-                className="
-                  mt-9
-                  flex
-                  flex-col
-                  items-center
-                  gap-3
-
-                  sm:flex-row
-                  sm:justify-center
-
-                  lg:justify-start
-                "
-              >
-                <PrimaryButton href="/register">
-                  Jisajili Sasa
-                </PrimaryButton>
-
-                <SecondaryButton href="/login">
-                  Ingia Kwenye Mfumo
-                </SecondaryButton>
-              </div>
-
-              {/* Categories */}
-              <div
-                className="
-                  mt-7
-                  flex
-                  flex-wrap
-                  items-center
-                  justify-center
-                  gap-x-5
-                  gap-y-2
-
-                  lg:justify-start
-                "
-              >
-                {heroCategories.map((item) => (
-                  <div
-                    key={item}
-                    className="
-                      flex
-                      items-center
-                      gap-2
-                      text-sm
-                      font-medium
-                      text-gov-ink-soft/75
-
-                      dark:text-white/60
-                    "
-                  >
-                    <CheckCircle2
-                      className="
-                        size-4
-                        text-gov-green-600
-
-                        dark:text-gov-green-400
-                      "
-                    />
-
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              {/* Hero Stats */}
-              <div
-                className="
-                  mt-10
-                  grid
-                  grid-cols-3
-                  gap-2
-
-                  sm:gap-3
-                "
-              >
-                {stats.map((item) => (
-                  <div
-                    key={item.label}
-                    className="
-                      rounded-2xl
-                      border
-                      border-gov-mist
-                      bg-gov-green-100/80
-                      px-3
-                      py-4
-                      shadow-sm
-
-                      sm:px-4
-                      sm:py-5
-
-                      dark:border-white/10
-                      dark:bg-white/4
-                    "
-                  >
-                    <div
-                      className="
-                        text-xl
-                        font-extrabold
-                        text-gov-green-700
-
-                        sm:text-2xl
-
-                        dark:text-gov-green-400
-                      "
-                    >
-                      {item.value}
-                    </div>
-
-                    <div
-                      className="
-                        mt-1
-                        text-[11px]
-                        leading-snug
-                        text-gov-ink-soft/70
-
-                        sm:text-xs
-
-                        dark:text-white/45
-                      "
-                    >
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* ==================================================
-                HERO SLIDER
-            ================================================== */}
-
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              className="
-                relative
                 w-full
-                overflow-hidden
-                rounded-3xl
-                border
-                border-gov-mist
-                bg-gov-paper
-                shadow-2xl
-                shadow-gov-ink/10
+              "
+            />
+          </motion.div>
 
-                dark:border-white/10
-                dark:bg-slate-950
-                dark:shadow-black/40
+          {/* ==================================================
+              HERO CONTENT — RIGHT / NARROW
+          ================================================== */}
 
-                min-h-120
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="
+              min-w-0
+              text-center
+              lg:text-left
+            "
+          >
+            <SectionBadge icon={Landmark}>
+              Mlele DC Fursa Portal · Halmashauri ya Mlele
+            </SectionBadge>
 
-                sm:min-h-140
+            <h1
+              id="hero-title"
+              className="
+                mt-7
+                text-4xl
+                font-extrabold
+                leading-[1.08]
+                tracking-tight
+                text-gov-ink
 
-                md:min-h-155
+                sm:text-5xl
+                lg:text-5xl
+                xl:text-6xl
 
-                lg:min-h-170
-
-                xl:min-h-180
+                dark:text-white
               "
             >
-              <HeroSlider
-                images={heroSlides}
-                className="
-                  h-120
+              Fursa za{" "}
+              <span className="text-gov-green-700 dark:text-gov-green-400">
+                Maendeleo
+              </span>{" "}
+              kwa Wananchi wa Mlele
+            </h1>
 
-                  sm:h-140
+            <p
+              className="
+                mx-auto
+                mt-6
+                max-w-2xl
+                text-base
+                leading-relaxed
+                text-gov-ink-soft/80
 
-                  md:h-155
+                sm:text-lg
 
-                  lg:h-170
+                lg:mx-0
 
-                  xl:h-180
+                dark:text-white/65
+              "
+            >
+              Mlele DC Fursa Portal unaowaunganisha wananchi
+              na taarifa muhimu kuhusu ajira, mafunzo, mikopo,
+              biashara na fursa nyingine za maendeleo kwa
+              urahisi na uwazi.
+            </p>
 
-                  w-full
-                "
-              />
-            </motion.div>
+            {/* CTA */}
+            <div
+              className="
+                mt-9
+                flex
+                flex-col
+                items-center
+                gap-3
+
+                sm:flex-row
+                sm:justify-center
+
+                lg:justify-start
+              "
+            >
+              <PrimaryButton href="/register">
+                Jisajili Sasa
+              </PrimaryButton>
+
+              <SecondaryButton href="/login">
+                Ingia Kwenye Mfumo
+              </SecondaryButton>
+            </div>
+
+            {/* Categories */}
+            <div
+              className="
+                mt-7
+                flex
+                flex-wrap
+                items-center
+                justify-center
+                gap-x-5
+                gap-y-2
+
+                lg:justify-start
+              "
+            >
+              {heroCategories.map((item) => (
+                <div
+                  key={item}
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    font-medium
+                    text-gov-ink-soft/75
+
+                    dark:text-white/60
+                  "
+                >
+                  <CheckCircle2
+                    className="
+                      size-4
+                      text-gov-green-600
+
+                      dark:text-gov-green-400
+                    "
+                  />
+
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            {/* Hero Stats */}
+            <div
+              className="
+                mt-10
+                grid
+                grid-cols-3
+                gap-2
+
+                sm:gap-3
+              "
+            >
+              {stats.map((item) => (
+                <div
+                  key={item.label}
+                  className="
+                    rounded-2xl
+                    border
+                    border-gov-mist
+                    bg-gov-green-100/80
+                    px-3
+                    py-4
+                    shadow-sm
+
+                    sm:px-4
+                    sm:py-5
+
+                    dark:border-white/10
+                    dark:bg-white/4
+                  "
+                >
+                  <div
+                    className="
+                      text-xl
+                      font-extrabold
+                      text-gov-green-700
+
+                      sm:text-2xl
+
+                      dark:text-gov-green-400
+                    "
+                  >
+                    {item.value}
+                  </div>
+
+                  <div
+                    className="
+                      mt-1
+                      text-[11px]
+                      leading-snug
+                      text-gov-ink-soft/70
+
+                      sm:text-xs
+
+                      dark:text-white/45
+                    "
+                  >
+                    {item.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
           </div>
         </div>
       </section>
