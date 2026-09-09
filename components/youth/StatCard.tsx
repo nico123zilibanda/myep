@@ -8,7 +8,6 @@ import {
 
 import {
   ArrowUpRight,
-  TrendingUp,
 } from "lucide-react";
 
 import clsx from "clsx";
@@ -43,7 +42,6 @@ export default function StatCard({
   value,
   icon,
   loading = false,
-  trendLabel = "Inaendelea",
   className,
 }: Props) {
   /* ================= COUNTER ================= */
@@ -248,58 +246,9 @@ export default function StatCard({
                 >
                   {displayValue}
                 </h3>
-
-                {/* SMALL INFO */}
-                <div
-                  className="
-                    mt-3
-
-                    flex items-center gap-2
-
-                    text-xs
-                    text-muted-foreground
-                  "
-                >
-                  <TrendingUp className="size-3.5 text-emerald-500" />
-
-                  Mfumo unaendelea vizuri
-                </div>
               </>
             )}
           </div>
-
-          {/* ================= STATUS ================= */}
-
-          {!loading && (
-            <div
-              className="
-                flex items-center gap-1.5
-
-                rounded-full
-
-                border border-emerald-500/10
-
-                bg-emerald-500/10
-
-                px-3 py-1.5
-
-                text-[11px]
-                font-semibold
-
-                text-emerald-600
-
-                backdrop-blur-sm
-
-                dark:text-emerald-400
-              "
-            >
-              <ArrowUpRight
-                className="size-3.5"
-              />
-
-              {trendLabel}
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>

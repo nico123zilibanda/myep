@@ -1,24 +1,23 @@
 "use client";
 
 import Link from "next/link";
-
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 import {
   ArrowRight,
-  Briefcase,
-  GraduationCap,
-  Landmark,
-  BriefcaseBusiness,
-  MessagesSquare,
-  Users,
   BookOpenCheck,
-  TrendingUp,
-  CheckCircle2,
-  ShieldCheck,
+  Briefcase,
+  BriefcaseBusiness,
   Building2,
-  Sprout,
+  CheckCircle2,
+  GraduationCap,
   HeartHandshake,
+  Landmark,
+  MessagesSquare,
+  ShieldCheck,
+  Sprout,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 
 import HeroSlider from "@/components/HeroSlider";
@@ -26,26 +25,57 @@ import HomeNavbar from "@/components/navbar/HomeNavbar";
 import GovernmentFooter from "@/components/government/GovernmentFooter";
 
 import { Button } from "@/components/ui/button";
-
 import {
   Card,
   CardContent,
 } from "@/components/ui/Card";
 
-/* ====================================================== */
-/* ANIMATIONS — preserved from the existing home page      */
-/* ====================================================== */
+/* ============================================================
+   TYPES
+   ============================================================ */
+
+interface StatItem {
+  value: string;
+  label: string;
+}
+
+interface FeatureItem {
+  title: string;
+  description: string;
+  icon: typeof BriefcaseBusiness;
+}
+
+interface AboutStatItem {
+  title: string;
+  value: string;
+  icon: typeof Users;
+}
+
+interface StepItem {
+  step: string;
+  title: string;
+  description: string;
+}
+
+interface PriorityItem {
+  title: string;
+  description: string;
+  icon: typeof Sprout;
+}
+
+/* ============================================================
+   ANIMATION VARIANTS
+   ============================================================ */
 
 const fadeUp: Variants = {
   hidden: {
     opacity: 0,
-    y: 30,
+    y: 24,
   },
 
   visible: {
     opacity: 1,
     y: 0,
-
     transition: {
       duration: 0.6,
       ease: [0.16, 1, 0.3, 1],
@@ -58,19 +88,67 @@ const staggerContainer: Variants = {
 
   visible: {
     transition: {
-      staggerChildren: 0.12,
+      staggerChildren: 0.1,
     },
   },
 };
 
-/* ====================================================== */
-/* DATA                                                    */
-/* ====================================================== */
+/* ============================================================
+   HERO SLIDES
+   ============================================================ */
 
-const stats = [
+const heroSlides = [
+  {
+    src: "/hero1.jpg",
+    title: "Fursa za Maendeleo kwa Wananchi wa Mlele",
+    subtitle:
+      "Pata taarifa za ajira, mafunzo, mikopo, biashara na fursa mbalimbali za maendeleo kupitia Mlele DC Fursa Portal.",
+  },
+
+  {
+    src: "/hero2.jpg",
+    title: "Ajira na Fursa za Kazi",
+    subtitle:
+      "Gundua nafasi za ajira na fursa mbalimbali zinazokuwezesha kujenga maisha bora na kuchangia maendeleo ya Wilaya ya Mlele.",
+  },
+
+  {
+    src: "/hero3.jpg",
+    title: "Mafunzo na Ujuzi",
+    subtitle:
+      "Jiunge na mafunzo, semina na programu zinazolenga kuongeza ujuzi, maarifa na uwezo wa kujiajiri au kuajiriwa.",
+  },
+
+  {
+    src: "/hero4.jpg",
+    title: "Ujasiriamali na Biashara",
+    subtitle:
+      "Pata taarifa kuhusu fursa za biashara, mikopo na programu zinazosaidia kukuza shughuli zako za kiuchumi.",
+  },
+
+  {
+    src: "/hero5.jpg",
+    title: "Huduma kwa Wananchi",
+    subtitle:
+      "Fikia taarifa na huduma muhimu za Serikali kwa urahisi, uwazi na kwa wakati wowote.",
+  },
+
+  {
+    src: "/hero7.jpg",
+    title: "Mlele DC Fursa Portal",
+    subtitle:
+      "Jukwaa la kidijitali linalowaunganisha wananchi wa Mlele na fursa, taarifa na huduma za maendeleo.",
+  },
+];
+
+/* ============================================================
+   HERO STATS
+   ============================================================ */
+
+const stats: StatItem[] = [
   {
     value: "500+",
-    label: "Wananchi Waliohudumiwa",
+    label: "Wananchi Waliojisajiri",
   },
 
   {
@@ -84,43 +162,49 @@ const stats = [
   },
 ];
 
-const features = [
+/* ============================================================
+   HERO CATEGORIES
+   ============================================================ */
+
+const heroCategories = [
+  "Ajira",
+  "Mafunzo",
+  "Mikopo",
+  "Ujasiriamali",
+];
+
+/* ============================================================
+   SERVICES
+   ============================================================ */
+
+const features: FeatureItem[] = [
   {
     title: "Fursa za Ajira",
-    desc: `
-      Pata taarifa za ajira, mikopo,
-      nafasi za kujitolea na fursa
-      mbalimbali za maendeleo kwa
-      wananchi wa Wilaya ya Mlele.
-    `,
-
+    description:
+      "Pata taarifa za ajira, mikopo, nafasi za kujitolea na fursa mbalimbali za maendeleo kwa wananchi wa Wilaya ya Mlele.",
     icon: BriefcaseBusiness,
   },
 
   {
     title: "Mafunzo na Kozi",
-    desc: `
-      Jifunze kupitia semina, mafunzo
-      na kozi mbalimbali zinazoongeza
-      ujuzi wa kitaalamu na ujasiriamali.
-    `,
-
+    description:
+      "Jifunze kupitia semina, mafunzo na kozi mbalimbali zinazoongeza ujuzi wa kitaalamu na ujasiriamali.",
     icon: GraduationCap,
   },
 
   {
     title: "Ushauri na Mwongozo",
-    desc: `
-      Pata msaada, ushauri wa kitaalamu
-      na majibu ya maswali kuhusu
-      huduma za Serikali ya Wilaya.
-    `,
-
+    description:
+      "Pata msaada, ushauri wa kitaalamu na majibu ya maswali kuhusu huduma za Serikali ya Wilaya.",
     icon: MessagesSquare,
   },
 ];
 
-const aboutStats = [
+/* ============================================================
+   ABOUT STATS
+   ============================================================ */
+
+const aboutStats: AboutStatItem[] = [
   {
     title: "Wananchi",
     value: "500+",
@@ -140,153 +224,279 @@ const aboutStats = [
   },
 
   {
-    title: "Miradi",
-    value: "45+",
+    title: "Upatikanaji",
+    value: "24/7",
     icon: TrendingUp,
   },
 ];
 
-const steps = [
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+
+const steps: StepItem[] = [
   {
     step: "01",
     title: "Jisajili",
-    desc: `
-      Fungua akaunti yako rasmi
-      ya mfumo ndani ya dakika chache.
-    `,
+    description:
+      "Fungua akaunti yako rasmi ya mfumo ndani ya dakika chache.",
   },
 
   {
     step: "02",
     title: "Tafuta Fursa",
-    desc: `
-      Chagua ajira, mafunzo au
-      huduma inayokufaa kwa wakati wako.
-    `,
+    description:
+      "Chagua ajira, mafunzo au huduma inayokufaa kwa wakati wako.",
   },
 
   {
     step: "03",
     title: "Anza Safari",
-    desc: `
-      Omba fursa au anza kujifunza
-      moja kwa moja kupitia mfumo.
-    `,
+    description:
+      "Omba fursa au anza kujifunza moja kwa moja kupitia mfumo.",
   },
 ];
 
-const priorities = [
+/* ============================================================
+   GOVERNMENT PRIORITIES
+   ============================================================ */
+
+const priorities: PriorityItem[] = [
   {
     icon: Sprout,
     title: "Kilimo na Ujasiriamali",
-    desc: "Kuinua uchumi wa wananchi kupitia kilimo chenye tija na ujasiriamali endelevu.",
+    description:
+      "Kuinua uchumi wa wananchi kupitia kilimo chenye tija na ujasiriamali endelevu.",
   },
+
   {
     icon: Building2,
     title: "Miundombinu",
-    desc: "Kujenga na kudumisha miundombinu ya kisasa kwa maendeleo ya Wilaya.",
+    description:
+      "Kujenga na kudumisha miundombinu ya kisasa kwa maendeleo ya Wilaya.",
   },
+
   {
     icon: HeartHandshake,
     title: "Huduma kwa Jamii",
-    desc: "Kutoa huduma bora za kijamii, elimu na afya kwa wananchi wote.",
+    description:
+      "Kutoa huduma bora za kijamii, elimu na afya kwa wananchi wote.",
   },
 ];
 
-/* ====================================================== */
-/* PAGE                                                    */
-/* ====================================================== */
+/* ============================================================
+   SMALL REUSABLE COMPONENTS
+   ============================================================ */
+
+function SectionBadge({
+  icon: Icon,
+  children,
+}: {
+  icon?: typeof Landmark;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className="
+        inline-flex items-center gap-2
+        rounded-full
+        border border-gov-green-200
+        bg-gov-green-50
+        px-4 py-1.5
+        text-xs font-semibold
+        text-gov-green-700
+
+        dark:border-gov-green-800
+        dark:bg-gov-green-950/40
+        dark:text-gov-green-300
+      "
+    >
+      {Icon && <Icon className="size-3.5" />}
+      {children}
+    </div>
+  );
+}
+
+function PrimaryButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Button
+      asChild
+      size="lg"
+      className="
+        h-12 rounded-xl
+        bg-primary px-7
+        text-sm font-semibold
+        text-primary-foreground
+        shadow-md shadow-gov-green-900/15
+        transition-all
+        hover:-translate-y-0.5
+        hover:bg-primary-hover
+        dark:shadow-black/20
+      "
+    >
+      <Link href={href}>
+        {children}
+        <ArrowRight className="ml-2 size-4" />
+      </Link>
+    </Button>
+  );
+}
+
+function SecondaryButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Button
+      asChild
+      size="lg"
+      variant="outline"
+      className="
+        h-12 rounded-xl
+        border-gov-gold-300
+        bg-gov-gold-400
+        px-7
+        text-sm font-semibold
+        text-gov-ink
+        transition-all
+        hover:-translate-y-0.5
+        hover:bg-gov-gold-300
+        hover:text-gov-green-800
+
+        dark:border-gov-gold-600
+        dark:bg-gov-gold-500
+        dark:text-slate-950
+      "
+    >
+      <Link href={href}>
+        {children}
+        <ArrowRight className="ml-2 size-4" />
+      </Link>
+    </Button>
+  );
+}
+
+/* ============================================================
+   PAGE
+   ============================================================ */
 
 export default function HomePage() {
   return (
     <main
       className="
         min-h-screen
-
+        overflow-x-hidden
         bg-background
-
         text-foreground
       "
     >
-      {/* ====================================================== */}
-      {/* NAVBAR                                                  */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          NAVBAR
+      ======================================================== */}
 
       <HomeNavbar />
 
-      {/* ====================================================== */}
-      {/* HERO                                                    */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          HERO
+      ======================================================== */}
 
       <section
         id="home"
+        aria-labelledby="hero-title"
         className="
-          relative overflow-hidden
-
+          relative
+          overflow-hidden
           border-b border-gov-mist
+          bg-gov-blue-300
 
-          bg-gov-paper
+          dark:border-white/10
+          dark:bg-slate-950
         "
       >
-        {/* SUBTLE GOV GLOW */}
+        {/* Background glow */}
         <div
-          aria-hidden
+          aria-hidden="true"
           className="
             pointer-events-none
-
-            absolute left-1/2 top-0
-
-            h-125 w-125
-
+            absolute
+            left-1/2
+            top-0
+            h-[500px]
+            w-125
             -translate-x-1/2
-
             rounded-full
-
             bg-gov-green-100/40
-
             blur-3xl
+
+            dark:bg-gov-green-900/10
           "
         />
+
         <div
-          aria-hidden
+          aria-hidden="true"
           className="
             pointer-events-none
-
-            absolute right-0 top-32
-
-            h-72 w-72
-
+            absolute
+            right-0
+            top-32
+            h-72
+            w-72
             rounded-full
-
-            bg-gov-gold-100/40
-
+            bg-gov-gold-100/20
             blur-3xl
+
+            dark:bg-gov-gold-900/10
           "
         />
 
         <div
           className="
-            relative z-10
+            relative
+            z-10
+            mx-auto
+            max-w-400
+            px-4
+            sm:px-6
+            lg:px-8
 
-            mx-auto max-w-7xl
+            pt-28
+            pb-16
 
-            px-4 sm:px-6
+            md:pt-36
+            md:pb-20
 
-            pt-28 pb-16
-            md:pt-36 md:pb-24
-            lg:pt-40
+            lg:pt-36
+            lg:pb-24
+
+            xl:pt-40
+            xl:pb-28
           "
         >
           <div
             className="
-              grid items-center gap-14
+              grid
+              items-center
+              gap-10
 
-              lg:grid-cols-2
+              lg:grid-cols-[0.8fr_1.4fr]
+              lg:gap-12
+
+              xl:grid-cols-[0.75fr_1.45fr]
+              xl:gap-16
             "
           >
-            {/* ====================================================== */}
-            {/* LEFT                                                    */}
-            {/* ====================================================== */}
+            {/* ==================================================
+                HERO CONTENT
+            ================================================== */}
 
             <motion.div
               variants={fadeUp}
@@ -297,215 +507,163 @@ export default function HomePage() {
                 lg:text-left
               "
             >
-              {/* BADGE */}
-              <div
-                className="
-                  inline-flex items-center gap-2
+              <SectionBadge icon={Landmark}>
+                Mlele DC Fursa Portal · Halmashauri ya Mlele
+              </SectionBadge>
 
-                  rounded-full
-
-                  border border-gov-green-200
-
-                  bg-gov-green-50
-
-                  px-4 py-2
-
-                  text-xs font-semibold
-                  text-gov-green-700
-
-                  shadow-sm
-                "
-              >
-                <Landmark
-                  className="
-                    size-3.5
-                    text-gov-green-700
-                  "
-                />
-
-                <span>
-                  Mlele DC Fursa Portal · Halmashauri ya Mlele
-                </span>
-              </div>
-
-              {/* TITLE */}
               <h1
+                id="hero-title"
                 className="
                   mt-7
-
                   text-4xl
-                  font-bold
+                  font-extrabold
+                  leading-[1.08]
                   tracking-tight
-
-                  leading-tight
-
                   text-gov-ink
 
                   sm:text-5xl
-                  lg:text-6xl
+
+                  lg:text-5xl
+
+                  xl:text-6xl
+
+                  dark:text-white
                 "
               >
                 Fursa za{" "}
-                <span className="text-gov-green-700">
+                <span className="text-gov-green-700 dark:text-gov-green-400">
                   Maendeleo
                 </span>{" "}
                 kwa Wananchi wa Mlele
               </h1>
 
-              {/* DESCRIPTION */}
               <p
                 className="
-                  mx-auto mt-6
-
+                  mx-auto
+                  mt-6
                   max-w-2xl
-
-                  text-base leading-relaxed
-
+                  text-base
+                  leading-relaxed
                   text-gov-ink-soft/80
 
                   sm:text-lg
 
                   lg:mx-0
+
+                  dark:text-white/65
                 "
               >
-                Mlele DC Fursa portal,
-                unaowaunganisha wananchi na
-                taarifa muhimu kuhusu ajira,
-                mafunzo, mikopo, biashara na
-                fursa nyingine za maendeleo kwa
+                Mlele DC Fursa Portal unaowaunganisha wananchi
+                na taarifa muhimu kuhusu ajira, mafunzo, mikopo,
+                biashara na fursa nyingine za maendeleo kwa
                 urahisi na uwazi.
               </p>
 
-              {/* BUTTONS */}
+              {/* CTA */}
               <div
                 className="
-                  mt-10
-
-                  flex flex-col items-center gap-4
-
-                  sm:flex-row
-
-                  lg:justify-start
-                "
-              >
-                <Button
-                  asChild
-                  size="lg"
-                  className="
-                    h-12 rounded-xl
-                    bg-primary px-7
-                    text-sm font-semibold text-primary-foreground
-                    shadow-md shadow-gov-green-900/15
-                    dark:shadow-black/20
-                    hover:bg-primary-hover
-                  "
-                >
-                  <Link href="/register">
-                    Jisajili Sasa
-
-                    <ArrowRight
-                      className="
-                        ml-2 size-4
-                      "
-                    />
-                  </Link>
-                </Button>
-
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="
-                    h-12 rounded-xl
-                    border-gov-mist
-                    bg-gov-gold-400
-                    text-sm font-semibold
-                    text-gov-ink
-                    hover:bg-gov-gold-300
-                    hover:text-gov-green-700
-                  "
-                >
-                  <Link href="/login">
-                    Ingia Kwenye Mfumo
-
-                       <ArrowRight
-                      className="
-                        ml-2 size-4
-                      "
-                    />
-                  </Link>
-                </Button>
-              </div>
-
-              {/* FEATURES */}
-              <div
-                className="
-                  mt-8
-
-                  flex flex-col gap-3
-
-                  text-sm
-                  text-gov-ink-soft/80
+                  mt-9
+                  flex
+                  flex-col
+                  items-center
+                  gap-3
 
                   sm:flex-row
-                  sm:flex-wrap
-                  sm:items-center
                   sm:justify-center
 
                   lg:justify-start
                 "
               >
-                {[
-                  "Ajira",
-                  "Mafunzo",
-                  "Mikopo",
-                  "Ujasiriamali",
-                ].map((item) => (
+                <PrimaryButton href="/register">
+                  Jisajili Sasa
+                </PrimaryButton>
+
+                <SecondaryButton href="/login">
+                  Ingia Kwenye Mfumo
+                </SecondaryButton>
+              </div>
+
+              {/* Categories */}
+              <div
+                className="
+                  mt-7
+                  flex
+                  flex-wrap
+                  items-center
+                  justify-center
+                  gap-x-5
+                  gap-y-2
+
+                  lg:justify-start
+                "
+              >
+                {heroCategories.map((item) => (
                   <div
                     key={item}
                     className="
-                      flex items-center gap-2
+                      flex
+                      items-center
+                      gap-2
+                      text-sm
+                      font-medium
+                      text-gov-ink-soft/75
+
+                      dark:text-white/60
                     "
                   >
                     <CheckCircle2
                       className="
-                        size-4 text-gov-green-700
+                        size-4
+                        text-gov-green-600
+
+                        dark:text-gov-green-400
                       "
                     />
 
-                    <span>{item}</span>
+                    {item}
                   </div>
                 ))}
               </div>
 
-              {/* STATS */}
+              {/* Hero Stats */}
               <div
                 className="
-                  mt-12
+                  mt-10
+                  grid
+                  grid-cols-3
+                  gap-2
 
-                  grid grid-cols-3 gap-3 sm:gap-4
+                  sm:gap-3
                 "
               >
-                {stats.map((item, index) => (
+                {stats.map((item) => (
                   <div
-                    key={index}
+                    key={item.label}
                     className="
                       rounded-2xl
-
-                      border border-gov-mist
-                      text-gov-ink
-                      bg-gov-green-100
-
-                      px-4 py-5
-
+                      border
+                      border-gov-mist
+                      bg-gov-green-100/80
+                      px-3
+                      py-4
                       shadow-sm
+
+                      sm:px-4
+                      sm:py-5
+
+                      dark:border-white/10
+                      dark:bg-white/4
                     "
                   >
                     <div
                       className="
-                        text-2xl
-                        font-bold
+                        text-xl
+                        font-extrabold
                         text-gov-green-700
+
+                        sm:text-2xl
+
+                        dark:text-gov-green-400
                       "
                     >
                       {item.value}
@@ -514,11 +672,13 @@ export default function HomePage() {
                     <div
                       className="
                         mt-1
-
-                        text-xs
+                        text-[11px]
+                        leading-snug
                         text-gov-ink-soft/70
 
-                        sm:text-sm
+                        sm:text-xs
+
+                        dark:text-white/45
                       "
                     >
                       {item.label}
@@ -528,9 +688,9 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* ====================================================== */}
-            {/* RIGHT (HERO SLIDER)                                    */}
-            {/* ====================================================== */}
+            {/* ==================================================
+                HERO SLIDER
+            ================================================== */}
 
             <motion.div
               variants={fadeUp}
@@ -538,363 +698,339 @@ export default function HomePage() {
               animate="visible"
               className="
                 relative
-
-                h-105
                 w-full
-
                 overflow-hidden
-
                 rounded-3xl
-
-                border border-gov-mist
-
+                border
+                border-gov-mist
                 bg-gov-paper
+                shadow-2xl
+                shadow-gov-ink/10
 
-                shadow-xl shadow-gov-ink/5
+                dark:border-white/10
+                dark:bg-slate-950
+                dark:shadow-black/40
+
+                min-h-120
+
+                sm:min-h-140
+
+                md:min-h-155
+
+                lg:min-h-170
+
+                xl:min-h-180
               "
             >
-              {/* Subtle Tanzania tricolor accent */}
-              <div
-                aria-hidden
-                className="absolute inset-x-0 top-0 z-20 flex h-1"
-              >
-                <div className="flex-1 bg-gov-green-600" />
-                <div className="flex-1 bg-gov-gold-500" />
-                <div className="flex-1 bg-gov-blue-500" />
-                <div className="flex-1 bg-gov-ink-soft/70" />
-              </div>
-
               <HeroSlider
-                images={[
-                  "/hero1.jpg",
-                  "/hero2.jpg",
-                  "/hero3.jpg",
-                  "/hero4.jpg",
-                  "/hero5.jpg",
-                  "/hero7.jpg",
-                ]}
+                images={heroSlides}
+                className="
+                  h-120
+
+                  sm:h-140
+
+                  md:h-155
+
+                  lg:h-170
+
+                  xl:h-180
+
+                  w-full
+                "
               />
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ====================================================== */}
-      {/* ABOUT                                                   */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          ABOUT
+      ======================================================== */}
 
       <motion.section
         id="about"
         variants={fadeUp}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.15 }}
         className="
-          relative overflow-hidden
+          relative
+          overflow-hidden
+          py-20
 
-          py-20 sm:py-24
+          sm:py-24
         "
       >
-        {/* DECORATION */}
         <div
-          aria-hidden
+          aria-hidden="true"
           className="
-            absolute right-0 top-0
-
-            h-96 w-96
-
-            translate-x-1/3 -translate-y-1/3
-
+            pointer-events-none
+            absolute
+            right-0
+            top-0
+            h-96
+            w-96
+            translate-x-1/3
+            -translate-y-1/3
             rounded-full
-
             bg-gov-green-100/50
-
             blur-3xl
+
+            dark:bg-gov-green-900/10
           "
         />
 
         <div
           className="
-            relative z-10
-
-            mx-auto max-w-7xl
-
-            px-4 sm:px-6
+            relative
+            z-10
+            mx-auto
+            max-w-7xl
+            px-4
+            sm:px-6
+            lg:px-8
           "
         >
           <div
             className="
-              grid items-center gap-14
+              grid
+              items-center
+              gap-12
 
               lg:grid-cols-2
+              lg:gap-16
             "
           >
-            {/* LEFT */}
+            {/* About content */}
             <div>
-              <div
-                className="
-                  inline-flex items-center gap-2
-
-                  rounded-full
-
-                  border border-gov-green-200
-
-                  bg-gov-green-50
-
-                  px-4 py-1.5
-
-                  text-xs font-semibold
-
-                  text-gov-green-700
-                "
-              >
-                <ShieldCheck className="size-3.5" />
+              <SectionBadge icon={ShieldCheck}>
                 Kuhusu Mfumo
-              </div>
+              </SectionBadge>
 
               <h2
                 className="
                   mt-6
-
-                  text-3xl font-bold tracking-tight
+                  text-3xl
+                  font-extrabold
+                  tracking-tight
                   text-gov-ink
 
                   sm:text-4xl
                   md:text-5xl
+
+                  dark:text-white
                 "
               >
-                Mlele Dc Fursa Portal
+                Mlele DC Fursa Portal
                 <span
                   className="
                     block
                     text-gov-green-700
+
+                    dark:text-gov-green-400
                   "
                 >
-                  Halmashauri ya mlele
+                  Halmashauri ya Mlele
                 </span>
               </h2>
 
               <p
                 className="
                   mt-6
-
                   max-w-2xl
-
-                  text-base leading-relaxed
-
+                  text-base
+                  leading-relaxed
                   text-gov-ink-soft/80
 
                   sm:text-lg
+
+                  dark:text-white/65
                 "
               >
-                Halmashauri ya Wilaya ya Mlele
-                ni miongoni mwa mamlaka za
-                Serikali za Mitaa zinazotoa
-                huduma kwa wananchi kupitia
-                mfumo wa kidijitali wenye
-                uwazi na urahisi wa matumizi.
+                Halmashauri ya Wilaya ya Mlele ni miongoni
+                mwa mamlaka za Serikali za Mitaa zinazotoa
+                huduma kwa wananchi kupitia mfumo wa kidijitali
+                wenye uwazi na urahisi wa matumizi.
               </p>
 
               <p
                 className="
                   mt-5
-
                   max-w-2xl
-
-                  text-base leading-relaxed
-
+                  text-base
+                  leading-relaxed
                   text-gov-ink-soft/80
+
+                  dark:text-white/65
                 "
               >
-                Mfumo huu umeundwa kusaidia
-                wananchi kupata taarifa sahihi
-                kwa wakati, kuongeza ujuzi na
-                kushiriki katika shughuli za
-                maendeleo ya jamii.
+                Mfumo huu umeundwa kusaidia wananchi kupata
+                taarifa sahihi kwa wakati, kuongeza ujuzi na
+                kushiriki katika shughuli za maendeleo ya jamii.
               </p>
             </div>
 
-            {/* RIGHT */}
+            {/* About statistics */}
             <div
               className="
-                grid gap-5
-
+                grid
+                gap-5
                 sm:grid-cols-2
               "
             >
-              {aboutStats.map(
-                (item, index) => {
-                  const Icon = item.icon;
+              {aboutStats.map((item) => {
+                const Icon = item.icon;
 
-                  return (
-                    <motion.div
-                      key={index}
-                      variants={fadeUp}
+                return (
+                  <motion.div
+                    key={item.title}
+                    variants={fadeUp}
+                  >
+                    <Card
+                      className="
+                        group
+                        relative
+                        h-full
+                        overflow-hidden
+                        border-gov-mist
+                        bg-gov-paper
+                        transition-all
+                        duration-300
+
+                        hover:-translate-y-1
+                        hover:border-gov-green-300
+                        hover:shadow-lg
+                        hover:shadow-gov-green-900/5
+
+                        dark:border-white/10
+                        dark:bg-white/3
+                        dark:hover:border-gov-green-700
+                      "
                     >
-                      <Card
+                      <div
+                        aria-hidden="true"
                         className="
-                          group relative
+                          absolute
+                          inset-0
+                          bg-linear-to-br
+                          from-gov-green-50
+                          via-transparent
+                          to-transparent
+                          opacity-0
+                          transition-opacity
+                          duration-300
+                          group-hover:opacity-100
 
-                          overflow-hidden
-
-                          border-gov-mist
-
-                          bg-gov-paper
-
-                          transition-all duration-200
-
-                          hover:-translate-y-1
-                          hover:border-gov-green-300
-                          hover:shadow-lg
-                          hover:shadow-gov-green-900/5
+                          dark:from-gov-green-950/30
                         "
-                      >
+                      />
+
+                      <CardContent className="relative z-10 p-7">
                         <div
                           className="
-                            absolute inset-0
+                            flex
+                            size-14
+                            items-center
+                            justify-center
+                            rounded-2xl
+                            bg-gov-green-50
+                            text-gov-green-700
+                            ring-1
+                            ring-gov-green-100
 
-                            bg-linear-to-br
-                            from-gov-green-50
-                            via-transparent
-                            to-transparent
-
-                            opacity-0
-
-                            transition-opacity duration-200
-
-                            group-hover:opacity-100
-                          "
-                        />
-
-                        <CardContent
-                          className="
-                            relative z-10
-                            p-7
+                            dark:bg-gov-green-950/50
+                            dark:text-gov-green-400
+                            dark:ring-gov-green-900
                           "
                         >
-                          <div
-                            className="
-                              flex size-14 items-center justify-center
+                          <Icon className="size-6" />
+                        </div>
 
-                              rounded-2xl
+                        <h3
+                          className="
+                            mt-6
+                            text-3xl
+                            font-extrabold
+                            tracking-tight
+                            text-gov-ink
 
-                              bg-gov-green-50
+                            dark:text-white
+                          "
+                        >
+                          {item.value}
+                        </h3>
 
-                              text-gov-green-700
+                        <p
+                          className="
+                            mt-2
+                            text-sm
+                            font-medium
+                            text-gov-ink-soft/70
 
-                              ring-1 ring-gov-green-100
-                            "
-                          >
-                            <Icon
-                              className="
-                                size-6
-                              "
-                            />
-                          </div>
-
-                          <h3
-                            className="
-                              mt-6
-
-                              text-3xl
-                              font-bold
-                              tracking-tight
-                              text-gov-ink
-                            "
-                          >
-                            {item.value}
-                          </h3>
-
-                          <p
-                            className="
-                              mt-2
-
-                              text-sm
-                              font-medium
-
-                              text-gov-ink-soft/70
-                            "
-                          >
-                            {item.title}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  );
-                },
-              )}
+                            dark:text-white/50
+                          "
+                        >
+                          {item.title}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>
       </motion.section>
 
-      {/* ====================================================== */}
-      {/* SERVICES                                                */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          SERVICES
+      ======================================================== */}
 
       <motion.section
         id="services"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.1 }}
         className="
-          relative overflow-hidden
-
+          relative
+          overflow-hidden
           bg-gov-mist/50
+          py-20
 
-          py-20 sm:py-24
+          sm:py-24
+
+          dark:bg-slate-900/50
         "
       >
         <div
           className="
-            relative z-10
-
-            mx-auto max-w-7xl
-
-            px-4 sm:px-6
+            relative
+            z-10
+            mx-auto
+            max-w-7xl
+            px-4
+            sm:px-6
+            lg:px-8
           "
         >
-          {/* HEADER */}
-          <div
-            className="
-              mx-auto mb-14
-
-              max-w-3xl
-
-              text-center
-            "
-          >
-            <div
-              className="
-                inline-flex items-center gap-2
-
-                rounded-full
-
-                border border-gov-green-200
-
-                bg-gov-green-50
-
-                px-4 py-1.5
-
-                text-xs font-semibold
-
-                text-gov-green-700
-              "
-            >
-              Huduma za Serikali
-            </div>
+          {/* Header */}
+          <div className="mx-auto mb-14 max-w-3xl text-center">
+            <SectionBadge>
+              Huduma za Serikali ya wilaya ya mlele
+            </SectionBadge>
 
             <h2
               className="
                 mt-6
-
                 text-3xl
-                font-bold
+                font-extrabold
                 tracking-tight
                 text-gov-ink
 
                 sm:text-4xl
+
+                dark:text-white
               "
             >
               Mfumo Unaokuwezesha
@@ -902,6 +1038,8 @@ export default function HomePage() {
                 className="
                   block
                   text-gov-green-700
+
+                  dark:text-gov-green-400
                 "
               >
                 Kupata Huduma za Msingi
@@ -911,137 +1049,130 @@ export default function HomePage() {
             <p
               className="
                 mt-5
-
-                text-base leading-relaxed
-
+                text-base
+                leading-relaxed
                 text-gov-ink-soft/80
 
                 sm:text-lg
+
+                dark:text-white/60
               "
             >
-              Pata huduma mbalimbali muhimu
-              zinazotolewa na Halmashauri ya
-              Wilaya ya Mlele kupitia mfumo
+              Pata huduma mbalimbali muhimu zinazotolewa na
+              Halmashauri ya Wilaya ya Mlele kupitia mfumo
               mmoja wa kidijitali.
             </p>
           </div>
 
-          {/* FEATURE CARDS */}
+          {/* Service cards */}
           <div
             className="
-              grid gap-6
+              grid
+              gap-6
 
               md:grid-cols-2
               xl:grid-cols-3
             "
           >
-            {features.map((item, index) => {
+            {features.map((item) => {
               const Icon = item.icon;
 
               return (
                 <motion.div
-                  key={index}
+                  key={item.title}
                   variants={fadeUp}
                 >
                   <Card
                     className="
-                      group relative
-
-                      h-full overflow-hidden
-
+                      group
+                      relative
+                      h-full
+                      overflow-hidden
                       border-gov-mist
-
                       bg-gov-paper
-
-                      transition-all duration-200
+                      transition-all
+                      duration-300
 
                       hover:-translate-y-1
                       hover:border-gov-green-300
                       hover:shadow-xl
                       hover:shadow-gov-green-900/5
+
+                      dark:border-white/10
+                      dark:bg-white/3
                     "
                   >
                     <div
+                      aria-hidden="true"
                       className="
-                        absolute right-0 top-0
-
-                        h-32 w-32
-
+                        absolute
+                        right-0
+                        top-0
+                        h-32
+                        w-32
                         translate-x-1/3
                         -translate-y-1/3
-
                         rounded-full
-
                         bg-gov-green-100
-
                         blur-3xl
-
                         opacity-0
-
-                        transition-opacity duration-200
-
+                        transition-opacity
+                        duration-300
                         group-hover:opacity-100
+
+                        dark:bg-gov-green-900/20
                       "
                     />
 
-                    <CardContent
-                      className="
-                        relative z-10
-                        p-8
-                      "
-                    >
+                    <CardContent className="relative z-10 p-8">
                       <div
                         className="
-                          flex size-14 items-center justify-center
-
+                          flex
+                          size-14
+                          items-center
+                          justify-center
                           rounded-2xl
-
                           bg-gov-green-50
-
                           text-gov-green-700
-
-                          ring-1 ring-gov-green-100
-
-                          transition-transform duration-200
-
+                          ring-1
+                          ring-gov-green-100
+                          transition-transform
+                          duration-300
                           group-hover:scale-110
+
+                          dark:bg-gov-green-950/50
+                          dark:text-gov-green-400
+                          dark:ring-gov-green-900
                         "
                       >
-                        <Icon
-                          className="
-                            size-7
-                          "
-                        />
+                        <Icon className="size-7" />
                       </div>
 
-                      <div
+                      <h3
                         className="
                           mt-7
+                          text-xl
+                          font-bold
+                          tracking-tight
+                          text-gov-ink
+
+                          dark:text-white
                         "
                       >
-                        <h3
-                          className="
-                            text-xl
-                            font-bold
-                            tracking-tight
-                            text-gov-ink
-                          "
-                        >
-                          {item.title}
-                        </h3>
+                        {item.title}
+                      </h3>
 
-                        <p
-                          className="
-                            mt-4
+                      <p
+                        className="
+                          mt-4
+                          leading-relaxed
+                          text-gov-ink-soft/80
 
-                            leading-relaxed
-
-                            text-gov-ink-soft/80
-                          "
-                        >
-                          {item.desc}
-                        </p>
-                      </div>
+                          dark:text-white/60
+                        "
+                      >
+                        {item.description}
+                      </p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -1049,55 +1180,82 @@ export default function HomePage() {
             })}
           </div>
 
-          {/* PRIORITY GRID — Government priorities */}
+          {/* Priorities */}
           <div
             className="
               mt-16
-
-              grid gap-5
+              grid
+              gap-5
 
               md:grid-cols-3
             "
           >
-            {priorities.map((item, index) => {
+            {priorities.map((item) => {
               const Icon = item.icon;
+
               return (
                 <motion.div
-                  key={index}
+                  key={item.title}
                   variants={fadeUp}
                   className="
-                    flex items-start gap-4
-
+                    flex
+                    items-start
+                    gap-4
                     rounded-2xl
-
-                    border border-gov-mist
-
+                    border
+                    border-gov-mist
                     bg-gov-paper
-
                     p-5
+
+                    dark:border-white/10
+                    dark:bg-white/3
                   "
                 >
                   <div
                     className="
-                      flex size-11 shrink-0 items-center justify-center
-
+                      flex
+                      size-11
+                      shrink-0
+                      items-center
+                      justify-center
                       rounded-xl
-
                       bg-gov-gold-50
-
                       text-gov-gold-700
+                      ring-1
+                      ring-gov-gold-100
 
-                      ring-1 ring-gov-gold-100
+                      dark:bg-gov-gold-950/30
+                      dark:text-gov-gold-400
+                      dark:ring-gov-gold-900
                     "
                   >
                     <Icon className="size-5" />
                   </div>
+
                   <div>
-                    <h4 className="text-sm font-bold text-gov-ink">
+                    <h3
+                      className="
+                        text-sm
+                        font-bold
+                        text-gov-ink
+
+                        dark:text-white
+                      "
+                    >
                       {item.title}
-                    </h4>
-                    <p className="mt-1 text-sm leading-relaxed text-gov-ink-soft/80">
-                      {item.desc}
+                    </h3>
+
+                    <p
+                      className="
+                        mt-1
+                        text-sm
+                        leading-relaxed
+                        text-gov-ink-soft/80
+
+                        dark:text-white/55
+                      "
+                    >
+                      {item.description}
                     </p>
                   </div>
                 </motion.div>
@@ -1107,62 +1265,43 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* ====================================================== */}
-      {/* HOW IT WORKS                                            */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          HOW IT WORKS
+      ======================================================== */}
 
       <motion.section
         id="how-it-works"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
-        className="
-          py-20 sm:py-24
-        "
+        viewport={{ once: true, amount: 0.1 }}
+        className="py-20 sm:py-24"
       >
         <div
           className="
-            mx-auto max-w-7xl
-            px-4 sm:px-6
+            mx-auto
+            max-w-7xl
+            px-4
+            sm:px-6
+            lg:px-8
           "
         >
-          {/* HEADER */}
-          <div
-            className="
-              mb-14 text-center
-            "
-          >
-            <div
-              className="
-                inline-flex items-center gap-2
-
-                rounded-full
-
-                border border-gov-green-200
-
-                bg-gov-green-50
-
-                px-4 py-1.5
-
-                text-xs font-semibold
-
-                text-gov-green-700
-              "
-            >
+          <div className="mb-14 text-center">
+            <SectionBadge>
               Mfumo Unavyofanya Kazi
-            </div>
+            </SectionBadge>
 
             <h2
               className="
                 mt-6
-
                 text-3xl
-                font-bold
+                font-extrabold
                 tracking-tight
                 text-gov-ink
 
                 md:text-4xl
+
+                dark:text-white
               "
             >
               Hatua Rahisi za
@@ -1173,70 +1312,73 @@ export default function HomePage() {
               className="
                 mt-4
                 text-gov-ink-soft/80
+
+                dark:text-white/60
               "
             >
-              Jiunge ndani ya muda mfupi
-              na uanze kupata fursa za maendeleo.
+              Jiunge ndani ya muda mfupi na uanze kupata
+              fursa za maendeleo.
             </p>
           </div>
 
-          {/* STEPS */}
           <div
             className="
-              grid gap-6
+              grid
+              gap-6
 
               md:grid-cols-3
             "
           >
-            {steps.map((item, index) => (
+            {steps.map((item) => (
               <motion.div
-                key={index}
+                key={item.step}
                 variants={fadeUp}
               >
                 <Card
                   className="
-                    relative h-full overflow-hidden
-
+                    relative
+                    h-full
+                    overflow-hidden
                     border-gov-mist
-
                     bg-gov-paper
-
-                    transition-all duration-200
+                    transition-all
+                    duration-300
 
                     hover:-translate-y-1
                     hover:border-gov-green-300
                     hover:shadow-lg
+
+                    dark:border-white/10
+                    dark:bg-white/3
                   "
                 >
                   <div
+                    aria-hidden="true"
                     className="
-                      absolute right-0 top-0
-
-                      h-32 w-32
-
+                      absolute
+                      right-0
+                      top-0
+                      h-32
+                      w-32
                       translate-x-1/3
                       -translate-y-1/3
-
                       rounded-full
-
                       bg-gov-green-100
-
                       blur-3xl
+
+                      dark:bg-gov-green-900/20
                     "
                   />
 
-                  <CardContent
-                    className="
-                      relative z-10
-                      p-8
-                    "
-                  >
+                  <CardContent className="relative z-10 p-8">
                     <div
                       className="
                         text-5xl
-                        font-bold
-
+                        font-extrabold
+                        tracking-tight
                         text-gov-green-200
+
+                        dark:text-gov-green-900
                       "
                     >
                       {item.step}
@@ -1245,10 +1387,11 @@ export default function HomePage() {
                     <h3
                       className="
                         mt-6
-
                         text-xl
                         font-bold
                         text-gov-ink
+
+                        dark:text-white
                       "
                     >
                       {item.title}
@@ -1257,13 +1400,13 @@ export default function HomePage() {
                     <p
                       className="
                         mt-3
-
                         leading-relaxed
-
                         text-gov-ink-soft/80
+
+                        dark:text-white/60
                       "
                     >
-                      {item.desc}
+                      {item.description}
                     </p>
                   </CardContent>
                 </Card>
@@ -1273,86 +1416,89 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* ====================================================== */}
-      {/* CTA                                                     */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          CTA
+      ======================================================== */}
 
       <motion.section
         variants={fadeUp}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.2 }}
         className="
-          relative overflow-hidden
-
-          border-y border-gov-green-700/40
-
+          relative
+          overflow-hidden
+          border-y
+          border-gov-green-700/40
           bg-gov-green-800
-
-          py-20 sm:py-24
-
+          py-20
           text-white
+
+          sm:py-24
         "
       >
-        {/* Decorative rings */}
+        {/* Decorative glow */}
         <div
-          aria-hidden
+          aria-hidden="true"
           className="
-            absolute left-1/2 top-1/2
-
-            h-100 w-100
-
+            pointer-events-none
+            absolute
+            left-1/2
+            top-1/2
+            h-100
+            w-100
             -translate-x-1/2
             -translate-y-1/2
-
             rounded-full
-
             bg-white/10
-
             blur-3xl
           "
         />
+
         <div
-          aria-hidden
+          aria-hidden="true"
           className="
-            absolute -right-24 -bottom-24
-
-            h-72 w-72
-
+            pointer-events-none
+            absolute
+            -bottom-24
+            -right-24
+            h-72
+            w-72
             rounded-full
-
             bg-gov-gold-400/20
-
             blur-3xl
-        "
+          "
         />
 
         <div
           className="
-            relative z-10
-
-            mx-auto max-w-4xl
-
-            px-4 sm:px-6
-
+            relative
+            z-10
+            mx-auto
+            max-w-4xl
+            px-4
             text-center
+
+            sm:px-6
           "
         >
           <div
             className="
-              mx-auto inline-flex items-center gap-2
-
+              mx-auto
+              inline-flex
+              items-center
+              gap-2
               rounded-full
-
-              border border-white/20
-
+              border
+              border-white/20
               bg-white/10
-
-              px-4 py-1.5
-
-              text-xs font-semibold uppercase tracking-[0.18em]
+              px-4
+              py-1.5
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.18em]
               text-white/90
-
               backdrop-blur
             "
           >
@@ -1364,100 +1510,65 @@ export default function HomePage() {
             className="
               mt-6
               text-3xl
-              font-bold
+              font-extrabold
               tracking-tight
 
               sm:text-4xl
+              md:text-5xl
             "
           >
             Jiunge Leo na
-            Uanze Safari ya
-            Maendeleo
+            <span className="block text-gov-gold-300">
+              Uanze Safari ya Maendeleo
+            </span>
           </h2>
 
           <p
             className="
-              mx-auto mt-5
-
+              mx-auto
+              mt-5
               max-w-2xl
+              text-base
+              leading-relaxed
+              text-white/85
 
-              text-base leading-relaxed
-
-              text-white/90
+              sm:text-lg
             "
           >
-            Usikose nafasi za
-            ajira, mafunzo na
-            huduma nyingine muhimu
-            zinazotolewa na Halmashauri
+            Usikose nafasi za ajira, mafunzo na huduma
+            nyingine muhimu zinazotolewa na Halmashauri
             ya Wilaya ya Mlele.
           </p>
 
           <div
             className="
-              mt-10
-
-              flex flex-col items-center justify-center gap-3
+              mt-9
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-3
 
               sm:flex-row
             "
           >
-                <Button
-                  asChild
-                  size="lg"
-                  className="
-                    h-12 rounded-xl
-                    bg-primary px-7
-                    text-sm font-semibold text-primary-foreground
-                    shadow-md shadow-gov-green-900/15
-                    dark:shadow-black/20
-                    hover:bg-primary-hover
-                  "
-                >
-                  <Link href="/register">
-                    Jisajili Sasa
+            <PrimaryButton href="/register">
+              Jisajili Sasa
+            </PrimaryButton>
 
-                    <ArrowRight
-                      className="
-                        ml-2 size-4
-                      "
-                    />
-                  </Link>
-                </Button>
-
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="
-                    h-12 rounded-xl
-                    border-gov-mist
-                    bg-gov-gold-400
-                    text-sm font-semibold
-                    text-gov-ink
-                    hover:bg-gov-gold-300
-                    hover:text-gov-green-700
-                  "
-                >
-                  <Link href="/login">
-                    Ingia Kwenye Mfumo
-
-                       <ArrowRight
-                      className="
-                        ml-2 size-4
-                      "
-                    />
-                  </Link>
-                </Button>
+            <SecondaryButton href="/login">
+              Ingia Kwenye Mfumo
+            </SecondaryButton>
           </div>
         </div>
       </motion.section>
 
-      {/* ====================================================== */}
-      {/* FOOTER (Government)                                     */}
-      {/* ====================================================== */}
+      {/* ========================================================
+          GOVERNMENT FOOTER
+      ======================================================== */}
 
       <GovernmentFooter />
     </main>
   );
 }
+

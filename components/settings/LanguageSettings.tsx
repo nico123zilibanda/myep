@@ -52,8 +52,7 @@ export default function LanguageSettings() {
           value={lang}
           onChange={(value) => handleChange(value as Lang)}
           options={[
-            { value: "sw", label: "Swahili" },
-            { value: "en", label: "English" },
+            { value: "sw", label: "Swahili" }
           ]}
         />
       </div>

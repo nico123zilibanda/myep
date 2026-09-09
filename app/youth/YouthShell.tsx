@@ -327,7 +327,7 @@ export default function YouthShell({
                   text-white
                 "
               >
-                Mfumo wa Huduma kwa Wananchi
+                Mlele DC Fursa Portal
               </p>
 
               {/* CARD DESCRIPTION */}

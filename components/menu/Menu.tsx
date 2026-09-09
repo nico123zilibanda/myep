@@ -346,24 +346,26 @@ export default function Menu({
 
                 rounded-3xl border
 
-                border-gov-green-100
+                border-primary/10
 
-                bg-gov-green-50
+                bg-linear-to-br
+                from-background
+                via-muted/40
+                to-primary/5
 
                 p-5
 
                 shadow-sm
               "
             >
-              {/* ================= DECORATIONS ================= */}
-
+              {/* BACKGROUND DECOR */}
               <div
                 className="
                   absolute -right-6 -top-6
 
                   size-20 rounded-full
 
-                  bg-gov-green-200
+                  bg-primary/10
 
                   blur-2xl
                 "
@@ -375,109 +377,73 @@ export default function Menu({
 
                   size-24 rounded-full
 
-                  bg-gov-gold-200
+                  bg-indigo-500/10
 
                   blur-3xl
                 "
               />
 
-              {/* ================= CONTENT ================= */}
-
               <div className="relative z-10">
                 {/* BADGE */}
-
                 <div
                   className="
                     mb-4 inline-flex items-center gap-2
 
                     rounded-full border
 
-                    border-gov-green-200
+                    border-primary/10
 
-                    bg-gov-paper
+                    bg-primary/8
 
                     px-3 py-1
 
                     text-xs font-semibold
-                    text-gov-green-700
+                    text-primary
                   "
                 >
                   <Sparkles className="size-3.5" />
 
-                  Mfumo Rasmi wa Serikali
+                  Mlele DC Fursa Portal
                 </div>
-
-                {/* TITLE */}
-
-                <h3
-                  className="
-                    text-sm font-bold
-                    tracking-tight
-                    text-gov-ink
-                  "
-                >
-                  Halmashauri ya Wilaya ya Mlele
-                </h3>
-
-                {/* DESCRIPTION */}
-
-                <p
-                  className="
-                    mt-2
-
-                    text-xs
-                    leading-relaxed
-
-                    text-gov-ink-soft/80
-                  "
-                >
-                   Mfumo rasmi wa fursa, mafunzo,
-                   ajira, na maendeleo ya kijamii
-                   ndani ya Wilaya ya Mlele.
-                </p>
-
                 {/* STATUS */}
-
                 <div
                   className="
                     mt-4 flex items-center gap-2
 
                     rounded-2xl border
 
-                    border-gov-green-200
-
-                    bg-gov-paper
+                    bg-background/70
 
                     px-3 py-2
 
-                    text-xs text-gov-ink-soft
+                    text-xs text-muted-foreground
+
+                    backdrop-blur-sm
                   "
                 >
                   <div
                     className="
                       size-2 rounded-full
 
-                      bg-gov-green-500
+                      bg-emerald-500
 
                       animate-pulse
                     "
                   />
 
-                  Mfumo unafanya kazi vizuri
+                  Inyonga - Mlele
                 </div>
 
                 {/* COPYRIGHT */}
-
                 <p
                   className="
                     mt-4
 
                     text-[10px]
-
-                    text-gov-ink-soft/70
+                    text-muted-foreground
                   "
                 >
-                  © {new Date().getFullYear()} Halmashauri ya Mlele
+                  © {new Date().getFullYear()} Halmashauri ya mlele
                 </p>
               </div>
             </div>

@@ -77,7 +77,7 @@ export default function Navbar({
       return t("settings");
     }
 
-    return t("ADMIN_DASHBOARD");
+    return t("DASHBOARD");
   }, [pathname, t]);
 
   /* ================= INITIALS ================= */

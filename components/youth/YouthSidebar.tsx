@@ -380,35 +380,6 @@ export default function YouthMenu({
 
                   Mlele DC Fursa Portal
                 </div>
-
-                {/* TITLE */}
-                <h3
-                  className="
-                    text-sm font-bold
-                    tracking-tight
-                    text-foreground
-                  "
-                >
-                  Mfumo wa Halmashauri ya Wilaya ya
-                  Mlele
-                </h3>
-
-                {/* DESCRIPTION */}
-                <p
-                  className="
-                    mt-2
-
-                    text-xs
-                    leading-relaxed
-
-                    text-muted-foreground
-                  "
-                >
-                  Mfumo wa kisasa wa vijana kwa ajili ya
-                  fursa, mafunzo, ajira, na maendeleo ya
-                  kijamii ndani ya Wilaya ya Mlele.
-                </p>
-
                 {/* STATUS */}
                 <div
                   className="
@@ -435,7 +406,7 @@ export default function YouthMenu({
                     "
                   />
 
-                  Mfumo unafanya kazi vizuri
+                  Inyonga - Mlele
                 </div>
 
                 {/* COPYRIGHT */}
@@ -447,7 +418,7 @@ export default function YouthMenu({
                     text-muted-foreground
                   "
                 >
-                  © {new Date().getFullYear()} Mlele DC
+                  © {new Date().getFullYear()} Halmashauri ya mlele
                 </p>
               </div>
             </div>

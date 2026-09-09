@@ -125,7 +125,7 @@ export default function YouthTopbar({
       return "Mipangilio";
     }
 
-    return "Dashibodi ya Vijana";
+    return "Dashibodi";
   }, [pathname]);
 
   /* ================= LOGOUT ================= */
@@ -543,7 +543,7 @@ export default function YouthTopbar({
                       >
                         <ShieldCheck className="size-3" />
 
-                        Akaunti ya Kijana
+                        Akaunti yako
                       </div>
                     </div>
                   </div>

@@ -311,7 +311,7 @@ export default function AdminShell({
                   text-white
                 "
               >
-                Mfumo wa Usimamizi wa Serikali
+                Mlele DC Fursa Portal
               </p>
 
               <p

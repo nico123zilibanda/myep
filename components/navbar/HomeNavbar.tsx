@@ -14,17 +14,11 @@ import {
   X,
 } from "lucide-react";
 
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-} from "framer-motion";
-
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { HalmashauriLogo } from "@/components/government/HalmashauriLogo";
-
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -57,18 +51,15 @@ const sectionIds = navLinks
 export default function HomeNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] =
-    useState("home");
+  const [activeSection, setActiveSection] = useState("home");
+  const [mounted, setMounted] = useState(false);
 
   const shouldReduceMotion = useReducedMotion();
-
   const { setTheme, resolvedTheme } = useTheme();
 
   /* ==========================================================================
-   * THEME TOGGLE
+   * THEME
    * ======================================================================== */
-
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -88,7 +79,9 @@ export default function HomeNavbar() {
   };
 
   const currentThemeIcon = () => {
-    if (!mounted) return <Sun className="size-5" />;
+    if (!mounted) {
+      return <Sun className="size-5" />;
+    }
 
     if (resolvedTheme === "dark") {
       return <Moon className="size-5" />;
@@ -105,81 +98,69 @@ export default function HomeNavbar() {
    * SCROLL + ACTIVE SECTION
    * ======================================================================== */
 
- useEffect(() => {
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
 
-    setScrolled(scrollY > 10);
+      setScrolled(scrollY > 10);
 
-    if (scrollY < 120) {
-      setActiveSection("home");
-      return;
-    }
-
-    const sections = sectionIds
-      .map((id) => {
-        const element =
-          document.getElementById(id);
-
-        if (!element) {
-          return null;
-        }
-
-        return {
-          id,
-          element,
-        };
-      })
-      .filter(
-        (
-          item,
-        ): item is {
-          id: (typeof sectionIds)[number];
-          element: HTMLElement;
-        } => item !== null,
-      );
-
-    let currentSection = "home";
-    let closestDistance = Infinity;
-
-    for (const section of sections) {
-      const rect =
-        section.element.getBoundingClientRect();
-
-      const distance = Math.abs(
-        rect.top - 120,
-      );
-
-      if (
-        rect.top <= 180 &&
-        rect.bottom >= 120 &&
-        distance < closestDistance
-      ) {
-        closestDistance = distance;
-        currentSection = section.id;
+      if (scrollY < 120) {
+        setActiveSection("home");
+        return;
       }
-    }
 
-    setActiveSection(currentSection);
-  };
+      const sections = sectionIds
+        .map((id) => {
+          const element = document.getElementById(id);
 
-  handleScroll();
+          if (!element) {
+            return null;
+          }
 
-  window.addEventListener(
-    "scroll",
-    handleScroll,
-    {
+          return {
+            id,
+            element,
+          };
+        })
+        .filter(
+          (
+            item,
+          ): item is {
+            id: (typeof sectionIds)[number];
+            element: HTMLElement;
+          } => item !== null,
+        );
+
+      let currentSection = "home";
+      let closestDistance = Infinity;
+
+      for (const section of sections) {
+        const rect = section.element.getBoundingClientRect();
+        const distance = Math.abs(rect.top - 120);
+
+        if (
+          rect.top <= 180 &&
+          rect.bottom >= 120 &&
+          distance < closestDistance
+        ) {
+          closestDistance = distance;
+          currentSection = section.id;
+        }
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
       passive: true,
-    },
-  );
+    });
 
-  return () => {
-    window.removeEventListener(
-      "scroll",
-      handleScroll,
-    );
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   /* ==========================================================================
    * HASH STATE
@@ -187,18 +168,9 @@ export default function HomeNavbar() {
 
   useEffect(() => {
     const updateFromHash = () => {
-      const hash =
-        window.location.hash.replace(
-          "#",
-          "",
-        );
+      const hash = window.location.hash.replace("#", "");
 
-      if (
-        hash &&
-        navLinks.some(
-          (link) => link.id === hash,
-        )
-      ) {
+      if (hash && navLinks.some((link) => link.id === hash)) {
         setActiveSection(hash);
       } else if (!hash) {
         setActiveSection("home");
@@ -207,16 +179,10 @@ export default function HomeNavbar() {
 
     updateFromHash();
 
-    window.addEventListener(
-      "hashchange",
-      updateFromHash,
-    );
+    window.addEventListener("hashchange", updateFromHash);
 
     return () => {
-      window.removeEventListener(
-        "hashchange",
-        updateFromHash,
-      );
+      window.removeEventListener("hashchange", updateFromHash);
     };
   }, []);
 
@@ -229,14 +195,12 @@ export default function HomeNavbar() {
       return;
     }
 
-    const previousOverflow =
-      document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow =
-        previousOverflow;
+      document.body.style.overflow = previousOverflow;
     };
   }, [mobileOpen]);
 
@@ -249,8 +213,7 @@ export default function HomeNavbar() {
     setMobileOpen(false);
   };
 
-  const isActive = (id: string) =>
-    activeSection === id;
+  const isActive = (id: string) => activeSection === id;
 
   /* ==========================================================================
    * UI
@@ -264,55 +227,28 @@ export default function HomeNavbar() {
 
       <header
         className={cn(
-          /*
-           * Position
-           */
           "fixed inset-x-0 top-0 z-50",
-
-          /*
-           * Animation
-           */
           "transition-all duration-300",
 
           /*
-           * --------------------------------------------------------------------
            * LIGHT MODE
-           * --------------------------------------------------------------------
-           *
-           * Light mode can retain a small amount of transparency.
            */
           "bg-gov-paper/95",
 
           /*
-           * --------------------------------------------------------------------
            * DARK MODE
-           * --------------------------------------------------------------------
            *
-           * IMPORTANT:
-           *
-           * gov-ink is the system's pure dark green background.
-           *
-           * Do NOT use:
-           *
-           * dark:bg-gov-ink/90
-           * dark:bg-gov-ink/80
-           * dark:bg-white/[0.04]
-           *
-           * for the navbar itself.
-           *
-           * This keeps the navbar completely integrated with the system
-           * dark background.
+           * Same dark tone used by GovernmentFooter.
            */
-          "dark:bg-gov-ink",
+          "dark:bg-slate-950",
 
           /*
-           * Only the background gets blur.
-           * Text and controls remain visually solid.
+           * Background blur
            */
           "backdrop-blur-xl",
 
           /*
-           * Border + shadow when scrolling.
+           * Border + shadow when scrolling
            */
           scrolled
             ? [
@@ -320,7 +256,7 @@ export default function HomeNavbar() {
                 "shadow-lg shadow-black/5",
 
                 "dark:border-white/10",
-                "dark:shadow-black/30",
+                "dark:shadow-black/40",
               ]
             : [
                 "border-b border-transparent",
@@ -352,7 +288,6 @@ export default function HomeNavbar() {
               rounded-full
               bg-gov-green-400/10
               blur-3xl
-
               dark:bg-gov-green-400/5
             "
           />
@@ -368,7 +303,6 @@ export default function HomeNavbar() {
               rounded-full
               bg-gov-blue-400/10
               blur-3xl
-
               dark:bg-gov-blue-400/5
             "
           />
@@ -389,16 +323,14 @@ export default function HomeNavbar() {
           "
         >
           <div className="flex-1 bg-gov-green-600" />
-
           <div className="flex-1 bg-gov-gold-500" />
-
           <div className="flex-1 bg-gov-blue-500" />
 
           <div
             className="
               flex-1
               bg-gov-ink-soft
-              dark:bg-white/15
+              dark:bg-white/20
             "
           />
         </div>
@@ -432,9 +364,7 @@ export default function HomeNavbar() {
 
             <Link
               href="/"
-              onClick={() =>
-                handleNavClick("home")
-              }
+              onClick={() => handleNavClick("home")}
               className="
                 group
                 flex
@@ -448,7 +378,7 @@ export default function HomeNavbar() {
                 focus-visible:ring-offset-2
                 focus-visible:ring-offset-gov-paper
 
-                dark:focus-visible:ring-offset-gov-ink
+                dark:focus-visible:ring-offset-slate-950
               "
               aria-label="Halmashauri ya Wilaya ya Mlele — Mwanzo"
             >
@@ -477,7 +407,6 @@ export default function HomeNavbar() {
                   leading-tight
                 "
               >
-                {/* Main title */}
                 <span
                   className="
                     text-sm
@@ -493,7 +422,6 @@ export default function HomeNavbar() {
                   Halmashauri ya Wilaya ya Mlele
                 </span>
 
-                {/* Subtitle */}
                 <span
                   className="
                     text-[11px]
@@ -501,7 +429,7 @@ export default function HomeNavbar() {
 
                     text-gov-ink-soft
 
-                    dark:text-white/70
+                    dark:text-white/60
                   "
                 >
                   Mlele District Council
@@ -518,7 +446,6 @@ export default function HomeNavbar() {
                 hidden
                 items-center
                 gap-1
-
                 rounded-2xl
 
                 border
@@ -534,33 +461,21 @@ export default function HomeNavbar() {
                 lg:flex
 
                 dark:border-white/10
-                dark:bg-gov-ink/90
+                dark:bg-slate-950
                 dark:shadow-black/30
               "
               aria-label="Navigesheni kuu"
             >
               {navLinks.map((link) => {
-                const active =
-                  isActive(link.id);
+                const active = isActive(link.id);
 
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    onClick={() =>
-                      handleNavClick(
-                        link.id,
-                      )
-                    }
-                    aria-current={
-                      active
-                        ? "page"
-                        : undefined
-                    }
+                    onClick={() => handleNavClick(link.id)}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
-                      /*
-                       * Base
-                       */
                       "relative",
                       "rounded-xl",
                       "px-4",
@@ -571,15 +486,9 @@ export default function HomeNavbar() {
                       "transition-all",
                       "duration-200",
 
-                      /*
-                       * Accessibility
-                       */
                       "focus-visible:ring-2",
                       "focus-visible:ring-gov-green-400",
 
-                      /*
-                       * ACTIVE
-                       */
                       active
                         ? [
                             "bg-gov-green-600",
@@ -587,30 +496,20 @@ export default function HomeNavbar() {
                             "shadow-sm",
                             "shadow-gov-green-900/20",
 
-                            /*
-                             * Dark mode active state.
-                             * Keep it fully solid.
-                             */
                             "dark:bg-gov-green-500",
                             "dark:text-white",
                             "dark:shadow-black/30",
                           ]
                         : [
                             /*
-                             * Light mode
+                             * LIGHT
                              */
                             "text-gov-ink",
                             "hover:bg-gov-mist",
                             "hover:text-gov-green-700",
 
                             /*
-                             * Dark mode
-                             *
-                             * IMPORTANT:
-                             * No text-white/65.
-                             * No text-white/50.
-                             *
-                             * Navigation text remains solid white.
+                             * DARK
                              */
                             "dark:text-white",
                             "dark:hover:bg-white/10",
@@ -742,7 +641,7 @@ export default function HomeNavbar() {
               </div>
 
               {/* -------------------------------------------------------------- */}
-              {/* THEME TOGGLE (always visible)                                   */}
+              {/* THEME TOGGLE                                                    */}
               {/* -------------------------------------------------------------- */}
 
               <Button
@@ -762,8 +661,11 @@ export default function HomeNavbar() {
 
                   "hover:bg-gov-mist",
 
+                  /*
+                   * DARK
+                   */
                   "dark:border-white/10",
-                  "dark:bg-gov-ink",
+                  "dark:bg-slate-950",
                   "dark:text-white",
                   "dark:hover:bg-white/10",
                 )}
@@ -780,9 +682,7 @@ export default function HomeNavbar() {
                 type="button"
                 size="icon-lg"
                 variant="outline"
-                onClick={() =>
-                  setMobileOpen(true)
-                }
+                onClick={() => setMobileOpen(true)}
                 className="
                   rounded-xl
 
@@ -796,7 +696,7 @@ export default function HomeNavbar() {
                   hover:bg-gov-mist
 
                   dark:border-white/10
-                  dark:bg-gov-ink
+                  dark:bg-slate-950
                   dark:text-white
                   dark:hover:bg-white/10
 
@@ -838,17 +738,13 @@ export default function HomeNavbar() {
                 opacity: 0,
               }}
               transition={{
-                duration: shouldReduceMotion
-                  ? 0
-                  : 0.2,
+                duration: shouldReduceMotion ? 0 : 0.2,
               }}
-              onClick={() =>
-                setMobileOpen(false)
-              }
+              onClick={() => setMobileOpen(false)}
               className="
                 fixed
                 inset-0
-                z-[60]
+                z-60
 
                 bg-black/70
                 backdrop-blur-sm
@@ -857,7 +753,7 @@ export default function HomeNavbar() {
             />
 
             {/* ================================================================ */}
-            {/* DRAWER                                                           */}
+            {/* DRAWER                                                            */}
             {/* ================================================================ */}
 
             <motion.aside
@@ -881,19 +777,14 @@ export default function HomeNavbar() {
                     }
                   : {
                       duration: 0.3,
-                      ease: [
-                        0.16,
-                        1,
-                        0.3,
-                        1,
-                      ],
+                      ease: [0.16, 1, 0.3, 1],
                     }
               }
               className="
                 fixed
                 right-0
                 top-0
-                z-[70]
+                z-70
 
                 flex
                 h-screen
@@ -910,7 +801,7 @@ export default function HomeNavbar() {
                 shadow-2xl
 
                 dark:border-white/10
-                dark:bg-gov-ink
+                dark:bg-slate-950
                 dark:shadow-black/60
               "
               aria-label="Menyu ya simu"
@@ -948,16 +839,14 @@ export default function HomeNavbar() {
                   "
                 >
                   <div className="flex-1 bg-gov-green-600" />
-
                   <div className="flex-1 bg-gov-gold-500" />
-
                   <div className="flex-1 bg-gov-blue-500" />
 
                   <div
                     className="
                       flex-1
                       bg-gov-ink-soft
-                      dark:bg-white/15
+                      dark:bg-white/20
                     "
                   />
                 </div>
@@ -965,9 +854,7 @@ export default function HomeNavbar() {
                 {/* Mobile brand */}
                 <Link
                   href="/"
-                  onClick={() =>
-                    handleNavClick("home")
-                  }
+                  onClick={() => handleNavClick("home")}
                   className="
                     flex
                     items-center
@@ -1010,7 +897,7 @@ export default function HomeNavbar() {
                         font-medium
 
                         text-gov-ink-soft
-                        dark:text-white/70
+                        dark:text-white/60
                       "
                     >
                       Mlele District Council
@@ -1023,9 +910,7 @@ export default function HomeNavbar() {
                   type="button"
                   size="icon-lg"
                   variant="ghost"
-                  onClick={() =>
-                    setMobileOpen(false)
-                  }
+                  onClick={() => setMobileOpen(false)}
                   className="
                     rounded-xl
 
@@ -1065,137 +950,120 @@ export default function HomeNavbar() {
                   "
                   aria-label="Navigesheni ya simu"
                 >
-                  {navLinks.map(
-                    (link, index) => {
-                      const active =
-                        isActive(link.id);
+                  {navLinks.map((link, index) => {
+                    const active = isActive(link.id);
 
-                      return (
-                        <motion.div
-                          key={link.href}
-                          initial={{
-                            opacity: 0,
-                            x: 20,
-                          }}
-                          animate={{
-                            opacity: 1,
-                            x: 0,
-                          }}
-                          transition={{
-                            delay:
-                              shouldReduceMotion
-                                ? 0
-                                : index * 0.05,
-                            duration:
-                              shouldReduceMotion
-                                ? 0
-                                : 0.2,
-                          }}
+                    return (
+                      <motion.div
+                        key={link.href}
+                        initial={{
+                          opacity: 0,
+                          x: 20,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          x: 0,
+                        }}
+                        transition={{
+                          delay: shouldReduceMotion
+                            ? 0
+                            : index * 0.05,
+                          duration: shouldReduceMotion
+                            ? 0
+                            : 0.2,
+                        }}
+                      >
+                        <Link
+                          href={link.href}
+                          onClick={() =>
+                            handleNavClick(link.id)
+                          }
+                          aria-current={
+                            active ? "page" : undefined
+                          }
+                          className={cn(
+                            "group",
+                            "flex",
+                            "items-center",
+                            "justify-between",
+                            "rounded-2xl",
+                            "px-4",
+                            "py-3.5",
+                            "text-sm",
+                            "font-semibold",
+                            "transition-all",
+                            "duration-200",
+
+                            active
+                              ? [
+                                  "bg-gov-green-600",
+                                  "text-white",
+                                  "shadow-sm",
+
+                                  "dark:bg-gov-green-500",
+                                  "dark:text-white",
+                                ]
+                              : [
+                                  /*
+                                   * LIGHT
+                                   */
+                                  "text-gov-ink",
+                                  "hover:bg-gov-mist",
+                                  "hover:text-gov-green-700",
+
+                                  /*
+                                   * DARK
+                                   */
+                                  "dark:text-white",
+                                  "dark:hover:bg-white/10",
+                                  "dark:hover:text-white",
+                                ],
+                          )}
                         >
-                          <Link
-                            href={link.href}
-                            onClick={() =>
-                              handleNavClick(
-                                link.id,
-                              )
-                            }
-                            aria-current={
-                              active
-                                ? "page"
-                                : undefined
-                            }
+                          <span
+                            className="
+                              flex
+                              items-center
+                              gap-3
+                            "
+                          >
+                            {active && (
+                              <span
+                                aria-hidden="true"
+                                className="
+                                  size-1.5
+                                  shrink-0
+                                  rounded-full
+                                  bg-gov-gold-400
+                                "
+                              />
+                            )}
+
+                            {link.label}
+                          </span>
+
+                          <ChevronRight
+                            aria-hidden="true"
                             className={cn(
-                              /*
-                               * Base
-                               */
-                              "group",
-                              "flex",
-                              "items-center",
-                              "justify-between",
-                              "rounded-2xl",
-                              "px-4",
-                              "py-3.5",
-                              "text-sm",
-                              "font-semibold",
-                              "transition-all",
+                              "size-4",
+                              "shrink-0",
+                              "transition-transform",
                               "duration-200",
 
                               active
-                                ? [
-                                    /*
-                                     * Active
-                                     */
-                                    "bg-gov-green-600",
-                                    "text-white",
-                                    "shadow-sm",
-
-                                    "dark:bg-gov-green-500",
-                                    "dark:text-white",
-                                  ]
+                                ? "text-white/80"
                                 : [
-                                    /*
-                                     * Light
-                                     */
-                                    "text-gov-ink",
-                                    "hover:bg-gov-mist",
-                                    "hover:text-gov-green-700",
-
-                                    /*
-                                     * Dark
-                                     *
-                                     * Solid white text.
-                                     */
-                                    "dark:text-white",
-                                    "dark:hover:bg-white/10",
-                                    "dark:hover:text-white",
+                                    "text-gov-ink-soft",
+                                    "dark:text-white/60",
                                   ],
+
+                              "group-hover:translate-x-0.5",
                             )}
-                          >
-                            <span
-                              className="
-                                flex
-                                items-center
-                                gap-3
-                              "
-                            >
-                              {active && (
-                                <span
-                                  aria-hidden="true"
-                                  className="
-                                    size-1.5
-                                    shrink-0
-                                    rounded-full
-                                    bg-gov-gold-400
-                                  "
-                                />
-                              )}
-
-                              {link.label}
-                            </span>
-
-                            <ChevronRight
-                              aria-hidden="true"
-                              className={cn(
-                                "size-4",
-                                "shrink-0",
-                                "transition-transform",
-                                "duration-200",
-
-                                active
-                                  ? "text-white/80"
-                                  : [
-                                      "text-gov-ink-soft",
-                                      "dark:text-white/70",
-                                    ],
-
-                                "group-hover:translate-x-0.5",
-                              )}
-                            />
-                          </Link>
-                        </motion.div>
-                      );
-                    },
-                  )}
+                          />
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                 </nav>
               </div>
 
@@ -1240,7 +1108,7 @@ export default function HomeNavbar() {
                       hover:bg-gov-mist
 
                       dark:border-white/10
-                      dark:bg-gov-ink-soft/20
+                      dark:bg-transparent
                       dark:text-white
                       dark:hover:bg-white/10
                     "
@@ -1258,7 +1126,6 @@ export default function HomeNavbar() {
                           size-4
                         "
                       />
-
                       Ingia
                     </Link>
                   </Button>
@@ -1307,7 +1174,6 @@ export default function HomeNavbar() {
                     onClick={cycleTheme}
                     className={cn(
                       "w-full",
-
                       "rounded-xl",
 
                       "border-gov-mist",
@@ -1318,7 +1184,7 @@ export default function HomeNavbar() {
                       "hover:bg-gov-mist",
 
                       "dark:border-white/10",
-                      "dark:bg-gov-ink",
+                      "dark:bg-slate-950",
                       "dark:text-white",
                       "dark:hover:bg-white/10",
                     )}
@@ -1340,10 +1206,10 @@ export default function HomeNavbar() {
 
                       text-gov-ink-soft
 
-                      dark:text-white/60
+                      dark:text-white/50
                     "
                   >
-                    Mfumo Rasmi wa Serikali
+                    Mlele DC Fursa Portal
                   </p>
                 </div>
               </div>
@@ -1354,3 +1220,4 @@ export default function HomeNavbar() {
     </>
   );
 }
+

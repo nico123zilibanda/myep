@@ -67,7 +67,7 @@ export const youthMenuItems: YouthMenuSection[] =
 
         {
           label:
-            "Mafunzo na Matangazo",
+            "Mafunzo & Matangazo",
 
           href: "/youth/trainings",
 
