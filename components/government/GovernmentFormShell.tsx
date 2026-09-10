@@ -35,12 +35,37 @@ interface GovernmentFormShellProps {
   identityContent?: React.ReactNode;
 }
 
-const HERO_IMAGES = [
-  "/hero1.jpg",
-  "/hero2.jpg",
-  "/hero3.jpg",
-  "/hero4.jpg",
-  "/hero7.jpg",
+const HERO_SLIDES = [
+  {
+    src: "/hero1.jpg",
+    title: "Fursa za Maendeleo kwa Wananchi wa Mlele",
+    description:
+      "Pata taarifa za fursa mbalimbali zinazopatikana kupitia Halmashauri ya Wilaya ya Mlele.",
+  },
+  {
+    src: "/hero2.jpg",
+    title: "Ajira na Mafunzo",
+    description:
+      "Gundua nafasi za ajira, mafunzo na programu za kuwawezesha wananchi.",
+  },
+  {
+    src: "/hero3.jpg",
+    title: "Mikopo na Uwezeshaji",
+    description:
+      "Pata taarifa kuhusu mikopo na fursa za uwezeshaji kwa wananchi.",
+  },
+  {
+    src: "/hero4.jpg",
+    title: "Biashara na Ujasiriamali",
+    description:
+      "Jenga na kukuza biashara yako kupitia fursa na huduma za uwezeshaji.",
+  },
+  {
+    src: "/hero7.jpg",
+    title: "Mlele ya Fursa na Maendeleo",
+    description:
+      "Mfumo wa kidijitali unaounganisha wananchi na fursa za maendeleo.",
+  },
 ];
 
 export function GovernmentFormShell({
@@ -69,12 +94,12 @@ export function GovernmentFormShell({
    * ================================================================ */
 
   const nextSlide = React.useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
   }, []);
 
   const prevSlide = React.useCallback(() => {
     setCurrentSlide((prev) =>
-      prev === 0 ? HERO_IMAGES.length - 1 : prev - 1,
+      prev === 0 ? HERO_SLIDES.length - 1 : prev - 1,
     );
   }, []);
 
@@ -91,8 +116,8 @@ export function GovernmentFormShell({
     if (isPaused) return;
 
     intervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 5000);
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 10000);
   }, [isPaused, stopAutoSlide]);
 
   React.useEffect(() => {
@@ -234,46 +259,114 @@ export function GovernmentFormShell({
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              {HERO_IMAGES.map((src, index) => {
-                const isActive = currentSlide === index;
+            {HERO_SLIDES.map((slide, index) => {
+                  const isActive = currentSlide === index;
 
-                return (
-                  <div
-                    key={src}
-                    className={cn(
-                      "absolute inset-0",
-                      "transition-all duration-1000 ease-in-out",
-                      isActive
-                        ? "z-20 opacity-100"
-                        : "z-10 opacity-0",
-                    )}
-                    aria-hidden={!isActive}
-                  >
-                    <Image
-                      src={src}
-                      alt=""
-                      fill
-                      priority={index === 0}
-                      sizes="(max-width: 1024px) 100vw, 60vw"
-                      className={cn(
-                        "object-cover",
-                        "object-center",
-                        "transition-transform duration-7000 ease-out",
-                        isActive
-                          ? "scale-105"
-                          : "scale-100",
-                      )}
-                    />
-
-                    {/* Very subtle image protection only.
-                        No text / content overlay. */}
+                  return (
                     <div
-                      aria-hidden
-                      className="absolute inset-0 bg-black/10"
-                    />
-                  </div>
-                );
-              })}
+                      key={slide.src}
+                      className={cn(
+                        "absolute inset-0",
+                        "transition-all duration-1000 ease-in-out",
+                        isActive
+                          ? "z-20 opacity-100"
+                          : "z-10 opacity-0",
+                      )}
+                      aria-hidden={!isActive}
+                    >
+                      {/* Image */}
+                      <Image
+                        src={slide.src}
+                        alt={slide.title}
+                        fill
+                        priority={index === 0}
+                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className={cn(
+                          "object-cover object-center",
+                          "transition-transform duration-7000 ease-out",
+                          isActive
+                            ? "scale-105"
+                            : "scale-100",
+                        )}
+                      />
+
+                      {/* ======================================================
+                          IMAGE OVERLAY
+
+                          Keeps the image visible while improving text contrast.
+                      ======================================================= */}
+
+                      <div
+                        aria-hidden
+                        className="
+                          absolute inset-0
+                          bg-linear-to-t
+                          from-black/75
+                          via-black/20
+                          to-black/5
+                        "
+                      />
+
+                      {/* ======================================================
+                          SLIDE TITLE
+                      ======================================================= */}
+
+                      <div
+                        className={cn(
+                          "absolute inset-x-0 bottom-0 z-30",
+                          "p-6 sm:p-8 lg:p-10",
+                          "transition-all duration-700",
+                          isActive
+                            ? "translate-y-0 opacity-100"
+                            : "translate-y-4 opacity-0",
+                        )}
+                      >
+                        <div className="max-w-xl">
+                          {/* Small category indicator */}
+                          <div className="mb-3 flex items-center gap-2">
+                            <span className="h-1.5 w-8 rounded-full bg-gov-gold-400" />
+
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80 sm:text-xs">
+                              Mlele DC Fursa Portal
+                            </span>
+                          </div>
+
+                          {/* Main title */}
+                          <h2
+                            className="
+                              max-w-2xl
+                              text-2xl
+                              font-bold
+                              leading-tight
+                              tracking-tight
+                              text-white
+                              drop-shadow-lg
+                              sm:text-3xl
+                              lg:text-4xl
+                            "
+                          >
+                            {slide.title}
+                          </h2>
+
+                          {/* Description */}
+                          <p
+                            className="
+                              mt-3
+                              max-w-xl
+                              text-sm
+                              leading-relaxed
+                              text-white/85
+                              drop-shadow
+                              sm:text-base
+                            "
+                          >
+                            {slide.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
 
               {/* ======================================================
                   PREVIOUS
@@ -355,7 +448,7 @@ export function GovernmentFormShell({
                 role="tablist"
                 aria-label="Hero images"
               >
-                {HERO_IMAGES.map((_, index) => {
+                {HERO_SLIDES.map((_, index) => {
                   const active = currentSlide === index;
 
                   return (
@@ -448,50 +541,6 @@ export function GovernmentFormShell({
                     />
                   </button>
                 </div>
-
-                {/* ====================================================
-                    BOTTOM BRANDING
-
-                    Minimal branding — no text overlay on images.
-                ==================================================== */}
-
-                <div className="flex items-end justify-between gap-5">
-                  <div
-                    className={cn(
-                      "inline-flex items-center gap-3",
-                      "rounded-2xl",
-                      "border border-white/15",
-                      "bg-black/20",
-                      "px-4 py-3",
-                      "backdrop-blur-md",
-                    )}
-                  >
-                    <div className="h-2.5 w-2.5 rounded-full bg-gov-gold-400 shadow-lg shadow-gov-gold-400/40" />
-
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/90">
-                      Serikali ya Tanzania
-                    </span>
-                  </div>
-
-                  {/* Slide number */}
-                  <div
-                    className={cn(
-                      "hidden rounded-xl",
-                      "border border-white/15",
-                      "bg-black/20",
-                      "px-3 py-2",
-                      "text-xs font-medium text-white/80",
-                      "backdrop-blur-md",
-                      "sm:block",
-                    )}
-                  >
-                    {String(currentSlide + 1).padStart(2, "0")}{" "}
-                    <span className="text-white/40">
-                      /
-                    </span>{" "}
-                    {String(HERO_IMAGES.length).padStart(2, "0")}
-                  </div>
-                </div>
               </div>
             )}
           </div>
@@ -510,65 +559,6 @@ export function GovernmentFormShell({
           )}
         >
           <div className="w-full">
-            {/* ========================================================
-                MOBILE IDENTITY
-            ======================================================== */}
-
-            <div className="mb-6 flex items-center justify-between gap-3 lg:hidden">
-              <div className="flex items-center gap-3">
-                <TanzaniaLogo
-                  size="sm"
-                  framed
-                  priority
-                />
-
-                <div className="flex flex-col leading-tight">
-                  <span className="text-sm font-bold text-gov-ink">
-                    Serikali ya Tanzania
-                  </span>
-
-                  <span className="text-xs text-gov-ink-soft/70">
-                    Mfumo wa Kidijitali
-                  </span>
-                </div>
-              </div>
-
-              {/* Mobile back button */}
-              <button
-                type="button"
-                onClick={handleBackHome}
-                aria-label="Rudi kwenye ukurasa wa mwanzo"
-                className={cn(
-                  "group inline-flex shrink-0 items-center gap-2",
-                  "rounded-xl",
-                  "border border-gov-mist",
-                  "bg-gov-paper px-3 py-2",
-                  "text-xs font-semibold text-gov-ink",
-                  "shadow-sm",
-                  "transition-all duration-200",
-                  "hover:border-gov-green-200",
-                  "hover:bg-gov-green-50",
-                  "hover:text-gov-green-700",
-                  "focus:outline-none",
-                  "focus-visible:ring-2",
-                  "focus-visible:ring-gov-green-400",
-                )}
-              >
-                <ArrowLeft
-                  className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5"
-                  aria-hidden
-                />
-
-                <span className="hidden sm:inline">
-                  Nyumbani
-                </span>
-
-                <Home
-                  className="h-3.5 w-3.5 sm:hidden"
-                  aria-hidden
-                />
-              </button>
-            </div>
 
             {/* ========================================================
                 FORM CARD
