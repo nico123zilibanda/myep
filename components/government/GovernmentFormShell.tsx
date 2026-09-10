@@ -62,7 +62,7 @@ const HERO_SLIDES = [
   },
   {
     src: "/hero7.jpg",
-    title: "Mlele ya Fursa na Maendeleo",
+    title: "Mlele DC Fursa Portal",
     description:
       "Mfumo wa kidijitali unaounganisha wananchi na fursa za maendeleo.",
   },
