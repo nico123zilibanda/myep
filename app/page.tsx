@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 
@@ -34,6 +35,17 @@ import {
    TYPES
    ============================================================ */
 
+interface DashboardStats {
+  youth: number;
+  trainings: number;
+  opportunities: number;
+}
+
+interface DashboardResponse {
+  success: boolean;
+  stats?: DashboardStats;
+}
+
 interface StatItem {
   value: string;
   label: string;
@@ -62,6 +74,16 @@ interface PriorityItem {
   description: string;
   icon: typeof Sprout;
 }
+
+/* ============================================================
+   DEFAULT / FALLBACK DATA
+   ============================================================ */
+
+const EMPTY_STATS: DashboardStats = {
+  youth: 0,
+  trainings: 0,
+  opportunities: 0,
+};
 
 /* ============================================================
    ANIMATION VARIANTS
@@ -142,27 +164,6 @@ const heroSlides = [
 ];
 
 /* ============================================================
-   HERO STATS
-   ============================================================ */
-
-const stats: StatItem[] = [
-  {
-    value: "500+",
-    label: "Wananchi Waliojisajiri",
-  },
-
-  {
-    value: "120+",
-    label: "Fursa na Mafunzo",
-  },
-
-  {
-    value: "24/7",
-    label: "Mfumo wa Kidijitali",
-  },
-];
-
-/* ============================================================
    HERO CATEGORIES
    ============================================================ */
 
@@ -197,36 +198,6 @@ const features: FeatureItem[] = [
     description:
       "Pata msaada, ushauri wa kitaalamu na majibu ya maswali kuhusu huduma za Serikali ya Wilaya.",
     icon: MessagesSquare,
-  },
-];
-
-/* ============================================================
-   ABOUT STATS
-   ============================================================ */
-
-const aboutStats: AboutStatItem[] = [
-  {
-    title: "Wananchi",
-    value: "500+",
-    icon: Users,
-  },
-
-  {
-    title: "Fursa",
-    value: "120+",
-    icon: Briefcase,
-  },
-
-  {
-    title: "Mafunzo",
-    value: "80+",
-    icon: BookOpenCheck,
-  },
-
-  {
-    title: "Upatikanaji",
-    value: "24/7",
-    icon: TrendingUp,
   },
 ];
 
@@ -283,6 +254,14 @@ const priorities: PriorityItem[] = [
       "Kutoa huduma bora za kijamii, elimu na afya kwa wananchi wote.",
   },
 ];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("en-US").format(value);
+}
 
 /* ============================================================
    SMALL REUSABLE COMPONENTS
@@ -386,10 +365,200 @@ function SecondaryButton({
 }
 
 /* ============================================================
+   LOADING STAT CARD
+   ============================================================ */
+
+function StatSkeleton() {
+  return (
+    <div
+      className="
+        rounded-2xl
+        border border-gov-mist
+        bg-gov-green-100/80
+        px-3 py-4
+        shadow-sm
+
+        sm:px-4
+        sm:py-5
+
+        dark:border-white/10
+        dark:bg-white/4
+      "
+    >
+      <div
+        className="
+          h-7
+          w-20
+          animate-pulse
+          rounded-md
+          bg-gov-green-200
+
+          dark:bg-gov-green-900
+        "
+      />
+
+      <div
+        className="
+          mt-2
+          h-3
+          w-24
+          animate-pulse
+          rounded
+          bg-gov-green-200/80
+
+          dark:bg-white/10
+        "
+      />
+    </div>
+  );
+}
+
+/* ============================================================
    PAGE
    ============================================================ */
 
 export default function HomePage() {
+  /* ============================================================
+     REAL DASHBOARD DATA
+     ============================================================ */
+
+  const [stats, setStats] =
+    useState<DashboardStats>(EMPTY_STATS);
+
+  const [isLoadingStats, setIsLoadingStats] =
+    useState(true);
+
+  const [statsError, setStatsError] =
+    useState(false);
+
+  /* ============================================================
+     FETCH REAL DATA FROM API
+     ============================================================ */
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDashboardStats() {
+      try {
+        setIsLoadingStats(true);
+        setStatsError(false);
+
+        const response = await fetch("/api/dashboard", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Dashboard API failed with status ${response.status}`
+          );
+        }
+
+        const data: DashboardResponse =
+          await response.json();
+
+        if (!data.success || !data.stats) {
+          throw new Error(
+            "Dashboard API returned invalid data."
+          );
+        }
+
+        if (isMounted) {
+          setStats({
+            youth: data.stats.youth ?? 0,
+            trainings: data.stats.trainings ?? 0,
+            opportunities: data.stats.opportunities ?? 0,
+          });
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load homepage dashboard statistics:",
+          error
+        );
+
+        if (isMounted) {
+          setStatsError(true);
+
+          setStats(EMPTY_STATS);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingStats(false);
+        }
+      }
+    }
+
+    loadDashboardStats();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  /* ============================================================
+     DYNAMIC HERO STATS
+     ============================================================ */
+
+  const heroStats: StatItem[] = [
+    {
+      value: isLoadingStats
+        ? "..."
+        : formatNumber(stats.youth),
+      label: "Wananchi Waliojisajiri",
+    },
+
+    {
+      value: isLoadingStats
+        ? "..."
+        : formatNumber(stats.opportunities),
+      label: "Fursa Zilizopo",
+    },
+
+    {
+      value: "24/7",
+      label: "Mfumo wa Kidijitali",
+    },
+  ];
+
+  /* ============================================================
+     DYNAMIC ABOUT STATS
+     ============================================================ */
+
+  const aboutStats: AboutStatItem[] = [
+    {
+      title: "Wananchi",
+      value: isLoadingStats
+        ? "..."
+        : formatNumber(stats.youth),
+      icon: Users,
+    },
+
+    {
+      title: "Fursa",
+      value: isLoadingStats
+        ? "..."
+        : formatNumber(stats.opportunities),
+      icon: Briefcase,
+    },
+
+    {
+      title: "Mafunzo",
+      value: isLoadingStats
+        ? "..."
+        : formatNumber(stats.trainings),
+      icon: BookOpenCheck,
+    },
+
+    {
+      title: "Upatikanaji",
+      value: "24/7",
+      icon: TrendingUp,
+    },
+  ];
+
   return (
     <main
       className="
@@ -423,6 +592,7 @@ export default function HomePage() {
         "
       >
         {/* Background glow */}
+
         <div
           aria-hidden="true"
           className="
@@ -465,15 +635,15 @@ export default function HomePage() {
             mx-auto
             max-w-400
             px-4
-            sm:px-6
-            lg:px-8
-
             pt-28
             pb-16
+
+            sm:px-6
 
             md:pt-36
             md:pb-20
 
+            lg:px-8
             lg:pt-36
             lg:pb-24
 
@@ -482,254 +652,276 @@ export default function HomePage() {
           "
         >
           <div
-          className="
-            grid
-            items-center
-            gap-10
-
-            lg:grid-cols-[1.45fr_0.75fr]
-            lg:gap-12
-
-            xl:grid-cols-[1.50fr_0.75fr]
-            xl:gap-16
-          "
-          >
-          {/* ==================================================
-              HERO SLIDER — LEFT / LARGE
-          ================================================== */}
-
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
             className="
-              relative
-              w-full
-              overflow-hidden
-              rounded-3xl
-              border
-              border-gov-mist
-              bg-gov-paper
-              shadow-2xl
-              shadow-gov-ink/10
+              grid
+              items-center
+              gap-10
 
-              dark:border-white/10
-              dark:bg-slate-950
-              dark:shadow-black/40
+              lg:grid-cols-[1.45fr_0.75fr]
+              lg:gap-12
 
-              min-h-120
-              sm:min-h-140
-              md:min-h-155
-              lg:min-h-170
-              xl:min-h-180
+              xl:grid-cols-[1.50fr_0.75fr]
+              xl:gap-16
             "
           >
-            <HeroSlider
-              images={heroSlides}
-              className="
-                h-120
-                sm:h-140
-                md:h-155
-                lg:h-170
-                xl:h-180
+            {/* ==================================================
+                HERO SLIDER — LEFT / LARGE
+            ================================================== */}
 
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="
+                relative
                 w-full
-              "
-            />
-          </motion.div>
+                overflow-hidden
+                rounded-3xl
+                border
+                border-gov-mist
+                bg-gov-paper
+                shadow-2xl
+                shadow-gov-ink/10
 
-          {/* ==================================================
-              HERO CONTENT — RIGHT / NARROW
-          ================================================== */}
+                dark:border-white/10
+                dark:bg-slate-950
+                dark:shadow-black/40
 
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="
-              min-w-0
-              text-center
-              lg:text-left
-            "
-          >
-            <SectionBadge icon={Landmark}>
-              Mlele DC Fursa Portal · Halmashauri ya Mlele
-            </SectionBadge>
-
-            <h1
-              id="hero-title"
-              className="
-                mt-7
-                text-4xl
-                font-extrabold
-                leading-[1.08]
-                tracking-tight
-                text-gov-ink
-
-                sm:text-5xl
-                lg:text-5xl
-                xl:text-6xl
-
-                dark:text-white
+                min-h-120
+                sm:min-h-140
+                md:min-h-155
+                lg:min-h-170
+                xl:min-h-180
               "
             >
-              Fursa za{" "}
-              <span className="text-gov-green-700 dark:text-gov-green-400">
-                Maendeleo
-              </span>{" "}
-              kwa Wananchi wa Mlele
-            </h1>
+              <HeroSlider
+                images={heroSlides}
+                className="
+                  h-120
+                  sm:h-140
+                  md:h-155
+                  lg:h-170
+                  xl:h-180
 
-            <p
+                  w-full
+                "
+              />
+            </motion.div>
+
+            {/* ==================================================
+                HERO CONTENT — RIGHT / NARROW
+            ================================================== */}
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
               className="
-                mx-auto
-                mt-6
-                max-w-2xl
-                text-base
-                leading-relaxed
-                text-gov-ink-soft/80
-
-                sm:text-lg
-
-                lg:mx-0
-
-                dark:text-white/65
+                min-w-0
+                text-center
+                lg:text-left
               "
             >
-              Mlele DC Fursa Portal unaowaunganisha wananchi
-              na taarifa muhimu kuhusu ajira, mafunzo, mikopo,
-              biashara na fursa nyingine za maendeleo kwa
-              urahisi na uwazi.
-            </p>
+              <SectionBadge icon={Landmark}>
+                Mlele DC Fursa Portal · Halmashauri ya Mlele
+              </SectionBadge>
 
-            {/* CTA */}
-            <div
-              className="
-                mt-9
-                flex
-                flex-col
-                items-center
-                gap-3
+              <h1
+                id="hero-title"
+                className="
+                  mt-7
+                  text-4xl
+                  font-extrabold
+                  leading-[1.08]
+                  tracking-tight
+                  text-gov-ink
 
-                sm:flex-row
-                sm:justify-center
+                  sm:text-5xl
+                  lg:text-5xl
+                  xl:text-6xl
 
-                lg:justify-start
-              "
-            >
-              <PrimaryButton href="/register">
-                Jisajili Sasa
-              </PrimaryButton>
+                  dark:text-white
+                "
+              >
+                Fursa za{" "}
+                <span className="text-gov-green-700 dark:text-gov-green-400">
+                  Maendeleo
+                </span>{" "}
+                kwa Wananchi wa Mlele
+              </h1>
 
-              <SecondaryButton href="/login">
-                Ingia Kwenye Mfumo
-              </SecondaryButton>
-            </div>
+              <p
+                className="
+                  mx-auto
+                  mt-6
+                  max-w-2xl
+                  text-base
+                  leading-relaxed
+                  text-gov-ink-soft/80
 
-            {/* Categories */}
-            <div
-              className="
-                mt-7
-                flex
-                flex-wrap
-                items-center
-                justify-center
-                gap-x-5
-                gap-y-2
+                  sm:text-lg
 
-                lg:justify-start
-              "
-            >
-              {heroCategories.map((item) => (
-                <div
-                  key={item}
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    text-sm
-                    font-medium
-                    text-gov-ink-soft/75
+                  lg:mx-0
 
-                    dark:text-white/60
-                  "
-                >
-                  <CheckCircle2
-                    className="
-                      size-4
-                      text-gov-green-600
+                  dark:text-white/65
+                "
+              >
+                Mlele DC Fursa Portal unaowaunganisha wananchi
+                na taarifa muhimu kuhusu ajira, mafunzo, mikopo,
+                biashara na fursa nyingine za maendeleo kwa
+                urahisi na uwazi.
+              </p>
 
-                      dark:text-gov-green-400
-                    "
-                  />
+              {/* CTA */}
 
-                  {item}
-                </div>
-              ))}
-            </div>
+              <div
+                className="
+                  mt-9
+                  flex
+                  flex-col
+                  items-center
+                  gap-3
 
-            {/* Hero Stats */}
-            <div
-              className="
-                mt-10
-                grid
-                grid-cols-3
-                gap-2
+                  sm:flex-row
+                  sm:justify-center
 
-                sm:gap-3
-              "
-            >
-              {stats.map((item) => (
-                <div
-                  key={item.label}
-                  className="
-                    rounded-2xl
-                    border
-                    border-gov-mist
-                    bg-gov-green-100/80
-                    px-3
-                    py-4
-                    shadow-sm
+                  lg:justify-start
+                "
+              >
+                <PrimaryButton href="/register">
+                  Jisajili Sasa
+                </PrimaryButton>
 
-                    sm:px-4
-                    sm:py-5
+                <SecondaryButton href="/login">
+                  Ingia Kwenye Mfumo
+                </SecondaryButton>
+              </div>
 
-                    dark:border-white/10
-                    dark:bg-white/4
-                  "
-                >
+              {/* Categories */}
+
+              <div
+                className="
+                  mt-7
+                  flex
+                  flex-wrap
+                  items-center
+                  justify-center
+                  gap-x-5
+                  gap-y-2
+
+                  lg:justify-start
+                "
+              >
+                {heroCategories.map((item) => (
                   <div
+                    key={item}
                     className="
-                      text-xl
-                      font-extrabold
-                      text-gov-green-700
+                      flex
+                      items-center
+                      gap-2
+                      text-sm
+                      font-medium
+                      text-gov-ink-soft/75
 
-                      sm:text-2xl
-
-                      dark:text-gov-green-400
+                      dark:text-white/60
                     "
                   >
-                    {item.value}
+                    <CheckCircle2
+                      className="
+                        size-4
+                        text-gov-green-600
+
+                        dark:text-gov-green-400
+                      "
+                    />
+
+                    {item}
                   </div>
+                ))}
+              </div>
 
+              {/* ==================================================
+                  REAL HERO STATS
+              ================================================== */}
+
+              <div
+                className="
+                  mt-10
+                  grid
+                  grid-cols-3
+                  gap-2
+
+                  sm:gap-3
+                "
+              >
+                {heroStats.map((item) => (
                   <div
+                    key={item.label}
                     className="
-                      mt-1
-                      text-[11px]
-                      leading-snug
-                      text-gov-ink-soft/70
+                      rounded-2xl
+                      border
+                      border-gov-mist
+                      bg-gov-green-100/80
+                      px-3
+                      py-4
+                      shadow-sm
 
-                      sm:text-xs
+                      sm:px-4
+                      sm:py-5
 
-                      dark:text-white/45
+                      dark:border-white/10
+                      dark:bg-white/4
                     "
                   >
-                    {item.label}
+                    <div
+                      className="
+                        text-xl
+                        font-extrabold
+                        text-gov-green-700
+
+                        sm:text-2xl
+
+                        dark:text-gov-green-400
+                      "
+                    >
+                      {item.value}
+                    </div>
+
+                    <div
+                      className="
+                        mt-1
+                        text-[11px]
+                        leading-snug
+                        text-gov-ink-soft/70
+
+                        sm:text-xs
+
+                        dark:text-white/45
+                      "
+                    >
+                      {item.label}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                ))}
+              </div>
+
+              {/* API error */}
+
+              {statsError && (
+                <p
+                  className="
+                    mt-3
+                    text-center
+                    text-xs
+                    text-gov-ink-soft/60
+
+                    lg:text-left
+                  "
+                >
+                  Takwimu za mfumo hazikuweza kupakiwa kwa sasa.
+                </p>
+              )}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -743,7 +935,10 @@ export default function HomePage() {
         variants={fadeUp}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{
+          once: true,
+          amount: 0.15,
+        }}
         className="
           relative
           overflow-hidden
@@ -778,7 +973,9 @@ export default function HomePage() {
             mx-auto
             max-w-7xl
             px-4
+
             sm:px-6
+
             lg:px-8
           "
         >
@@ -793,6 +990,7 @@ export default function HomePage() {
             "
           >
             {/* About content */}
+
             <div>
               <SectionBadge icon={ShieldCheck}>
                 Kuhusu Mfumo
@@ -813,6 +1011,7 @@ export default function HomePage() {
                 "
               >
                 Mlele DC Fursa Portal
+
                 <span
                   className="
                     block
@@ -859,13 +1058,47 @@ export default function HomePage() {
                 taarifa sahihi kwa wakati, kuongeza ujuzi na
                 kushiriki katika shughuli za maendeleo ya jamii.
               </p>
+
+              {/* Real-data summary */}
+
+              <div
+                className="
+                  mt-7
+                  rounded-2xl
+                  border
+                  border-gov-green-200
+                  bg-gov-green-50/70
+                  p-5
+
+                  dark:border-gov-green-900
+                  dark:bg-gov-green-950/20
+                "
+              >
+                <p
+                  className="
+                    text-sm
+                    leading-relaxed
+                    text-gov-ink-soft/80
+
+                    dark:text-white/60
+                  "
+                >
+                  Takwimu zinazoonekana kwenye ukurasa huu
+                  zinatokana moja kwa moja na taarifa zilizopo
+                  kwenye mfumo.
+                </p>
+              </div>
             </div>
 
-            {/* About statistics */}
+            {/* ==================================================
+                REAL ABOUT STATISTICS
+            ================================================== */}
+
             <div
               className="
                 grid
                 gap-5
+
                 sm:grid-cols-2
               "
             >
@@ -982,7 +1215,10 @@ export default function HomePage() {
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{
+          once: true,
+          amount: 0.1,
+        }}
         className="
           relative
           overflow-hidden
@@ -1001,14 +1237,24 @@ export default function HomePage() {
             mx-auto
             max-w-7xl
             px-4
+
             sm:px-6
+
             lg:px-8
           "
         >
           {/* Header */}
-          <div className="mx-auto mb-14 max-w-3xl text-center">
+
+          <div
+            className="
+              mx-auto
+              mb-14
+              max-w-3xl
+              text-center
+            "
+          >
             <SectionBadge>
-              Huduma za Serikali ya wilaya ya mlele
+              Huduma za Serikali ya Wilaya ya Mlele
             </SectionBadge>
 
             <h2
@@ -1025,6 +1271,7 @@ export default function HomePage() {
               "
             >
               Mfumo Unaokuwezesha
+
               <span
                 className="
                   block
@@ -1056,6 +1303,7 @@ export default function HomePage() {
           </div>
 
           {/* Service cards */}
+
           <div
             className="
               grid
@@ -1172,6 +1420,7 @@ export default function HomePage() {
           </div>
 
           {/* Priorities */}
+
           <div
             className="
               mt-16
@@ -1265,7 +1514,10 @@ export default function HomePage() {
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{
+          once: true,
+          amount: 0.1,
+        }}
         className="py-20 sm:py-24"
       >
         <div
@@ -1273,7 +1525,9 @@ export default function HomePage() {
             mx-auto
             max-w-7xl
             px-4
+
             sm:px-6
+
             lg:px-8
           "
         >
@@ -1296,7 +1550,9 @@ export default function HomePage() {
               "
             >
               Hatua Rahisi za
-              Kuanza Safari Yako
+              <span className="block">
+                Kuanza Safari Yako
+              </span>
             </h2>
 
             <p
@@ -1415,7 +1671,10 @@ export default function HomePage() {
         variants={fadeUp}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{
+          once: true,
+          amount: 0.2,
+        }}
         className="
           relative
           overflow-hidden
@@ -1429,6 +1688,7 @@ export default function HomePage() {
         "
       >
         {/* Decorative glow */}
+
         <div
           aria-hidden="true"
           className="
@@ -1509,6 +1769,7 @@ export default function HomePage() {
             "
           >
             Jiunge Leo na
+
             <span className="block text-gov-gold-300">
               Uanze Safari ya Maendeleo
             </span>
@@ -1562,4 +1823,3 @@ export default function HomePage() {
     </main>
   );
 }
-
